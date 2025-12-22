@@ -2,16 +2,27 @@
 title: "Easy Database"
 category: "student-projects"
 date: "2023-09-01"
-tags: ["Database", "C++", "Systems"]
-github: ""
+tags: ["Database", "C++", "Systems", "LSM Tree", "B+ Tree", "Bloom Filter", "Buffer Pool"]
+github: "https://github.com/zixiumeng/csc443"
 images:
   - "/images/portfolioImg_easy-database.png"
-description: "A lightweight database management system implementation."
+description: "A high-performance database management system implementing advanced data structures including LSM tree, B+ tree, Bloom filter, buffer pool with LRU eviction, and extendable hash table."
 ---
 
 # Easy Database
 
-A lightweight database management system implementation.
+A high-performance database management system implementing advanced data structures including LSM tree, B+ tree, Bloom filter, buffer pool with LRU eviction, and extendable hash table.
 
-Student project implementing core database functionality including query processing, indexing, and transaction management.
+Collaborative student project implementing a sophisticated database management system from the ground up using C++. This advanced version features state-of-the-art database components:
 
+- **LSM Tree (Log-Structured Merge Tree)**: Optimized for write-heavy workloads with efficient compaction strategies
+- **Bloom Filter**: Probabilistic data structure for fast membership testing
+- **B+ Tree**: Balanced tree structure for efficient range queries and indexing
+- **Buffer Pool**: Memory management system with LRU (Least Recently Used) eviction policy
+- **Extendable Hash Table**: Dynamic hash table that grows efficiently without complete reorganization
+- **Query Processing**: SQL query parsing, optimization, and execution
+- **Transaction Management**: ACID-compliant transaction support
+
+**Advanced Implementation (Primary)**: [https://github.com/zixiumeng/csc443](https://github.com/zixiumeng/csc443)
+
+**Alternative Version**: [https://github.com/IronDumpling/easy-database](https://github.com/IronDumpling/easy-database)

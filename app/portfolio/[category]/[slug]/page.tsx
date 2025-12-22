@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation'
 import { getProjectBySlug } from '@/lib/portfolio'
 import type { PortfolioProject } from '@/lib/portfolio-types'
 import { serializeMDX } from '@/lib/mdx'
-import { MDXRemote } from 'next-mdx-remote'
+import MDXContent from '@/components/MDXContent'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -133,7 +133,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
         {/* MDX Content */}
         <div className="prose prose-lg dark:prose-invert max-w-none">
-          <MDXRemote {...mdxSource} />
+          <MDXContent source={mdxSource} />
         </div>
       </div>
     </article>

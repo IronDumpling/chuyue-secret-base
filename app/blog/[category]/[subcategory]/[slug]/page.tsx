@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation'
 import { getPostBySlug } from '@/lib/blog'
 import type { BlogPost } from '@/lib/blog-types'
 import { serializeMDX } from '@/lib/mdx'
-import { MDXRemote } from 'next-mdx-remote'
+import MDXContent from '@/components/MDXContent'
 import Link from 'next/link'
 import Rating from '@/components/blog/Rating'
 import { getCategoryDisplayName, getSubcategoryDisplayName } from '@/lib/blog-utils'
@@ -99,7 +99,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
         {/* MDX Content */}
         <div className="prose prose-lg dark:prose-invert max-w-none">
-          <MDXRemote {...mdxSource} components={{ Rating }} />
+          <MDXContent source={mdxSource} />
         </div>
       </div>
     </article>
