@@ -29,13 +29,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }))
 
-  // Add blog post pages
+  // Add blog post pages  - all use 3-level structure now
   const posts = getAllPosts()
   const postRoutes = posts.map((post) => {
-    // Review posts have subcategory in path, casual posts don't
+    // Review posts: /blog/review/{subcategory}/{slug}
+    // Casual posts: /blog/casual/posts/{slug}
     const url = post.frontMatter.category === 'review' && post.frontMatter.subcategory
       ? `${baseUrl}/blog/${post.frontMatter.category}/${post.frontMatter.subcategory}/${post.slug}`
-      : `${baseUrl}/blog/${post.frontMatter.category}/${post.slug}`
+      : `${baseUrl}/blog/${post.frontMatter.category}/posts/${post.slug}`
     
     return {
       url,

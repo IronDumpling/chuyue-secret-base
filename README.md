@@ -69,7 +69,7 @@ Create a new MDX file in `content/portfolio/{category}/{slug}.mdx`:
 ```mdx
 ---
 title: "Project Name"
-category: "video-games"  # student-projects, work-projects, video-games, or applications
+category: "video-games"  # student-projects, video-games, or applications
 date: "2024-01-01"
 tags: ["Unity", "C#"]
 github: "https://github.com/..."

@@ -2,29 +2,16 @@ import 'server-only'
 
 import { getAllMDXFiles, getMDXFile, MDXContent } from './mdx'
 import { categoryMap } from './portfolio-utils'
+import type { PortfolioProject } from './portfolio-types'
 
-export interface PortfolioProject {
-  slug: string
-  frontMatter: {
-    title: string
-    category: 'student-projects' | 'work-projects' | 'video-games' | 'applications'
-    date: string
-    tags?: string[]
-    github?: string
-    demo?: string
-    website?: string
-    images?: string[]
-    description?: string
-  }
-  content: string
-}
+// Re-export type for convenience
+export type { PortfolioProject }
 
 export function getAllProjects(): PortfolioProject[] {
   const projects: PortfolioProject[] = []
   
   const categories: Array<keyof typeof categoryMap> = [
     'student-projects',
-    'work-projects',
     'video-games',
     'applications',
   ]
@@ -65,7 +52,6 @@ export function getProjectBySlug(slug: string, category?: string): PortfolioProj
   // Search all categories
   const categories: Array<keyof typeof categoryMap> = [
     'student-projects',
-    'work-projects',
     'video-games',
     'applications',
   ]

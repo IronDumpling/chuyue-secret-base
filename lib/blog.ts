@@ -2,20 +2,10 @@ import 'server-only'
 
 import { getAllMDXFiles, getMDXFile, MDXContent } from './mdx'
 import { categoryMap, subcategoryMap } from './blog-utils'
+import type { BlogPost } from './blog-types'
 
-export interface BlogPost {
-  slug: string
-  frontMatter: {
-    title: string
-    category: 'review' | 'casual'
-    subcategory?: 'music' | 'movies' | 'video-games' | 'shows' | 'books'  // Only for review
-    date: string
-    tags?: string[]
-    rating?: number  // Only used for review category
-    description?: string
-  }
-  content: string
-}
+// Re-export type for convenience
+export type { BlogPost }
 
 export function getAllPosts(): BlogPost[] {
   const posts: BlogPost[] = []

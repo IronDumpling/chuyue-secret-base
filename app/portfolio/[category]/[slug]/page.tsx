@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
-import { getProjectBySlug, PortfolioProject } from '@/lib/portfolio'
+import { getProjectBySlug } from '@/lib/portfolio'
+import type { PortfolioProject } from '@/lib/portfolio-types'
 import { serializeMDX } from '@/lib/mdx'
 import { MDXRemote } from 'next-mdx-remote'
 import Image from 'next/image'

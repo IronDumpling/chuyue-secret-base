@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { BlogPost } from '@/lib/blog'
+import type { BlogPost } from '@/lib/blog-types'
 import BlogCard from './BlogCard'
 import { getCategoryDisplayName, getSubcategoryDisplayName } from '@/lib/blog-utils'
 

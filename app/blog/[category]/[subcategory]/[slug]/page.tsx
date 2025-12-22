@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
-import { getPostBySlug, BlogPost } from '@/lib/blog'
+import { getPostBySlug } from '@/lib/blog'
+import type { BlogPost } from '@/lib/blog-types'
 import { serializeMDX } from '@/lib/mdx'
 import { MDXRemote } from 'next-mdx-remote'
 import Link from 'next/link'
@@ -18,23 +19,28 @@ export async function generateStaticParams() {
   const { getAllPosts } = await import('@/lib/blog')
   const posts = getAllPosts()
   
-  // Only generate params for review posts (which have subcategories)
-  return posts
-    .filter(post => post.frontMatter.category === 'review' && post.frontMatter.subcategory)
-    .map(post => ({
+  // Generate params for all posts
+  // Review posts use their actual subcategory
+  // Casual posts use 'posts' as the subcategory
+  return posts.map(post => {
+    const subcategory = post.frontMatter.category === 'review' && post.frontMatter.subcategory
+      ? post.frontMatter.subcategory
+      : 'posts'
+    
+    return {
       category: post.frontMatter.category,
-      subcategory: post.frontMatter.subcategory!,
+      subcategory,
       slug: post.slug,
-    }))
+    }
+  })
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
-  // This route is only for review posts with subcategories
-  if (params.category !== 'review') {
-    notFound()
-  }
-
-  const post = getPostBySlug(params.slug, 'review', params.subcategory)
+  // For casual posts, subcategory is 'posts' (virtual), so fetch without subcategory
+  // For review posts, use the actual subcategory
+  const post = params.category === 'casual' && params.subcategory === 'posts'
+    ? getPostBySlug(params.slug, params.category)
+    : getPostBySlug(params.slug, params.category, params.subcategory)
 
   if (!post) {
     notFound()

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { PortfolioProject } from '@/lib/portfolio'
+import type { PortfolioProject } from '@/lib/portfolio-types'
 import ProjectCard from './ProjectCard'
 import { getCategoryDisplayName } from '@/lib/portfolio-utils'
 
@@ -11,7 +11,6 @@ interface ProjectGridProps {
 
 const categories: PortfolioProject['frontMatter']['category'][] = [
   'student-projects',
-  'work-projects',
   'video-games',
   'applications',
 ]

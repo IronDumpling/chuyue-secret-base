@@ -3,7 +3,6 @@
 
 export const categoryMap = {
   'student-projects': 'Student Project',
-  'work-projects': 'Work Project',
   'video-games': 'Video Games',
   'applications': 'Applications',
 } as const

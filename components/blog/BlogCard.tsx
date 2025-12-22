@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { BlogPost } from '@/lib/blog'
+import type { BlogPost } from '@/lib/blog-types'
 import { getCategoryDisplayName, getSubcategoryDisplayName } from '@/lib/blog-utils'
 import Rating from './Rating'
 
@@ -8,11 +8,16 @@ interface BlogCardProps {
 }
 
 export default function BlogCard({ post }: BlogCardProps) {
+  // Determine the URL - all posts use 3-level structure now
+  // For review: /blog/review/{subcategory}/{slug}
+  // For casual: /blog/casual/posts/{slug}
+  const url = post.frontMatter.category === 'review' && post.frontMatter.subcategory
+    ? `/blog/${post.frontMatter.category}/${post.frontMatter.subcategory}/${post.slug}`
+    : `/blog/${post.frontMatter.category}/posts/${post.slug}`
+
   return (
     <Link
-      href={post.frontMatter.category === 'review' && post.frontMatter.subcategory
-        ? `/blog/${post.frontMatter.category}/${post.frontMatter.subcategory}/${post.slug}`
-        : `/blog/${post.frontMatter.category}/${post.slug}`}
+      href={url}
       className="block bg-white dark:bg-gray-900 rounded-lg shadow-md p-6 hover:shadow-xl transition-shadow duration-300"
     >
       <div className="flex items-start justify-between mb-3">
