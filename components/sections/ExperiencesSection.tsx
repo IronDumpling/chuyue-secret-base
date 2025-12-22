@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { withBasePath } from '@/lib/utils'
 
 interface ExperienceItem {
   title: string
@@ -154,18 +155,19 @@ const experiences: ExperienceItem[] = [
     ],
   },
   {
-    title: 'Computer Engineering',
+    title: 'Computer Engineering (BASc)',
     subtitle: 'University of Toronto, Canada',
     period: '9/2023-5/2024',
     details: [
       {
-        title: 'Wave Optics Education Website',
+        title: 'Key Projects',
         content: [
-          'Simulated interactive and editable scenes generated through physical algorithms, facilitating students\' comprehension of wave optics.',
+          'Wave Optics Education Website: Interactive physics simulations for wave optics education',
+          'Dynamo/Cassandra-Style Distributed Key-Value Store: Consistent hashing, 3-replica redundancy, dynamic node management',
+          'LLVM-based SmallC Compiler: IR optimization, code generation, semantic analysis',
         ],
         links: [
-          { text: 'Website Page', url: 'https://ece496-game-project.github.io/' },
-          { text: 'Github Repository', url: 'https://github.com/ECE496-Game-Project/ece496-game-project.github.io' },
+          { text: 'View Portfolio', url: '/portfolio' },
         ],
       },
     ],
@@ -212,10 +214,10 @@ const experiences: ExperienceItem[] = [
       {
         title: 'Key Projects',
         content: [
-          'Dynamo/Cassandra-Style Distributed Key-Value Store',
+          'Database Management System: LSM tree, B+ tree, Bloom filter, buffer pool with LRU eviction, extendable hash table',
+          'Anime Goods E-Commerce Platform: Full-stack web application with user authentication, shopping cart, payment integration',
           'ClickHouse-HE: Distributed Query on Homomorphic Encrypted Database',
           'Redis Performance Enhancement with RDMA & VMA',
-          'LLVM-based SmallC Compiler',
         ],
         links: [
           { text: 'View Portfolio', url: '/portfolio' },
@@ -326,7 +328,7 @@ export default function ExperiencesSection() {
                                 {detail.links.map((link, linkIndex) => (
                                   <a
                                     key={linkIndex}
-                                    href={link.url}
+                                    href={withBasePath(link.url)}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="text-primary-600 dark:text-primary-400 hover:underline text-sm"
