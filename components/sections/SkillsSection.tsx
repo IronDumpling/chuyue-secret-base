@@ -16,60 +16,105 @@ interface SkillCategory {
 
 const skillCategories: SkillCategory[] = [
   {
-    title: 'Frontend Develop',
-    subtitle: 'More than 6 websites',
+    title: 'Programming Languages',
+    subtitle: 'Core competencies',
     icon: 'code',
     skills: [
-      { name: 'HTML', percentage: 90 },
-      { name: 'CSS', percentage: 80 },
-      { name: 'JavaScript', percentage: 60 },
-      { name: 'React', percentage: 50 },
+      { name: 'C++/Modern C++ (11/14/17)', percentage: 85 },
+      { name: 'C', percentage: 80 },
+      { name: 'Python', percentage: 90 },
+      { name: 'C#', percentage: 80 },
+      { name: 'Java', percentage: 75 },
+      { name: 'Go', percentage: 70 },
+      { name: 'Rust', percentage: 65 },
+      { name: 'SQL', percentage: 85 },
+      { name: 'TypeScript', percentage: 70 },
     ],
   },
   {
-    title: 'Software Develop',
-    subtitle: 'More than 4 projects',
-    icon: 'cpu',
-    skills: [
-      { name: 'C', percentage: 75 },
-      { name: 'C++', percentage: 60 },
-      { name: 'Rust', percentage: 60 },
-      { name: 'Operating System', percentage: 50 },
-      { name: 'Computer Network', percentage: 50 },
-      { name: 'Version Control (Git, Perforce)', percentage: 60 },
-      { name: 'Design Patterns', percentage: 60 },
-    ],
-  },
-  {
-    title: 'Data Process',
-    subtitle: 'More than 2 years',
+    title: 'Databases & Data Platforms',
+    subtitle: 'Production experience',
     icon: 'database',
     skills: [
-      { name: 'Python', percentage: 90 },
-      { name: 'PostgreSQL', percentage: 75 },
-      { name: 'MySQL', percentage: 75 },
+      { name: 'PostgreSQL', percentage: 90 },
+      { name: 'MySQL', percentage: 85 },
+      { name: 'Redis', percentage: 80 },
+      { name: 'ClickHouse', percentage: 75 },
+      { name: 'MongoDB', percentage: 70 },
+      { name: 'Cassandra', percentage: 70 },
+      { name: 'DynamoDB', percentage: 65 },
+      { name: 'Query Optimization', percentage: 85 },
+      { name: 'Data Modeling (OLTP/OLAP)', percentage: 80 },
+      { name: 'Parquet/Columnar Storage', percentage: 80 },
     ],
   },
   {
-    title: 'Game Develop',
+    title: 'Distributed Systems',
+    subtitle: 'Architecture & Design',
+    icon: 'cpu',
+    skills: [
+      { name: 'ACID & Distributed Transactions', percentage: 85 },
+      { name: 'Consensus Algorithms (Raft, Paxos)', percentage: 80 },
+      { name: 'Sharding & Replication', percentage: 85 },
+      { name: 'CAP Theorem & Trade-offs', percentage: 80 },
+      { name: 'Message Queues (Kafka)', percentage: 70 },
+      { name: 'Distributed Caching', percentage: 80 },
+      { name: 'RDMA Programming', percentage: 75 },
+      { name: 'Performance Benchmarking', percentage: 85 },
+    ],
+  },
+  {
+    title: 'Web & API Development',
+    subtitle: 'Full-stack experience',
+    icon: 'web',
+    skills: [
+      { name: 'Node.js/Express.js', percentage: 80 },
+      { name: 'Django', percentage: 75 },
+      { name: '.NET Core', percentage: 70 },
+      { name: 'React.js', percentage: 75 },
+      { name: 'RESTful APIs', percentage: 85 },
+      { name: 'Microservices', percentage: 75 },
+      { name: 'HTML/CSS', percentage: 85 },
+      { name: 'JavaScript', percentage: 80 },
+    ],
+  },
+  {
+    title: 'DevOps & Cloud',
+    subtitle: 'Infrastructure & Automation',
+    icon: 'cloud',
+    skills: [
+      { name: 'Docker', percentage: 80 },
+      { name: 'Kubernetes', percentage: 70 },
+      { name: 'Jenkins CI/CD', percentage: 85 },
+      { name: 'Git/Version Control', percentage: 90 },
+      { name: 'AWS S3', percentage: 70 },
+      { name: 'Microsoft Azure', percentage: 65 },
+      { name: 'Shell Scripting', percentage: 85 },
+      { name: 'Linux Kernel', percentage: 75 },
+    ],
+  },
+  {
+    title: 'Game Development',
     subtitle: 'More than 3 years',
     icon: 'game',
     skills: [
-      { name: 'C#', percentage: 80 },
-      { name: 'Unity', percentage: 75 },
+      { name: 'Unity', percentage: 80 },
       { name: 'MAYA', percentage: 50 },
       { name: 'Photoshop', percentage: 50 },
       { name: 'Procreate', percentage: 95 },
+      { name: 'Shader Programming', percentage: 70 },
     ],
   },
   {
-    title: 'Machine Learning',
-    subtitle: 'More than 2 projects',
+    title: 'Machine Learning & AI',
+    subtitle: 'Research & Applications',
     icon: 'brain',
     skills: [
-      { name: 'Pytorch', percentage: 60 },
-      { name: 'Deep Learning', percentage: 40 },
-      { name: 'Reinforcement Learning', percentage: 40 },
+      { name: 'PyTorch', percentage: 70 },
+      { name: 'Deep Learning', percentage: 65 },
+      { name: 'Reinforcement Learning', percentage: 70 },
+      { name: 'Generative Learning', percentage: 60 },
+      { name: 'AI Agent Development', percentage: 60 },
     ],
   },
   {
@@ -77,10 +122,24 @@ const skillCategories: SkillCategory[] = [
     subtitle: 'More than 4 projects',
     icon: 'graphics',
     skills: [
-      { name: 'Shader', percentage: 60 },
-      { name: 'Geometry', percentage: 50 },
-      { name: 'Rendering', percentage: 70 },
-      { name: 'Animation', percentage: 70 },
+      { name: 'Shader Programming', percentage: 70 },
+      { name: 'Geometry Processing', percentage: 65 },
+      { name: 'Rendering Techniques', percentage: 75 },
+      { name: 'Animation Systems', percentage: 70 },
+      { name: 'GPU Programming', percentage: 65 },
+    ],
+  },
+  {
+    title: 'Additional Skills',
+    subtitle: 'Tools & Technologies',
+    icon: 'tools',
+    skills: [
+      { name: 'LLVM/Compiler Design', percentage: 70 },
+      { name: 'TCP/IP & Socket Programming', percentage: 80 },
+      { name: 'Parallel Programming', percentage: 75 },
+      { name: 'Performance Profiling (perf)', percentage: 80 },
+      { name: 'Operating Systems', percentage: 75 },
+      { name: 'Computer Networks', percentage: 80 },
     ],
   },
 ]
@@ -101,6 +160,16 @@ const iconMap: Record<string, JSX.Element> = {
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
     </svg>
   ),
+  web: (
+    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+    </svg>
+  ),
+  cloud: (
+    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
+    </svg>
+  ),
   game: (
     <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
@@ -114,6 +183,12 @@ const iconMap: Record<string, JSX.Element> = {
   graphics: (
     <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+    </svg>
+  ),
+  tools: (
+    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
     </svg>
   ),
 }

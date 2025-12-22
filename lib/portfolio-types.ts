@@ -1,6 +1,11 @@
 // Client-safe type definitions for portfolio
 // These types can be imported in client components
 
+export interface Link {
+  url: string
+  label: string
+}
+
 export interface PortfolioProject {
   slug: string
   frontMatter: {
@@ -8,9 +13,9 @@ export interface PortfolioProject {
     category: 'student-projects' | 'video-games' | 'applications'
     date: string
     tags?: string[]
-    github?: string
-    demo?: string
-    website?: string
+    github?: string | Link[] // Support single link, multiple links, or labeled links
+    demo?: string | Link[] // Support single link, multiple links, or labeled links
+    website?: string | Link[] // Support single link, multiple links, or labeled links
     images?: string[]
     description?: string
   }

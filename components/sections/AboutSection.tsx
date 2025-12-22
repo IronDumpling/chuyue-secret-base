@@ -57,7 +57,7 @@ export default function AboutSection() {
 
             {/* Download CV Button */}
             <Link
-              href="/pdf/Chuyue-Zhang-CV.pdf"
+              href="/pdf/Chuyue-Zhang-Resume.pdf"
               download
               className="button-primary inline-flex items-center gap-2"
             >

@@ -37,17 +37,17 @@ const experiences: ExperienceItem[] = [
     ],
   },
   {
-    title: 'Computer Engineering',
+    title: 'Computer Engineering (BASc)',
     subtitle: 'University of Toronto, Canada',
-    period: '9/2020-5/2023',
+    period: '9/2020-5/2024',
     details: [
       {
         title: 'GPA',
-        content: ['Cumulative GPA: 3.75', 'Annual GPA: 3.91'],
+        content: ['Cumulative GPA: 3.76/4.0', 'Graduate with Honours'],
       },
       {
-        title: "Dean's List",
-        content: ['On the list in 4 semesters'],
+        title: "Dean's Honours List",
+        content: ['On the list in 5 semesters'],
       },
       {
         title: 'Course Highlights',
@@ -83,21 +83,21 @@ const experiences: ExperienceItem[] = [
     ],
   },
   {
-    title: 'PEY Internship',
-    subtitle: 'Intel Corp., Canada',
+    title: 'PEY Internship - Software Engineer',
+    subtitle: 'Intel Corp., Programmable Solutions Group (PSG)',
     period: '5/2022-6/2023',
     details: [
       {
-        title: 'Intel Corp. PSG Group',
-        content: ["Intel's FPGAs and programmable solution group."],
+        title: 'Role & Impact',
+        content: [
+          'Streamlined chip analysis tools by combining PostgreSQL query tuning and Pandas preprocessing, reducing end-to-end analysis latency by 85%.',
+          'Implemented Django-powered dynamic query features, enabling 20+ engineers to customize chip data visualizations.',
+          'Managed 10M+ Quartus chip database with PostgreSQL and integrated it into internal CI/CD regression pipelines.',
+        ],
       },
       {
-        title: 'Software Engineer',
-        content: [
-          'Internship at timing modeling team.',
-          'Responsible for developing a website and tools for analyzing and comparing Quartus chip models and actual chip data using Python.',
-          'Utilizing tools such as Pandas and PostgreSQL for database processing.',
-        ],
+        title: 'Technologies',
+        content: ['Python, Django, PostgreSQL, Pandas, CI/CD'],
       },
     ],
   },
@@ -135,17 +135,21 @@ const experiences: ExperienceItem[] = [
     ],
   },
   {
-    title: 'Summer Research',
-    subtitle: 'C-MORE Lab, Canada',
-    period: '5/2023-9/2023',
+    title: 'Machine Learning Researcher (Intern)',
+    subtitle: 'C-MORE Lab, Robotics Team',
+    period: '5/2023-12/2023',
     details: [
       {
         title: 'Multi-Agent Reinforcement Learning',
         content: [
-          'Build and train reinforcement learning models to solve multi-robot exploration tasks in unknown areas.',
-          'Use Bayesian optimization to determine the optimal robot configuration.',
-          'Test the effectiveness of the optimization process using physical simulation environment built by Gazebo and ROS.',
+          'Engineered a pipeline for converting 2D maps to 3D Gazebo environments using ROS and XML plugins, automating batch simulations for multi-robot scenarios.',
+          'Developed reinforcement learning-based exploration algorithms, improving multi-robot coverage efficiency by 45%.',
+          'Applied Bayesian Optimization for robot parameter tuning, reducing trial count by 50% in real-world deployment scenarios.',
         ],
+      },
+      {
+        title: 'Technologies',
+        content: ['Python, PyTorch, ROS, Gazebo, Reinforcement Learning, Bayesian Optimization'],
       },
     ],
   },
@@ -167,13 +171,89 @@ const experiences: ExperienceItem[] = [
     ],
   },
   {
-    title: 'Future',
-    subtitle: '',
-    period: '5/2024-',
+    title: 'Software Engineer (Full-time)',
+    subtitle: 'Huawei Canada, Distributed Database Team (DDSM)',
+    period: '7/2024-7/2025',
     details: [
       {
-        title: 'Who Knows?',
-        content: [],
+        title: 'Database Performance Optimization',
+        content: [
+          'Accelerated TPC-H query runtime by 4.7× (28s → 6s, 1-node cluster) and 6.2× (28s → 4.5s, 3-node cluster) on GaussDB, a PostgreSQL-based database.',
+          'Optimized Parquet storage of GaussDB, boosting sysbench point-select TPS by 60% and reducing 3-node TPC-H performance to 5.8s.',
+          'Extended the distributed query system utilizing a share-everything architecture on GaussDB, efficiently supporting SF-300 scale TPC-H workloads.',
+        ],
+      },
+      {
+        title: 'DevOps & CI/CD',
+        content: [
+          'Designed and implemented a 3-node Jenkins CI pipeline, completing 1,500+ automated runs.',
+          'Enabled 40+ engineers to validate code changes rapidly through automated testing infrastructure.',
+        ],
+      },
+      {
+        title: 'Technologies',
+        content: ['C++, PostgreSQL, Parquet, Jenkins, TPC-H Benchmarking, Distributed Systems'],
+      },
+    ],
+  },
+  {
+    title: 'Computer Engineering (MEng)',
+    subtitle: 'University of Toronto, Canada',
+    period: '9/2024-12/2025',
+    details: [
+      {
+        title: 'Graduate Studies',
+        content: [
+          'Master of Engineering in Computer Engineering',
+          'Expected graduation: December 2025',
+          'Focus: Distributed Systems, Databases, and Performance Engineering',
+        ],
+      },
+      {
+        title: 'Key Projects',
+        content: [
+          'Dynamo/Cassandra-Style Distributed Key-Value Store',
+          'ClickHouse-HE: Distributed Query on Homomorphic Encrypted Database',
+          'Redis Performance Enhancement with RDMA & VMA',
+          'LLVM-based SmallC Compiler',
+        ],
+        links: [
+          { text: 'View Portfolio', url: '/portfolio' },
+        ],
+      },
+    ],
+  },
+  {
+    title: 'Software Engineer',
+    subtitle: 'ArcTrade',
+    period: '8/2025-Present',
+    details: [
+      {
+        title: 'Workflow Engine System',
+        content: [
+          'Designing and implementing a scalable workflow engine system.',
+          'Building robust infrastructure for distributed workflow orchestration and execution.',
+          'Optimizing system performance and reliability for high-throughput scenarios.',
+        ],
+      },
+      {
+        title: 'Technologies',
+        content: ['Workflow Orchestration, Distributed Systems, Performance Engineering'],
+      },
+    ],
+  },
+  {
+    title: 'Future Goals',
+    subtitle: 'Career Aspirations',
+    period: 'Ongoing',
+    details: [
+      {
+        title: 'Professional Vision',
+        content: [
+          'Becoming the best scalable system designer, specializing in distributed architectures and high-performance computing.',
+          'Becoming an exceptional video game producer, creating immersive and innovative gaming experiences.',
+          'Bridging technical excellence with creative vision to build systems and products that impact millions.',
+        ],
       },
     ],
   },
