@@ -124,7 +124,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                 </a>
               )
             })}
-            {project.frontMatter.demo && (
+            {typeof project.frontMatter.demo === 'string' && project.frontMatter.demo && (
               <a
                 href={project.frontMatter.demo}
                 target="_blank"
@@ -137,7 +137,26 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                 </svg>
               </a>
             )}
-            {project.frontMatter.website && (
+            {Array.isArray(project.frontMatter.demo) && project.frontMatter.demo.map((item, index) => {
+              const url = typeof item === 'string' ? item : item.url
+              const label = typeof item === 'string' ? 'View Demo' : item.label
+              
+              return (
+                <a
+                  key={index}
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="button-secondary inline-flex items-center gap-2"
+                >
+                  {label}
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </a>
+              )
+            })}
+            {typeof project.frontMatter.website === 'string' && project.frontMatter.website && (
               <a
                 href={project.frontMatter.website}
                 target="_blank"
@@ -150,6 +169,25 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                 </svg>
               </a>
             )}
+            {Array.isArray(project.frontMatter.website) && project.frontMatter.website.map((item, index) => {
+              const url = typeof item === 'string' ? item : item.url
+              const label = typeof item === 'string' ? 'Visit Website' : item.label
+              
+              return (
+                <a
+                  key={index}
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="button-secondary inline-flex items-center gap-2"
+                >
+                  {label}
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </a>
+              )
+            })}
           </div>
         )}
 
