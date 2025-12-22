@@ -1,9 +1,8 @@
 import { notFound } from 'next/navigation'
 import { getProjectBySlug } from '@/lib/portfolio'
-import type { PortfolioProject } from '@/lib/portfolio-types'
 import { serializeMDX } from '@/lib/mdx'
 import MDXContent from '@/components/MDXContent'
-import Image from 'next/image'
+import SafeImage from '@/components/portfolio/SafeImage'
 import Link from 'next/link'
 
 interface ProjectPageProps {
@@ -75,7 +74,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           <div className="mb-8 grid grid-cols-1 md:grid-cols-2 gap-4">
             {project.frontMatter.images.map((image, index) => (
               <div key={index} className="relative h-64 rounded-lg overflow-hidden">
-                <Image
+                <SafeImage
                   src={image}
                   alt={`${project.frontMatter.title} - Image ${index + 1}`}
                   fill
@@ -83,6 +82,18 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                 />
               </div>
             ))}
+          </div>
+        )}
+        {(!project.frontMatter.images || project.frontMatter.images.length === 0) && (
+          <div className="mb-8">
+            <div className="relative h-64 rounded-lg overflow-hidden">
+              <SafeImage
+                src="/images/placeholder/portofolio-default.jpg"
+                alt={`${project.frontMatter.title} - Default`}
+                fill
+                className="object-cover"
+              />
+            </div>
           </div>
         )}
 

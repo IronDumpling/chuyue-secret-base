@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import Image from 'next/image'
+import SafeImage from './SafeImage'
 import type { PortfolioProject } from '@/lib/portfolio-types'
 
 interface ProjectCardProps {
@@ -7,7 +7,7 @@ interface ProjectCardProps {
 }
 
 export default function ProjectCard({ project }: ProjectCardProps) {
-  const image = project.frontMatter.images?.[0] || '/images/portfolio/backtrack/portfolioImg_backtrack_1.png'
+  const image = project.frontMatter.images?.[0] || '/images/placeholder/portofolio-default.jpg'
 
   return (
     <Link
@@ -15,7 +15,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
       className="group block bg-white dark:bg-gray-900 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300"
     >
       <div className="relative h-48 overflow-hidden">
-        <Image
+        <SafeImage
           src={image}
           alt={project.frontMatter.title}
           fill
