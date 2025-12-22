@@ -313,8 +313,20 @@ export default function ExperiencesSection() {
 
                   {/* Right side (even) or Left side (odd) */}
                   <div className={`md:${index % 2 === 0 ? 'pl-8' : 'pr-8 order-1'}`}>
-                    {openIndex === index && (
-                      <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 space-y-6">
+                    <div
+                      className={`overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
+                        openIndex === index
+                          ? 'max-h-[2000px] opacity-100'
+                          : 'max-h-0 opacity-0'
+                      }`}
+                    >
+                      <div
+                        className={`bg-gray-50 dark:bg-gray-800 rounded-lg p-6 space-y-6 shadow-lg transform-gpu origin-center transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
+                          openIndex === index
+                            ? 'scale-100 translate-y-0'
+                            : 'scale-90 translate-y-4'
+                        }`}
+                      >
                         {exp.details.map((detail, detailIndex) => (
                           <div key={detailIndex}>
                             <h4 className="font-semibold mb-2">{detail.title}</h4>
@@ -341,7 +353,7 @@ export default function ExperiencesSection() {
                           </div>
                         ))}
                       </div>
-                    )}
+                    </div>
                   </div>
                 </div>
               </div>

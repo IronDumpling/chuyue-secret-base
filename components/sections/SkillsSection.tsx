@@ -238,8 +238,20 @@ export default function SkillsSection() {
                 </svg>
               </button>
 
-              {openCategory === index && (
-                <div className="p-4 pt-0 space-y-4">
+              <div
+                className={`overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
+                  openCategory === index
+                    ? 'max-h-[1000px] opacity-100'
+                    : 'max-h-0 opacity-0'
+                }`}
+              >
+                <div
+                  className={`p-4 pt-0 space-y-4 transform-gpu origin-top transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
+                    openCategory === index
+                      ? 'scale-100 translate-y-0'
+                      : 'scale-95 -translate-y-2'
+                  }`}
+                >
                   {category.skills.map((skill, skillIndex) => (
                     <div key={skillIndex}>
                       <div className="flex justify-between items-center mb-2">
@@ -255,7 +267,7 @@ export default function SkillsSection() {
                     </div>
                   ))}
                 </div>
-              )}
+              </div>
             </div>
           ))}
         </div>

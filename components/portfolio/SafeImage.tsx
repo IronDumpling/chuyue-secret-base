@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { withBasePath } from '@/lib/utils'
 
 interface SafeImageProps {
@@ -11,6 +11,8 @@ interface SafeImageProps {
   height?: number
   className?: string
   defaultSrc?: string
+  priority?: boolean
+  objectFit?: 'contain' | 'cover' | 'fill' | 'none' | 'scale-down'
 }
 
 export default function SafeImage({
@@ -21,6 +23,8 @@ export default function SafeImage({
   height,
   className,
   defaultSrc = '/images/placeholder/portofolio-default.jpg',
+  priority = false,
+  objectFit = 'cover',
 }: SafeImageProps) {
   // Add base path to src and defaultSrc for GitHub Pages deployment
   const srcWithBasePath = withBasePath(src)
@@ -28,6 +32,12 @@ export default function SafeImage({
   
   const [imgSrc, setImgSrc] = useState(srcWithBasePath)
   const [hasError, setHasError] = useState(false)
+
+  // Update image source when src prop changes
+  useEffect(() => {
+    setImgSrc(srcWithBasePath)
+    setHasError(false)
+  }, [srcWithBasePath])
 
   const handleError = () => {
     if (!hasError && imgSrc !== defaultSrcWithBasePath) {
@@ -37,7 +47,7 @@ export default function SafeImage({
   }
 
   const style = fill
-    ? { width: '100%', height: '100%', objectFit: 'cover' as const }
+    ? { width: '100%', height: '100%', objectFit }
     : width && height
     ? { width: `${width}px`, height: `${height}px` }
     : undefined
@@ -49,7 +59,7 @@ export default function SafeImage({
       className={className}
       style={style}
       onError={handleError}
-      loading="lazy"
+      loading={priority ? 'eager' : 'lazy'}
     />
   )
 }
