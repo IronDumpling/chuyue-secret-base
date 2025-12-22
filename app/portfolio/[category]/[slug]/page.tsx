@@ -1,6 +1,5 @@
 import { notFound } from 'next/navigation'
 import { getProjectBySlug } from '@/lib/portfolio'
-import { serializeMDX } from '@/lib/mdx'
 import MDXContent from '@/components/MDXContent'
 import SafeImage from '@/components/portfolio/SafeImage'
 import Link from 'next/link'
@@ -28,8 +27,6 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   if (!project) {
     notFound()
   }
-
-  const mdxSource = await serializeMDX(project.content)
 
   return (
     <article className="section bg-white dark:bg-gray-900">
@@ -204,7 +201,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
         {/* MDX Content */}
         <div className="prose prose-lg dark:prose-invert max-w-none">
-          <MDXContent source={mdxSource} />
+          <MDXContent source={project.content} />
         </div>
       </div>
     </article>

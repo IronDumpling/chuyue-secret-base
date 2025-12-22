@@ -44,7 +44,6 @@ export default function SafeImage({
       className={className}
       style={style}
       onError={handleError}
-      loading="lazy"
     />
   )
 }

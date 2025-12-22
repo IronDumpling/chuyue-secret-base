@@ -224,7 +224,7 @@ const experiences: ExperienceItem[] = [
     ],
   },
   {
-    title: 'Software Engineer',
+    title: 'Software Engineer (Full-time)',
     subtitle: 'ArcTrade',
     period: '8/2025-Present',
     details: [
@@ -238,7 +238,7 @@ const experiences: ExperienceItem[] = [
       },
       {
         title: 'Technologies',
-        content: ['Workflow Orchestration, Distributed Systems, Performance Engineering'],
+        content: ['Workflow Orchestration, Backend Development, Distributed Systems, C#'],
       },
     ],
   },
@@ -270,7 +270,6 @@ export default function ExperiencesSection() {
     <section id="experiences-section" className="section bg-white dark:bg-gray-900">
       <div className="container">
         <h2 className="section-title">Experiences</h2>
-        <span className="section-subtitle">My personal journey</span>
 
         <div className="relative">
           {/* Timeline line */}

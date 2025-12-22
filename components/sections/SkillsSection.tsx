@@ -204,7 +204,6 @@ export default function SkillsSection() {
     <section id="skills-section" className="section bg-gray-50 dark:bg-gray-800">
       <div className="container">
         <h2 className="section-title">Skills</h2>
-        <span className="section-subtitle">My technical Level</span>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {skillCategories.map((category, index) => (
