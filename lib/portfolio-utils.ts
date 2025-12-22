@@ -5,6 +5,7 @@ export const categoryMap = {
   'student-projects': 'Student Project',
   'video-games': 'Video Games',
   'applications': 'Applications',
+  'habits': 'Habits',
 } as const
 
 export function getCategoryDisplayName(

@@ -10,7 +10,7 @@ export interface PortfolioProject {
   slug: string
   frontMatter: {
     title: string
-    category: 'student-projects' | 'video-games' | 'applications'
+    category: 'student-projects' | 'video-games' | 'applications' | 'habits'
     date: string
     tags?: string[]
     github?: string | Link[] // Support single link, multiple links, or labeled links

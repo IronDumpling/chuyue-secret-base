@@ -19,14 +19,14 @@ export default function AboutSection() {
           <div className="grid grid-cols-2 gap-4">
             <div className="relative rounded-lg overflow-hidden shadow-lg">
               <img
-                src="/images/aboutImg1.jpeg"
+                src="/images/about/aboutImg1.jpeg"
                 alt="About me"
                 className="w-full h-64 object-cover"
               />
             </div>
             <div className="relative rounded-lg overflow-hidden shadow-lg mt-8">
               <img
-                src="/images/aboutImg2.jpeg"
+                src="/images/about/aboutImg2.jpeg"
                 alt="About me"
                 className="w-full h-64 object-cover"
               />

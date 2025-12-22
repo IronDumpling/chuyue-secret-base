@@ -13,6 +13,7 @@ const categories: PortfolioProject['frontMatter']['category'][] = [
   'student-projects',
   'video-games',
   'applications',
+  'habits',
 ]
 
 export default function ProjectGrid({ projects }: ProjectGridProps) {

@@ -7,7 +7,7 @@ interface ProjectCardProps {
 }
 
 export default function ProjectCard({ project }: ProjectCardProps) {
-  const image = project.frontMatter.images?.[0] || '/images/portfolioImg_backtrack_1.png'
+  const image = project.frontMatter.images?.[0] || '/images/portfolio/backtrack/portfolioImg_backtrack_1.png'
 
   return (
     <Link

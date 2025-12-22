@@ -63,7 +63,7 @@ export default function HomeSection() {
             {/* Profile Image */}
             <div className="w-64 h-64 rounded-full overflow-hidden shadow-2xl bg-gradient-to-br from-primary-400 to-primary-600">
               <img
-                src="/images/profileImg.jpeg"
+                src="/images/about/profileImg.jpeg"
                 alt="Chuyue Zhang"
                 className="w-full h-full object-cover"
               />
