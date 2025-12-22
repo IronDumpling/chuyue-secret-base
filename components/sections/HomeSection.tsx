@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { withBasePath } from '@/lib/utils'
 
 const socialLinks = [
   { href: 'https://github.com/IronDumpling', icon: 'github', label: 'GitHub' },
@@ -63,7 +64,7 @@ export default function HomeSection() {
             {/* Profile Image */}
             <div className="w-64 h-64 rounded-full overflow-hidden shadow-2xl bg-gradient-to-br from-primary-400 to-primary-600">
               <img
-                src="/images/about/profileImg.jpg"
+                src={withBasePath('/images/about/profileImg.jpg')}
                 alt="Chuyue Zhang"
                 className="w-full h-full object-cover"
               />

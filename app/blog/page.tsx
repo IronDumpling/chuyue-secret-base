@@ -13,7 +13,6 @@ export default function BlogPage() {
     <section className="section bg-white dark:bg-gray-900">
       <div className="container">
         <h1 className="section-title">Blog</h1>
-        <span className="section-subtitle">Reviews and Recommendations</span>
         <BlogList posts={posts} />
       </div>
     </section>
