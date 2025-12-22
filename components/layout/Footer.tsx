@@ -3,7 +3,7 @@ import Link from 'next/link'
 const socialLinks = [
   { href: 'https://github.com/IronDumpling', label: 'GitHub', icon: 'github' },
   { href: 'https://twitter.com/Irondump1ing', label: 'Twitter', icon: 'twitter' },
-  { href: 'https://www.linkedin.com/in/charlie-zhang-27216a207/', label: 'LinkedIn', icon: 'linkedin' },
+  { href: 'https://www.linkedin.com/in/chuyuez/', label: 'LinkedIn', icon: 'linkedin' },
   { href: 'https://www.zhihu.com/people/zhang-chu-yue-13-47', label: 'Zhihu', icon: 'zhihu' },
   { href: 'https://space.bilibili.com/26023645', label: 'Bilibili', icon: 'bilibili' },
   { href: 'https://www.pixiv.net/users/56079335', label: 'Pixiv', icon: 'pixiv' },

@@ -4,7 +4,7 @@ import { withBasePath } from '@/lib/utils'
 const socialLinks = [
   { href: 'https://github.com/IronDumpling', icon: 'github', label: 'GitHub' },
   { href: 'https://twitter.com/Irondump1ing', icon: 'twitter', label: 'Twitter' },
-  { href: 'https://www.linkedin.com/in/charlie-zhang-27216a207/', icon: 'linkedin', label: 'LinkedIn' },
+  { href: 'https://www.linkedin.com/in/chuyuez/', icon: 'linkedin', label: 'LinkedIn' },
   { href: 'https://www.zhihu.com/people/zhang-chu-yue-13-47', icon: 'zhihu', label: 'Zhihu' },
   { href: 'https://space.bilibili.com/26023645', icon: 'bilibili', label: 'Bilibili' },
   { href: 'https://www.pixiv.net/users/56079335', icon: 'pixiv', label: 'Pixiv' },
