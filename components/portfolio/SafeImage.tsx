@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { withBasePath } from '@/lib/utils'
 
 interface SafeImageProps {
   src: string
@@ -21,13 +22,17 @@ export default function SafeImage({
   className,
   defaultSrc = '/images/placeholder/portofolio-default.jpg',
 }: SafeImageProps) {
-  const [imgSrc, setImgSrc] = useState(src)
+  // Add base path to src and defaultSrc for GitHub Pages deployment
+  const srcWithBasePath = withBasePath(src)
+  const defaultSrcWithBasePath = withBasePath(defaultSrc)
+  
+  const [imgSrc, setImgSrc] = useState(srcWithBasePath)
   const [hasError, setHasError] = useState(false)
 
   const handleError = () => {
-    if (!hasError && imgSrc !== defaultSrc) {
+    if (!hasError && imgSrc !== defaultSrcWithBasePath) {
       setHasError(true)
-      setImgSrc(defaultSrc)
+      setImgSrc(defaultSrcWithBasePath)
     }
   }
 
@@ -44,6 +49,7 @@ export default function SafeImage({
       className={className}
       style={style}
       onError={handleError}
+      loading="lazy"
     />
   )
 }

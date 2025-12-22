@@ -13,7 +13,6 @@ export default function PortfolioPage() {
     <section className="section bg-white dark:bg-gray-900">
       <div className="container">
         <h1 className="section-title">Portfolio</h1>
-        <span className="section-subtitle">My project gallery</span>
         <ProjectGrid projects={projects} />
       </div>
     </section>
