@@ -11,7 +11,7 @@ const socialLinks = [
 
 export default function HomeSection() {
   return (
-    <section id="home" className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-800">
+    <section id="home-section" className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-800">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           {/* Social Links */}
@@ -96,7 +96,7 @@ export default function HomeSection() {
         {/* Scroll Indicator */}
         <div className="mt-16 flex justify-center">
           <a
-            href="#about"
+            href="#about-section"
             className="flex flex-col items-center text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors animate-bounce"
           >
             <span className="text-sm mb-2">Scroll down</span>

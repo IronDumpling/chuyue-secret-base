@@ -9,7 +9,7 @@ const stats = [
 
 export default function AboutSection() {
   return (
-    <section id="about" className="section bg-white dark:bg-gray-900">
+    <section id="about-section" className="section bg-white dark:bg-gray-900">
       <div className="container">
         <h2 className="section-title">About Me</h2>
         <span className="section-subtitle">My introduction</span>

@@ -126,7 +126,7 @@ export default function SkillsSection() {
   }
 
   return (
-    <section id="skills" className="section bg-gray-50 dark:bg-gray-800">
+    <section id="skills-section" className="section bg-gray-50 dark:bg-gray-800">
       <div className="container">
         <h2 className="section-title">Skills</h2>
         <span className="section-subtitle">My technical Level</span>

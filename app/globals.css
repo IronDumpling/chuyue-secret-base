@@ -16,6 +16,11 @@
   body {
     @apply bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200;
   }
+  
+  /* Smooth scroll offset for fixed header */
+  section[id] {
+    scroll-margin-top: 5rem;
+  }
 }
 
 @layer components {

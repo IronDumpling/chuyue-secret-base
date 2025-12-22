@@ -11,7 +11,7 @@ interface BlogListProps {
 }
 
 const categories: BlogPost['frontMatter']['category'][] = ['review', 'casual']
-const subcategories: BlogPost['frontMatter']['subcategory'][] = [
+const subcategories: Array<'music' | 'movies' | 'video-games' | 'shows' | 'books'> = [
   'music',
   'movies',
   'video-games',
@@ -123,7 +123,7 @@ export default function BlogList({ posts, showFilters = true }: BlogListProps) {
       {filteredPosts.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredPosts.map(post => (
-            <BlogCard key={`${post.frontMatter.category}-${post.frontMatter.subcategory || 'no-sub'}-${post.slug}`} post={post} />
+            <BlogCard key={`${post.frontMatter.category}-${post.frontMatter.subcategory ?? 'no-sub'}-${post.slug}`} post={post} />
           ))}
         </div>
       ) : (

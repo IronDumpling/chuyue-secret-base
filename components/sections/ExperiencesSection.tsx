@@ -187,7 +187,7 @@ export default function ExperiencesSection() {
   }
 
   return (
-    <section id="experiences" className="section bg-white dark:bg-gray-900">
+    <section id="experiences-section" className="section bg-white dark:bg-gray-900">
       <div className="container">
         <h2 className="section-title">Experiences</h2>
         <span className="section-subtitle">My personal journey</span>
