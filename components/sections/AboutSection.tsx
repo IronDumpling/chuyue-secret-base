@@ -58,15 +58,16 @@ export default function AboutSection() {
               ))}
             </div>
 
-            {/* Download CV Button */}
+            {/* View Resume Button */}
             <a
-              href={withBasePath('/pdf/Chuyue-Zhang-Resume.pdf')}
-              download
+              href={withBasePath('/pdf/Chuyue_Zhang_Resume.pdf')}
+              target="_blank"
+              rel="noopener noreferrer"
               className="button-primary inline-flex items-center gap-2"
             >
-              Download CV
+              View Resume
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
               </svg>
             </a>
           </div>

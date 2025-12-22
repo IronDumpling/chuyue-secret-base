@@ -11,6 +11,7 @@ export function getBasePath(): string {
 /**
  * Add base path to a URL if it's a relative path
  * Absolute URLs (starting with http:// or https://) are returned as-is
+ * This function ensures proper path joining for static exports with basePath
  */
 export function withBasePath(path: string): string {
   // If it's an absolute URL, return as-is
@@ -25,6 +26,10 @@ export function withBasePath(path: string): string {
   const normalizedPath = path.startsWith('/') ? path : `/${path}`
   
   // Combine base path and path, avoiding double slashes
-  return basePath ? `${basePath}${normalizedPath}` : normalizedPath
+  // Remove trailing slash from basePath if present
+  const cleanBasePath = basePath.endsWith('/') ? basePath.slice(0, -1) : basePath
+  
+  // Return combined path
+  return cleanBasePath ? `${cleanBasePath}${normalizedPath}` : normalizedPath
 }
 

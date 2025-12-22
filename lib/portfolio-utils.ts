@@ -2,7 +2,7 @@
 // These functions don't use fs and can be used in client components
 
 export const categoryMap = {
-  'student-projects': 'Student Project',
+  'student-projects': 'Student Projects',
   'video-games': 'Video Games',
   'applications': 'Applications',
   'habits': 'Habits',
