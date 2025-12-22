@@ -40,7 +40,7 @@ const experiences: ExperienceItem[] = [
   {
     title: 'Computer Engineering (BASc)',
     subtitle: 'University of Toronto, Canada',
-    period: '9/2020-5/2024',
+    period: '9/2020-5/2022',
     details: [
       {
         title: 'GPA',
@@ -124,14 +124,12 @@ const experiences: ExperienceItem[] = [
         ],
       },
       {
-        title: 'Backpack System',
-        links: [{ text: 'Github Repository', url: 'https://github.com/IronDumpling/backpack-system' }],
-        content: [],
-      },
-      {
-        title: 'Over-Clock Survivor',
-        content: ['A third-person 3D survival game inspired by "Vampire Survivor" and "Backpack Heroes".'],
-        links: [{ text: 'Github Repository', url: 'https://github.com/IronDumpling/over-clock-survivor-3d' }],
+        title: 'Signal Android',
+        content: ['A third-person 2D survival game inspired by "Vampire Survivor" and "Backpack Heroes".'],
+        links: [
+          { text: 'Github Repository', url: 'https://github.com/IronDumpling/signal-chariot' },
+          { text: 'Gameplay Demo', url: 'https://www.bilibili.com/video/BV1DBtzetEd2/?share_source=copy_web&vd_source=c4f4a62c77e5958d5b7b68dc5ac0b675' },
+        ],
       },
     ],
   },
@@ -227,20 +225,20 @@ const experiences: ExperienceItem[] = [
   },
   {
     title: 'Software Engineer (Full-time)',
-    subtitle: 'ArcTrade',
+    subtitle: 'ArcTrade, Infrastructure Team',
     period: '8/2025-Present',
     details: [
       {
         title: 'Workflow Engine System',
         content: [
-          'Designing and implementing a scalable workflow engine system.',
-          'Building robust infrastructure for distributed workflow orchestration and execution.',
+          'Designing and implementing the workflow engine system.',
+          'Building robust infrastructure for workflow orchestration and execution.',
           'Optimizing system performance and reliability for high-throughput scenarios.',
         ],
       },
       {
         title: 'Technologies',
-        content: ['Workflow Orchestration, Backend Development, Distributed Systems, C#'],
+        content: ['Workflow Orchestration, Backend Development, C#'],
       },
     ],
   },
