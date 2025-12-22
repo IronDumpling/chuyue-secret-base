@@ -63,7 +63,7 @@ export default function HomeSection() {
             {/* Profile Image */}
             <div className="w-64 h-64 rounded-full overflow-hidden shadow-2xl bg-gradient-to-br from-primary-400 to-primary-600">
               <img
-                src="/images/about/profileImg.jpeg"
+                src="/images/about/profileImg.jpg"
                 alt="Chuyue Zhang"
                 className="w-full h-full object-cover"
               />
@@ -79,7 +79,7 @@ export default function HomeSection() {
               A computer engineer
             </h3>
             <p className="text-lg text-gray-600 dark:text-gray-400 mb-8 max-w-md">
-              Undergraduate computer engineering student at University of Toronto.
+              A system builder at heart, I build software, AI agents, and games that deliver memorable experiences to you.
             </p>
             <Link
               href="/contact"

@@ -12,21 +12,20 @@ export default function AboutSection() {
     <section id="about-section" className="section bg-white dark:bg-gray-900">
       <div className="container">
         <h2 className="section-title">About Me</h2>
-        <span className="section-subtitle">My introduction</span>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           {/* Images */}
           <div className="grid grid-cols-2 gap-4">
             <div className="relative rounded-lg overflow-hidden shadow-lg">
               <img
-                src="/images/about/aboutImg1.jpeg"
+                src="/images/about/aboutImg1.jpg"
                 alt="About me"
                 className="w-full h-64 object-cover"
               />
             </div>
             <div className="relative rounded-lg overflow-hidden shadow-lg mt-8">
               <img
-                src="/images/about/aboutImg2.jpeg"
+                src="/images/about/aboutImg2.jpg"
                 alt="About me"
                 className="w-full h-64 object-cover"
               />
@@ -35,10 +34,13 @@ export default function AboutSection() {
 
           {/* Content */}
           <div>
+            <p className="text-lg text-gray-700 dark:text-gray-300 mb-2 leading-relaxed">
+              Currently working as a Software Engineer at ArcTrade, I view myself as a system architect across different mediums.
+              My passion lies in <strong className="text-primary-600 dark:text-primary-400">system design, AI agent development, and game creation</strong>.
+            </p>
             <p className="text-lg text-gray-700 dark:text-gray-300 mb-8 leading-relaxed">
-              An undergraduate computer engineer who is currently studying in University of Toronto.
-              I am interested in <strong className="text-primary-600 dark:text-primary-400">client software, website frontend, gameplay development and machine learning</strong>.
-              With extensive skills in programming and massive experiences in group projects, I am competent for all kinds of software work.
+              For me, code is more than just logic. It's a tool to bridge the gap between technology and emotion. Whether I'm building a complex software 
+              architecture or designing a game mechanic, my goal is the same: to deliver robust systems that provide seamless experiences and bring genuine joy to the user.
             </p>
 
             {/* Stats */}

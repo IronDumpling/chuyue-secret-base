@@ -1,5 +1,3 @@
-'use client'
-
 import Link from 'next/link'
 import SafeImage from './SafeImage'
 import type { PortfolioProject } from '@/lib/portfolio-types'

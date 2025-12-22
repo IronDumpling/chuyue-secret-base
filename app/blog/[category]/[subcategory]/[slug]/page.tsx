@@ -1,7 +1,5 @@
 import { notFound } from 'next/navigation'
 import { getPostBySlug } from '@/lib/blog'
-import type { BlogPost } from '@/lib/blog-types'
-import { serializeMDX } from '@/lib/mdx'
 import MDXContent from '@/components/MDXContent'
 import Link from 'next/link'
 import Rating from '@/components/blog/Rating'
@@ -45,8 +43,6 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   if (!post) {
     notFound()
   }
-
-  const mdxSource = await serializeMDX(post.content)
 
   return (
     <article className="section bg-white dark:bg-gray-900">
@@ -99,7 +95,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
         {/* MDX Content */}
         <div className="prose prose-lg dark:prose-invert max-w-none">
-          <MDXContent source={mdxSource} />
+          <MDXContent source={post.content} />
         </div>
       </div>
     </article>
