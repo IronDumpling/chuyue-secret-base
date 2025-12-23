@@ -17,18 +17,18 @@ export default function AboutSection() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           {/* Images */}
           <div className="grid grid-cols-2 gap-4">
-            <div className="relative rounded-lg overflow-hidden shadow-lg">
+            <div className="relative rounded-lg overflow-hidden shadow-lg h-64">
               <img
                 src={withBasePath('/images/about/aboutImg1.jpg')}
                 alt="About me"
-                className="w-full h-64 object-cover"
+                className="w-full h-full object-cover"
               />
             </div>
-            <div className="relative rounded-lg overflow-hidden shadow-lg mt-8">
+            <div className="relative rounded-lg overflow-hidden shadow-lg mt-8 h-64">
               <img
                 src={withBasePath('/images/about/aboutImg2.jpg')}
                 alt="About me"
-                className="w-full h-64 object-cover"
+                className="w-full h-full object-cover"
               />
             </div>
           </div>
