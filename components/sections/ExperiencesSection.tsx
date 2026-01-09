@@ -27,7 +27,7 @@ const experiences: ExperienceItem[] = [
     ],
   },
   {
-    title: 'Civil Engineering',
+    title: 'Civil Engineering (BASc)',
     subtitle: 'University of Toronto, Canada',
     period: '9/2019-5/2020',
     details: [
@@ -84,7 +84,7 @@ const experiences: ExperienceItem[] = [
     ],
   },
   {
-    title: 'PEY Internship - Software Engineer',
+    title: 'Software Engineer (Intern)',
     subtitle: 'Intel Corp., Programmable Solutions Group (PSG)',
     period: '5/2022-6/2023',
     details: [
@@ -250,9 +250,8 @@ const experiences: ExperienceItem[] = [
       {
         title: 'Professional Vision',
         content: [
-          'Becoming the best scalable system designer, specializing in distributed architectures and high-performance computing.',
-          'Becoming an exceptional video game producer, creating immersive and innovative gaming experiences.',
           'Bridging technical excellence with creative vision to build systems and products that impact millions.',
+          'Becoming an exceptional video game producer, creating immersive and innovative gaming experiences.',
         ],
       },
     ],
