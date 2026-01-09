@@ -43,19 +43,25 @@ export default function HomeSection() {
                     </svg>
                   )}
                   {social.icon === 'zhihu' && (
-                    <svg className="w-6 h-6 text-gray-800 dark:text-gray-200" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12.344 17.963l-1.688 1.074-2.131-3.644-2.771 1.005 1.933-2.097-4.215.048 5.428-5.428L3.99 6.002l2.464 2.453L3.99 3.002l8.354 8.354-2.654 2.607zm8.172-2.982l-1.933 2.097 2.771-1.005 2.131 3.644 1.688-1.074-2.654-2.607 8.354-8.354-2.464 2.453 2.464 2.453-5.428 5.428 4.215-.048z"/>
-                    </svg>
+                    <img
+                      src={withBasePath('/images/logo/zhihu.svg')}
+                      alt="Zhihu"
+                      className="w-6 h-6 dark:invert"
+                    />
                   )}
                   {social.icon === 'bilibili' && (
-                    <svg className="w-6 h-6 text-gray-800 dark:text-gray-200" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M17.381 18.056c-1.508 0-2.956-.295-4.381-.832l-.425-.141c-.285-.095-.59-.141-.893-.141-.304 0-.608.046-.893.141l-.425.141c-1.425.537-2.873.832-4.381.832H2.106v-1.5h4.256c1.306 0 2.581-.245 3.806-.729l.425-.141c.285-.095.59-.141.893-.141.304 0 .608.046.893.141l.425.141c1.225.484 2.5.729 3.806.729h4.256v1.5h-4.256zm-1.5-3.75c-1.508 0-2.956-.295-4.381-.832l-.425-.141c-.285-.095-.59-.141-.893-.141-.304 0-.608.046-.893.141l-.425.141c-1.425.537-2.873.832-4.381.832H2.106v-1.5h4.256c1.306 0 2.581-.245 3.806-.729l.425-.141c.285-.095.59-.141.893-.141.304 0 .608.046.893.141l.425.141c1.225.484 2.5.729 3.806.729h4.256v1.5h-4.256z"/>
-                    </svg>
+                    <img
+                      src={withBasePath('/images/logo/bilibili.svg')}
+                      alt="Bilibili"
+                      className="w-6 h-6 dark:invert"
+                    />
                   )}
                   {social.icon === 'pixiv' && (
-                    <svg className="w-6 h-6 text-gray-800 dark:text-gray-200" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M4.935 2.1c-.947 0-1.713.768-1.713 1.713v16.374c0 .947.768 1.713 1.713 1.713h14.13c.947 0 1.713-.768 1.713-1.713V3.813c0-.947-.768-1.713-1.713-1.713H4.935zm.57 1.142h12.99c.315 0 .57.255.57.57v14.376c0 .315-.255.57-.57.57H5.505a.57.57 0 01-.57-.57V3.812c0-.315.255-.57.57-.57zm1.142 2.856v10.284h10.284V6.098H6.647zm1.142 1.142h8v8H7.789v-8zm1.713 1.713v4.574h4.574v-4.574H9.502z"/>
-                    </svg>
+                    <img
+                      src={withBasePath('/images/logo/pixiv.svg')}
+                      alt="Pixiv"
+                      className="w-6 h-6 dark:invert"
+                    />
                   )}
                 </a>
               ))}
@@ -73,14 +79,14 @@ export default function HomeSection() {
 
           {/* Content */}
           <div className="text-center md:text-left order-1 md:order-2">
-            <h1 className="text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-primary-600 to-primary-400 bg-clip-text text-transparent">
+            <h1 className="text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-primary-600 to-primary-400 bg-clip-text text-transparent leading-relaxed pb-3">
               Hi, I am Chuyue
             </h1>
             <h3 className="text-2xl md:text-3xl font-semibold mb-4 text-gray-700 dark:text-gray-300">
-              A computer engineer
+              A system designer
             </h3>
             <p className="text-lg text-gray-600 dark:text-gray-400 mb-8 max-w-md">
-              A system builder at heart, I build software, AI agents, and games that deliver memorable experiences to you.
+              I build softwares, AI agents, and video games that deliver memorable experiences to you.
             </p>
             <Link
               href="/contact"

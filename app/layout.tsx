@@ -4,8 +4,8 @@ import Footer from '@/components/layout/Footer'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Chuyue - Computer Engineer',
-  description: 'Portfolio and blog of Chuyue Zhang, a computer engineering student at University of Toronto',
+  title: 'Chuyue - System Designer',
+  description: 'Portfolio and blog of Chuyue Zhang, a system designer graduate from University of Toronto',
 }
 
 export default function RootLayout({

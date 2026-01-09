@@ -37,7 +37,7 @@ export default function AboutSection() {
           <div>
             <p className="text-lg text-gray-700 dark:text-gray-300 mb-2 leading-relaxed">
               Currently working as a Software Engineer at ArcTrade, I view myself as a system architect across different mediums.
-              My passion lies in <strong className="text-primary-600 dark:text-primary-400">system design, AI agent development, and game creation</strong>.
+              My passion lies in <strong className="text-primary-600 dark:text-primary-400">system design, AI agent development, and video game creation</strong>.
             </p>
             <p className="text-lg text-gray-700 dark:text-gray-300 mb-8 leading-relaxed">
               For me, code is more than just logic. It's a tool to bridge the gap between technology and emotion. Whether I'm building a complex software 
