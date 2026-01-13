@@ -86,7 +86,7 @@ export default function HomeSection() {
               A system designer
             </h3>
             <p className="text-lg text-gray-600 dark:text-gray-400 mb-8 max-w-md">
-              I build softwares, AI agents, and video games that deliver memorable experiences to you.
+              I design softwares, AI agents, and video games that deliver memorable experiences to you.
             </p>
             <Link
               href="/contact"

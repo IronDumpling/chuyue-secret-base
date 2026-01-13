@@ -1,11 +1,10 @@
-import Link from 'next/link'
 import { withBasePath } from '@/lib/utils'
 
 const stats = [
-  { value: '05+', label: 'Years\nexperiences' },
-  { value: '08+', label: 'Completed\nprojects' },
+  { value: '07+', label: 'Years\nexperiences' },
+  { value: '26+', label: 'Completed\nprojects' },
   { value: '07+', label: 'Skilled\nlanguages' },
-  { value: '07+', label: 'Subjects\nKnowledge' },
+  { value: '10+', label: 'Subjects\nKnowledge' },
 ]
 
 export default function AboutSection() {

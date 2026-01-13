@@ -17,12 +17,17 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
             <h3 className="text-xl font-bold text-primary-600 dark:text-primary-400 mb-2">Chuyue</h3>
-            <p className="text-gray-600 dark:text-gray-400">Computer Engineer</p>
+            <p className="text-gray-600 dark:text-gray-400">System Designer</p>
           </div>
 
           <div>
             <h4 className="font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2">
+              <li>
+                <Link href="/" className="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+                  Home
+                </Link>
+              </li>
               <li>
                 <Link href="/portfolio" className="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
                   Portfolio
