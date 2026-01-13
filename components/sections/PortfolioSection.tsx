@@ -49,11 +49,11 @@ export default function PortfolioSection() {
               Selected Works
             </h3>
             <p className="text-lg text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">
-              Explore a collection of my past projects, ranging from system architecture to game development. Each "file" represents a challenge solved and a story told.
+              Explore a collection of my past projects, ranging from system architecture to game development.
             </p>
             
             <Link 
-              href={withBasePath('/portfolio')} 
+              href="/portfolio" 
               className="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors duration-200 shadow-md hover:shadow-lg"
             >
               View Full Portfolio
