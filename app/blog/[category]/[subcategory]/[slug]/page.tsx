@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { getPostBySlug } from '@/lib/blog'
 import Rating from '@/components/blog/Rating'
 import MDXContent from '@/components/shared/MDXContent'
+import MDXHeaderImage from '@/components/shared/MDXHeaderImage'
 import { getCategoryDisplayName, getSubcategoryDisplayName } from '@/lib/blog-utils'
 
 interface BlogPostPageProps {
@@ -92,6 +93,16 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             </div>
           )}
         </div>
+
+        {/* Header Image */}
+        <MDXHeaderImage
+          images={
+            post.frontMatter.images && post.frontMatter.images.length > 0
+              ? post.frontMatter.images
+              : ['/images/placeholder/blog-default.jpg']
+          }
+          title={post.frontMatter.title}
+        />
 
         {/* MDX Content */}
         <div className="prose prose-lg dark:prose-invert max-w-none">

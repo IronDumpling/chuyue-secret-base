@@ -1,6 +1,6 @@
 import 'server-only'
 
-import { getAllMDXFiles, getMDXFile, MDXContent } from './mdx'
+import { getAllMDXFiles, getMDXFile } from './mdx'
 import { categoryMap } from './portfolio-utils'
 import type { PortfolioProject } from './portfolio-types'
 

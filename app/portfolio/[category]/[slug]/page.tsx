@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getProjectBySlug } from '@/lib/portfolio'
 import MDXContent from '@/components/shared/MDXContent'
-import ProjectGallery from '@/components/portfolio/ProjectGallery'
+import MDXHeaderImage from '@/components/shared/MDXHeaderImage'
 
 interface ProjectPageProps {
   params: {
@@ -66,8 +66,8 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           </div>
         </div>
 
-        {/* Images Gallery */}
-        <ProjectGallery
+        {/* Header Image */}
+        <MDXHeaderImage
           images={
             project.frontMatter.images && project.frontMatter.images.length > 0
               ? project.frontMatter.images

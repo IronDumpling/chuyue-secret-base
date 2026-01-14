@@ -10,6 +10,7 @@ export interface BlogPost {
     date: string
     tags?: string[]
     rating?: number  // Only used for review category
+    images?: string[]
     description?: string
   }
   content: string
