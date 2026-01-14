@@ -1,5 +1,5 @@
 import { MDXRemote } from 'next-mdx-remote/rsc'
-import Rating from './blog/Rating'
+import Rating from '@/components/blog/Rating'
 
 interface MDXContentProps {
   source: string

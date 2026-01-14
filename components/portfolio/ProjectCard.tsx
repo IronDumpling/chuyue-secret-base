@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import SafeImage from './SafeImage'
+import SafeImage from '@/components/shared/SafeImage'
 import type { PortfolioProject } from '@/lib/portfolio-types'
 
 interface ProjectCardProps {

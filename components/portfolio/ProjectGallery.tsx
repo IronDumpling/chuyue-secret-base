@@ -1,8 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import SafeImage from './SafeImage'
-import ImageLightbox from '@/components/ImageLightbox'
+import SafeImage from '@/components/shared/SafeImage'
+import ImageLightbox from '@/components/shared/ImageLightbox'
 
 interface ProjectGalleryProps {
   images: string[]

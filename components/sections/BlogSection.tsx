@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import { withBasePath } from '@/lib/utils'
 
 export default function BlogSection() {
   return (

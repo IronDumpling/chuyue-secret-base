@@ -1,7 +1,7 @@
+import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getProjectBySlug } from '@/lib/portfolio'
-import MDXContent from '@/components/MDXContent'
-import Link from 'next/link'
+import MDXContent from '@/components/shared/MDXContent'
 import ProjectGallery from '@/components/portfolio/ProjectGallery'
 
 interface ProjectPageProps {

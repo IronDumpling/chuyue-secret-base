@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import SafeImage from './portfolio/SafeImage'
+import SafeImage from '@/components/shared/SafeImage'
 
 interface ImageLightboxProps {
   images: string[]

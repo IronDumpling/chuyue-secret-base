@@ -1,8 +1,8 @@
+import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getPostBySlug } from '@/lib/blog'
-import MDXContent from '@/components/MDXContent'
-import Link from 'next/link'
 import Rating from '@/components/blog/Rating'
+import MDXContent from '@/components/shared/MDXContent'
 import { getCategoryDisplayName, getSubcategoryDisplayName } from '@/lib/blog-utils'
 
 interface BlogPostPageProps {

@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import type { BlogPost } from '@/lib/blog-types'
 import { getCategoryDisplayName, getSubcategoryDisplayName } from '@/lib/blog-utils'
-import Rating from './Rating'
+import Rating from '@/components/blog/Rating'
 
 interface BlogCardProps {
   post: BlogPost

@@ -4,7 +4,7 @@ import SkillsSection from '@/components/sections/SkillsSection'
 import ExperiencesSection from '@/components/sections/ExperiencesSection'
 import PortfolioSection from '@/components/sections/PortfolioSection'
 import BlogSection from '@/components/sections/BlogSection'
-import ScrollHandler from '@/components/ScrollHandler'
+import ScrollHandler from '@/components/shared/ScrollHandler'
 
 export default function Home() {
   return (
