@@ -62,7 +62,7 @@ export default function AboutSection() {
               href={withBasePath('/pdf/Chuyue_Zhang_Resume.pdf')}
               target="_blank"
               rel="noopener noreferrer"
-              className="button-primary inline-flex items-center gap-2"
+              className="button-primary flex w-fit mx-auto md:mx-0 items-center gap-2"
             >
               View Resume
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -85,7 +85,7 @@ export default function HomeSection() {
             <h3 className="text-2xl md:text-3xl font-semibold mb-4 text-gray-700 dark:text-gray-300">
               A system designer
             </h3>
-            <p className="text-lg text-gray-600 dark:text-gray-400 mb-8 max-w-md">
+            <p className="text-lg text-gray-600 dark:text-gray-400 mb-8 max-w-md mx-auto md:mx-0">
               I design softwares, AI agents, and video games that deliver memorable experiences to you.
             </p>
             <Link

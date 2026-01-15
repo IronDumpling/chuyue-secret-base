@@ -11,7 +11,7 @@ export default function BlogSection() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           
           {/* Left Side: Floating Icons Spiral */}
-          <div className="relative h-[300px] md:h-[400px] w-full flex items-center justify-center order-2 md:order-1">
+          <div className="relative h-[300px] md:h-[400px] w-full flex items-center justify-center">
             {/* Background decorative circle */}
             <div className="absolute w-64 h-64 bg-blue-100 dark:bg-blue-900/20 rounded-full blur-3xl opacity-50 animate-pulse" />
 
@@ -72,7 +72,7 @@ export default function BlogSection() {
           </div>
 
           {/* Right Side: Text and Link */}
-          <div className="order-1 md:order-2 text-center md:text-left">
+          <div className="text-center md:text-left">
             <h3 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">
               Thoughts & Reviews
             </h3>
