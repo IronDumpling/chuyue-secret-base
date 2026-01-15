@@ -53,7 +53,7 @@ export default function ContactSection() {
               <div>
                 <h3 className="font-semibold mb-1">Email</h3>
                 <p className="text-gray-600 dark:text-gray-400">irondumpling010@gmail.com</p>
-                <p className="text-gray-600 dark:text-gray-400">irondumpling233@hotmail.com</p>
+                <p className="text-gray-600 dark:text-gray-400">irondumpling233@outlook.com</p>
               </div>
             </div>
 
@@ -80,6 +80,7 @@ export default function ContactSection() {
                 <h3 className="font-semibold mb-1">Language</h3>
                 <p className="text-gray-600 dark:text-gray-400">English</p>
                 <p className="text-gray-600 dark:text-gray-400">Mandarin</p>
+                <p className="text-gray-600 dark:text-gray-400">French</p>
               </div>
             </div>
           </div>
