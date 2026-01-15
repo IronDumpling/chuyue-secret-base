@@ -19,6 +19,7 @@ const navLinks = [
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
+  const [activeSection, setActiveSection] = useState('home-section')
   const pathname = usePathname()
   const router = useRouter()
 
@@ -32,17 +33,41 @@ export default function Header() {
 
   // Handle active link highlighting for anchor links
   useEffect(() => {
-    const handleHashChange = () => {
-      // Update active state based on current hash
+    if (pathname !== '/') return
+
+    const handleScrollSpy = () => {
+      // Get the target ID of all anchor links
+      const sections = navLinks
+        .filter(link => link.href.startsWith('/#'))
+        .map(link => link.href.split('#')[1])
+
+      // Find the Section that is the closest to the top of the viewport
+      for (const sectionId of sections) {
+        const element = document.getElementById(sectionId)
+        if (element) {
+          const rect = element.getBoundingClientRect()
+          // Logic: If a Section's top is close to the top of the viewport, or in the middle of the viewport, it is considered active
+          // 100px is an offset, adapted to the height of the Header
+          if (rect.top >= -300 && rect.top <= 300) {
+            setActiveSection(sectionId)
+            break 
+          }
+        }
+      }
     }
-    window.addEventListener('hashchange', handleHashChange)
-    return () => window.removeEventListener('hashchange', handleHashChange)
-  }, [])
+
+    // Initialize and run once
+    handleScrollSpy()
+    
+    window.addEventListener('scroll', handleScrollSpy)
+    return () => window.removeEventListener('scroll', handleScrollSpy)
+  }, [pathname])
 
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
+        // As long as the menu is open (isMenuOpen) or the page has been scrolled (isScrolled),
+        isMenuOpen || isScrolled
           ? 'bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-md'
           : 'bg-transparent'
       }`}
@@ -56,6 +81,22 @@ export default function Header() {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-1">
             {navLinks.map((link) => {
+              let isActive = false
+
+              if (link.href.startsWith('/#')) {
+                // Case A: This is an anchor link
+                // Only highlight when we are on the Home page, and ScrollSpy tells us we are currently in this Section
+                if (pathname === '/') {
+                  const sectionId = link.href.split('#')[1]
+                  isActive = activeSection === sectionId
+                }
+              } else {
+                // Case B: This is a normal page link
+                // Use startsWith to match, so /portfolio/project-1 also highlights /portfolio
+                // Also exclude '/' to prevent matching all paths
+                isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href))
+              }
+              
               const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
                 if (link.href.includes('#')) {
                   e.preventDefault()
@@ -72,10 +113,6 @@ export default function Header() {
                   }
                 }
               }
-
-              const isActive = pathname === link.href || 
-                (link.href.startsWith('/#') && pathname === '/') ||
-                (link.href === '/' && pathname === '/')
 
               return (
                 <Link
@@ -123,6 +160,16 @@ export default function Header() {
           <div className="md:hidden py-4 border-t border-gray-200 dark:border-gray-800">
             <div className="flex flex-col space-y-2">
               {navLinks.map((link) => {
+                let isActive = false
+                if (link.href.startsWith('/#')) {
+                  if (pathname === '/') {
+                    const sectionId = link.href.split('#')[1]
+                    isActive = activeSection === sectionId
+                  }
+                } else {
+                  isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href))
+                }
+                
                 const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
                   setIsMenuOpen(false)
                   if (link.href.includes('#')) {
@@ -139,10 +186,6 @@ export default function Header() {
                     }
                   }
                 }
-
-                const isActive = pathname === link.href || 
-                  (link.href.startsWith('/#') && pathname === '/') ||
-                  (link.href === '/' && pathname === '/')
 
                 return (
                   <Link

@@ -8,7 +8,7 @@ const PORTFOLIO_ITEMS = [
   { id: 1, src: '/images/portfolio/resonance/resonance-3.png', alt: 'Project Resonance' },
   { id: 2, src: '/images/portfolio/backtrack/portfolioImg_backtrack_2.png', alt: 'Project Backtrack' },
   { id: 3, src: '/images/portfolio/computer-graphics/portfolioImg_graphics_1.gif', alt: 'Computer Graphics' },
-  { id: 4, src: '/images/portfolio/candle-lighter/candle-1.jpg', alt: 'Candle Lighter' },
+  { id: 4, src: '/images/portfolio/candle-lighter/candle-4.png', alt: 'Candle Lighter' },
   { id: 5, src: '/images/portfolio/distributed-storage-service/distributed-storage.png', alt: 'Distributed Storage' },
   { id: 6, src: '/images/portfolio/frametime/frametime-1.png', alt: 'Frame Time' },
   { id: 7, src: '/images/portfolio/easy-go-map/portfolioImg_map.jpeg', alt: 'Easy Go Map' },
@@ -33,13 +33,6 @@ export default function PortfolioSection() {
     }
   }
 
-  // Calculate opacity or brightness
-  const getOpacity = (index: number) => {
-    if (hoveredIndex === null) return 1
-    const distance = Math.abs(hoveredIndex - index)
-    return distance > 2 ? 0.5 : 1 // The elements too far away are slightly dimmed, highlighting the center
-  }
-
   return (
     <section id="portfolio-section" className="section bg-gray-50 dark:bg-gray-800 overflow-hidden">
       <div className="container">
@@ -58,7 +51,6 @@ export default function PortfolioSection() {
                 onMouseLeave={() => setHoveredIndex(null)}
                 style={{ 
                   transform: `translateY(${getTranslateY(index)})`,
-                  opacity: getOpacity(index),
                   zIndex: hoveredIndex === index ? 50 : 10 // The element being hovered has the highest layer
                 }}
                 className="relative w-12 md:w-16 h-48 md:h-64 bg-white dark:bg-gray-700 rounded-t-lg shadow-lg border-t border-x border-gray-200 dark:border-gray-600 transition-all duration-300 ease-out cursor-pointer group flex-shrink-0"
