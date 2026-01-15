@@ -5,14 +5,62 @@ import { withBasePath } from '@/lib/utils'
 import Link from 'next/link'
 
 const PORTFOLIO_ITEMS = [
-  { id: 1, src: '/images/portfolio/resonance/resonance-3.png', alt: 'Project Resonance' },
-  { id: 2, src: '/images/portfolio/backtrack/portfolioImg_backtrack_2.png', alt: 'Project Backtrack' },
-  { id: 3, src: '/images/portfolio/computer-graphics/portfolioImg_graphics_1.gif', alt: 'Computer Graphics' },
-  { id: 4, src: '/images/portfolio/candle-lighter/candle-4.png', alt: 'Candle Lighter' },
-  { id: 5, src: '/images/portfolio/distributed-storage-service/distributed-storage.png', alt: 'Distributed Storage' },
-  { id: 6, src: '/images/portfolio/frametime/frametime-1.png', alt: 'Frame Time' },
-  { id: 7, src: '/images/portfolio/easy-go-map/portfolioImg_map.jpeg', alt: 'Easy Go Map' },
-  { id: 8, src: '/images/portfolio/signal-android/portfolioImg_signal-android-1.png', alt: 'Signal Android' },
+  { 
+    id: 1, 
+    src: '/images/portfolio/resonance/resonance-3.png', 
+    alt: 'Project Resonance', 
+    category: 'video-games', 
+    slug: 'resonance' 
+  },
+  { 
+    id: 2, 
+    src: '/images/portfolio/backtrack/portfolioImg_backtrack_2.png', 
+    alt: 'Project Backtrack', 
+    category: 'video-games', 
+    slug: 'backtrack' 
+  },
+  { 
+    id: 3, 
+    src: '/images/portfolio/computer-graphics/portfolioImg_graphics_1.gif', 
+    alt: 'Computer Graphics', 
+    category: 'student-projects', 
+    slug: 'computer-graphics' 
+  },
+  { 
+    id: 4, 
+    src: '/images/portfolio/candle-lighter/candle-4.png', 
+    alt: 'Candle Lighter', 
+    category: 'video-games', 
+    slug: 'candle-lighter' 
+  },
+  { 
+    id: 5, 
+    src: '/images/portfolio/distributed-storage-service/distributed-storage.png', 
+    alt: 'Distributed Storage', 
+    category: 'student-projects', 
+    slug: 'distributed-storage-service' 
+  },
+  { 
+    id: 6, 
+    src: '/images/portfolio/frametime/frametime-1.png', 
+    alt: 'Frame Time', 
+    category: 'applications', 
+    slug: 'frametime' 
+  },
+  { 
+    id: 7, 
+    src: '/images/portfolio/easy-go-map/portfolioImg_map.jpeg', 
+    alt: 'Easy Go Map', 
+    category: 'applications', 
+    slug: 'easy-go-map' 
+  },
+  { 
+    id: 8, 
+    src: '/images/portfolio/signal-android/portfolioImg_signal-android-1.png', 
+    alt: 'Signal Android', 
+    category: 'video-games', 
+    slug: 'signal-android' 
+  },
 ]
 
 export default function PortfolioSection() {
@@ -45,15 +93,16 @@ export default function PortfolioSection() {
           <div className="relative h-[300px] md:h-[400px] w-full flex items-end justify-center pb-8 gap-1 md:gap-2">
             
             {PORTFOLIO_ITEMS.map((item, index) => (
-              <div
+              <Link
                 key={item.id}
+                href={`/portfolio/${item.category}/${item.slug}`}
                 onMouseEnter={() => setHoveredIndex(index)}
                 onMouseLeave={() => setHoveredIndex(null)}
                 style={{ 
                   transform: `translateY(${getTranslateY(index)})`,
                   zIndex: hoveredIndex === index ? 50 : 10 // The element being hovered has the highest layer
                 }}
-                className="relative w-12 md:w-16 h-48 md:h-64 bg-white dark:bg-gray-700 rounded-t-lg shadow-lg border-t border-x border-gray-200 dark:border-gray-600 transition-all duration-300 ease-out cursor-pointer group flex-shrink-0"
+                className="block relative w-12 md:w-16 h-48 md:h-64 bg-white dark:bg-gray-700 rounded-t-lg shadow-lg border-t border-x border-gray-200 dark:border-gray-600 transition-all duration-300 ease-out cursor-pointer group flex-shrink-0"
               >
                 {/* Simulate the top label bar of the file bag/glass sheet */}
                 <div className="absolute top-0 left-0 right-0 h-1 bg-blue-500/50" />
@@ -67,7 +116,7 @@ export default function PortfolioSection() {
                     onError={(e) => {e.currentTarget.style.display='none'}}
                   />
                 </div>
-              </div>
+              </Link>
             ))}
 
             {/* A line at the bottom, simulating the "desktop" or "track" */}
