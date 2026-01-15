@@ -77,7 +77,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               </span>
             )}
             {post.frontMatter.category === 'review' && post.frontMatter.rating && (
-              <Rating stars={post.frontMatter.rating} />
+              <Rating score={post.frontMatter.rating} />
             )}
           </div>
           {post.frontMatter.tags && (

@@ -32,7 +32,7 @@ export default function BlogCard({ post }: BlogCardProps) {
           )}
         </div>
         {post.frontMatter.category === 'review' && post.frontMatter.rating && (
-          <Rating stars={post.frontMatter.rating} />
+          <Rating score={post.frontMatter.rating} />
         )}
       </div>
       <h3 className="text-xl font-semibold mb-2 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">

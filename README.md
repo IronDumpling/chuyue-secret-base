@@ -103,7 +103,7 @@ description: "Post description"
 
 # Post Title
 
-<Rating stars={5} />
+<Rating score={5} />
 
 Your blog content here...
 ```

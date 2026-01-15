@@ -17,8 +17,8 @@ export default function MDXContentImage({ src, alt, ...props }: MDXContentImageP
 
   return (
     <>
-      <div 
-        className="my-8 relative h-[400px] w-full cursor-zoom-in rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800"
+      <span 
+        className="block my-8 relative h-[400px] w-full cursor-zoom-in rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800"
         onClick={() => setIsOpen(true)}
       >
         <SafeImage
@@ -27,13 +27,13 @@ export default function MDXContentImage({ src, alt, ...props }: MDXContentImageP
           fill
           className="object-contain"
         />
-      </div>
+      </span>
 
       {/* Caption */}
       {alt && (
-        <p className="text-center text-sm text-gray-500 mt-2 mb-8 italic">
+        <span className="block text-center text-sm text-gray-500 mt-2 mb-8 italic">
           {alt}
-        </p>
+        </span>
       )}
 
       {/* Lightbox */}
