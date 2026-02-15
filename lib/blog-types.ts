@@ -12,6 +12,7 @@ export interface BlogPost {
     rating?: number  // Only used for review type
     images?: string[]
     description?: string
+    website?: string | { url: string; label: string }  // External link support
   }
   content: string
 }

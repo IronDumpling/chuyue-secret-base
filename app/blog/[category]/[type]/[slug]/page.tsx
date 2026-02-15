@@ -89,6 +89,23 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           title={post.frontMatter.title}
         />
 
+        {/* Website Link */}
+        {post.frontMatter.website && (
+          <div className="flex flex-wrap gap-4 mb-8">
+            <a
+              href={typeof post.frontMatter.website === 'string' ? post.frontMatter.website : post.frontMatter.website.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="button-secondary inline-flex items-center gap-2"
+            >
+              {typeof post.frontMatter.website === 'string' ? 'Visit Website' : post.frontMatter.website.label}
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </a>
+          </div>
+        )}
+
         {/* MDX Content */}
         <div className="prose prose-lg dark:prose-invert max-w-none">
           <MDXContent source={post.content} />
