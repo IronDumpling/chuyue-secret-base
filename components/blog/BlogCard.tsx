@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import type { BlogPost } from '@/lib/blog-types'
-import { getCategoryDisplayName, getSubcategoryDisplayName } from '@/lib/blog-utils'
+import { getCategoryDisplayName, getTypeDisplayName } from '@/lib/blog-utils'
 import Rating from '@/components/blog/Rating'
 
 interface BlogCardProps {
@@ -8,12 +8,8 @@ interface BlogCardProps {
 }
 
 export default function BlogCard({ post }: BlogCardProps) {
-  // Determine the URL - all posts use 3-level structure now
-  // For review: /blog/review/{subcategory}/{slug}
-  // For casual: /blog/casual/posts/{slug}
-  const url = post.frontMatter.category === 'review' && post.frontMatter.subcategory
-    ? `/blog/${post.frontMatter.category}/${post.frontMatter.subcategory}/${post.slug}`
-    : `/blog/${post.frontMatter.category}/posts/${post.slug}`
+  // URL structure: /blog/{category}/{type}/{slug}
+  const url = `/blog/${post.frontMatter.category}/${post.frontMatter.type}/${post.slug}`
 
   return (
     <Link
@@ -25,13 +21,11 @@ export default function BlogCard({ post }: BlogCardProps) {
           <span className="px-3 py-1 text-xs font-medium bg-primary-100 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 rounded-full">
             {getCategoryDisplayName(post.frontMatter.category)}
           </span>
-          {post.frontMatter.subcategory && (
-            <span className="px-3 py-1 text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full">
-              {getSubcategoryDisplayName(post.frontMatter.subcategory)}
-            </span>
-          )}
+          <span className="px-3 py-1 text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full">
+            {getTypeDisplayName(post.frontMatter.type)}
+          </span>
         </div>
-        {post.frontMatter.category === 'review' && post.frontMatter.rating && (
+        {post.frontMatter.type === 'review' && post.frontMatter.rating && (
           <Rating score={post.frontMatter.rating} />
         )}
       </div>

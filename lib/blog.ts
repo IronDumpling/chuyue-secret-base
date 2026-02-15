@@ -1,7 +1,7 @@
 import 'server-only'
 
 import { getAllMDXFiles, getMDXFile, MDXContent } from './mdx'
-import { categoryMap, subcategoryMap } from './blog-utils'
+import { categoryMap, typeMap } from './blog-utils'
 import type { BlogPost } from './blog-types'
 
 // Re-export type for convenience
@@ -10,43 +10,33 @@ export type { BlogPost }
 export function getAllPosts(): BlogPost[] {
   const posts: BlogPost[] = []
   
-  // Handle review category with subcategories
-  const subcategories: Array<keyof typeof subcategoryMap> = [
+  // Iterate through all categories
+  const categories: Array<keyof typeof categoryMap> = [
+    'photography',
+    'illustration',
+    'films-shows',
     'music',
-    'movies',
     'video-games',
-    'shows',
     'books',
   ]
 
-  for (const subcategory of subcategories) {
-    const files = getAllMDXFiles(`blog/review/${subcategory}`)
-    for (const file of files) {
-      posts.push({
-        slug: file.slug,
-        frontMatter: {
-          ...file.frontMatter,
-          category: 'review',
-          subcategory,
-        } as BlogPost['frontMatter'],
-        content: file.content,
-      })
-    }
-  }
+  const types: Array<keyof typeof typeMap> = ['review', 'casual']
 
-  // Handle casual category without subcategories
-  const casualFiles = getAllMDXFiles(`blog/casual`)
-  for (const file of casualFiles) {
-    posts.push({
-      slug: file.slug,
-      frontMatter: {
-        ...file.frontMatter,
-        category: 'casual',
-        subcategory: undefined,
-        rating: undefined,  // Casual posts don't have ratings
-      } as BlogPost['frontMatter'],
-      content: file.content,
-    })
+  for (const category of categories) {
+    for (const type of types) {
+      const files = getAllMDXFiles(`blog/${category}/${type}`)
+      for (const file of files) {
+        posts.push({
+          slug: file.slug,
+          frontMatter: {
+            ...file.frontMatter,
+            category,
+            type,
+          } as BlogPost['frontMatter'],
+          content: file.content,
+        })
+      }
+    }
   }
 
   return posts.sort((a, b) => 
@@ -57,76 +47,49 @@ export function getAllPosts(): BlogPost[] {
 export function getPostBySlug(
   slug: string,
   category?: string,
-  subcategory?: string
+  type?: string
 ): BlogPost | null {
-  // Handle review posts with subcategory
-  if (category === 'review' && subcategory) {
-    const file = getMDXFile(`blog/review/${subcategory}/${slug}.mdx`)
+  // If category and type are provided, try direct path
+  if (category && type) {
+    const file = getMDXFile(`blog/${category}/${type}/${slug}.mdx`)
     if (!file) return null
     return {
       slug: file.slug,
       frontMatter: {
         ...file.frontMatter,
-        category: 'review',
-        subcategory: subcategory as BlogPost['frontMatter']['subcategory'],
+        category: category as BlogPost['frontMatter']['category'],
+        type: type as BlogPost['frontMatter']['type'],
       } as BlogPost['frontMatter'],
       content: file.content,
     }
   }
 
-  // Handle casual posts without subcategory
-  if (category === 'casual') {
-    const file = getMDXFile(`blog/casual/${slug}.mdx`)
-    if (!file) return null
-    return {
-      slug: file.slug,
-      frontMatter: {
-        ...file.frontMatter,
-        category: 'casual',
-        subcategory: undefined,
-        rating: undefined,
-      } as BlogPost['frontMatter'],
-      content: file.content,
-    }
-  }
-
-  // Search all posts if category/subcategory not provided
-  // First check review posts
-  const subcategories: Array<keyof typeof subcategoryMap> = [
+  // Search all categories and types
+  const categories: Array<keyof typeof categoryMap> = [
+    'photography',
+    'illustration',
+    'films-shows',
     'music',
-    'movies',
     'video-games',
-    'shows',
     'books',
   ]
 
-  for (const subcat of subcategories) {
-    const file = getMDXFile(`blog/review/${subcat}/${slug}.mdx`)
-    if (file) {
-      return {
-        slug: file.slug,
-        frontMatter: {
-          ...file.frontMatter,
-          category: 'review',
-          subcategory: subcat,
-        } as BlogPost['frontMatter'],
-        content: file.content,
-      }
-    }
-  }
+  const types: Array<keyof typeof typeMap> = ['review', 'casual']
 
-  // Then check casual posts
-  const casualFile = getMDXFile(`blog/casual/${slug}.mdx`)
-  if (casualFile) {
-    return {
-      slug: casualFile.slug,
-      frontMatter: {
-        ...casualFile.frontMatter,
-        category: 'casual',
-        subcategory: undefined,
-        rating: undefined,
-      } as BlogPost['frontMatter'],
-      content: casualFile.content,
+  for (const cat of categories) {
+    for (const typ of types) {
+      const file = getMDXFile(`blog/${cat}/${typ}/${slug}.mdx`)
+      if (file) {
+        return {
+          slug: file.slug,
+          frontMatter: {
+            ...file.frontMatter,
+            category: cat,
+            type: typ,
+          } as BlogPost['frontMatter'],
+          content: file.content,
+        }
+      }
     }
   }
 
@@ -135,42 +98,17 @@ export function getPostBySlug(
 
 export function getPostsByCategory(category: BlogPost['frontMatter']['category']): BlogPost[] {
   const posts: BlogPost[] = []
+  const types: Array<keyof typeof typeMap> = ['review', 'casual']
 
-  if (category === 'review') {
-    // Review posts have subcategories
-    const subcategories: Array<keyof typeof subcategoryMap> = [
-      'music',
-      'movies',
-      'video-games',
-      'shows',
-      'books',
-    ]
-
-    for (const subcategory of subcategories) {
-      const files = getAllMDXFiles(`blog/review/${subcategory}`)
-      for (const file of files) {
-        posts.push({
-          slug: file.slug,
-          frontMatter: {
-            ...file.frontMatter,
-            category: 'review',
-            subcategory,
-          } as BlogPost['frontMatter'],
-          content: file.content,
-        })
-      }
-    }
-  } else if (category === 'casual') {
-    // Casual posts don't have subcategories
-    const files = getAllMDXFiles(`blog/casual`)
+  for (const type of types) {
+    const files = getAllMDXFiles(`blog/${category}/${type}`)
     for (const file of files) {
       posts.push({
         slug: file.slug,
         frontMatter: {
           ...file.frontMatter,
-          category: 'casual',
-          subcategory: undefined,
-          rating: undefined,
+          category,
+          type,
         } as BlogPost['frontMatter'],
         content: file.content,
       })
@@ -182,22 +120,48 @@ export function getPostsByCategory(category: BlogPost['frontMatter']['category']
   )
 }
 
-export function getPostsBySubcategory(
-  category: 'review',
-  subcategory: BlogPost['frontMatter']['subcategory']
-): BlogPost[] {
-  // Only review category has subcategories
-  if (category !== 'review' || !subcategory) {
-    return []
+export function getPostsByType(type: BlogPost['frontMatter']['type']): BlogPost[] {
+  const posts: BlogPost[] = []
+  const categories: Array<keyof typeof categoryMap> = [
+    'photography',
+    'illustration',
+    'films-shows',
+    'music',
+    'video-games',
+    'books',
+  ]
+
+  for (const category of categories) {
+    const files = getAllMDXFiles(`blog/${category}/${type}`)
+    for (const file of files) {
+      posts.push({
+        slug: file.slug,
+        frontMatter: {
+          ...file.frontMatter,
+          category,
+          type,
+        } as BlogPost['frontMatter'],
+        content: file.content,
+      })
+    }
   }
 
-  const files = getAllMDXFiles(`blog/review/${subcategory}`)
+  return posts.sort((a, b) => 
+    new Date(b.frontMatter.date).getTime() - new Date(a.frontMatter.date).getTime()
+  )
+}
+
+export function getPostsByCategoryAndType(
+  category: BlogPost['frontMatter']['category'],
+  type: BlogPost['frontMatter']['type']
+): BlogPost[] {
+  const files = getAllMDXFiles(`blog/${category}/${type}`)
   return files.map(file => ({
     slug: file.slug,
     frontMatter: {
       ...file.frontMatter,
-      category: 'review',
-      subcategory,
+      category,
+      type,
     } as BlogPost['frontMatter'],
     content: file.content,
   })).sort((a, b) => 
@@ -206,5 +170,5 @@ export function getPostsBySubcategory(
 }
 
 // Re-export for convenience, but use the client-safe version
-export { getCategoryDisplayName, getSubcategoryDisplayName } from './blog-utils'
+export { getCategoryDisplayName, getTypeDisplayName } from './blog-utils'
 

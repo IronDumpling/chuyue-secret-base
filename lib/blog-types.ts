@@ -5,11 +5,11 @@ export interface BlogPost {
   slug: string
   frontMatter: {
     title: string
-    category: 'review' | 'casual'
-    subcategory?: 'music' | 'movies' | 'video-games' | 'shows' | 'books'  // Only for review
+    category: 'photography' | 'illustration' | 'films-shows' | 'music' | 'video-games' | 'books'
+    type: 'review' | 'casual'
     date: string
     tags?: string[]
-    rating?: number  // Only used for review category
+    rating?: number  // Only used for review type
     images?: string[]
     description?: string
   }

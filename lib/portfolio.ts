@@ -14,7 +14,6 @@ export function getAllProjects(): PortfolioProject[] {
     'student-projects',
     'video-games',
     'applications',
-    'habits',
   ]
 
   for (const category of categories) {
@@ -55,7 +54,6 @@ export function getProjectBySlug(slug: string, category?: string): PortfolioProj
     'student-projects',
     'video-games',
     'applications',
-    'habits',
   ]
 
   for (const cat of categories) {

@@ -4,12 +4,12 @@ import { getPostBySlug } from '@/lib/blog'
 import Rating from '@/components/blog/Rating'
 import MDXContent from '@/components/shared/MDXContent'
 import MDXHeaderImage from '@/components/shared/MDXHeaderImage'
-import { getCategoryDisplayName, getSubcategoryDisplayName } from '@/lib/blog-utils'
+import { getCategoryDisplayName, getTypeDisplayName } from '@/lib/blog-utils'
 
 interface BlogPostPageProps {
   params: {
     category: string
-    subcategory: string
+    type: string
     slug: string
   }
 }
@@ -18,28 +18,15 @@ export async function generateStaticParams() {
   const { getAllPosts } = await import('@/lib/blog')
   const posts = getAllPosts()
   
-  // Generate params for all posts
-  // Review posts use their actual subcategory
-  // Casual posts use 'posts' as the subcategory
-  return posts.map(post => {
-    const subcategory = post.frontMatter.category === 'review' && post.frontMatter.subcategory
-      ? post.frontMatter.subcategory
-      : 'posts'
-    
-    return {
-      category: post.frontMatter.category,
-      subcategory,
-      slug: post.slug,
-    }
-  })
+  return posts.map(post => ({
+    category: post.frontMatter.category,
+    type: post.frontMatter.type,
+    slug: post.slug,
+  }))
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
-  // For casual posts, subcategory is 'posts' (virtual), so fetch without subcategory
-  // For review posts, use the actual subcategory
-  const post = params.category === 'casual' && params.subcategory === 'posts'
-    ? getPostBySlug(params.slug, params.category)
-    : getPostBySlug(params.slug, params.category, params.subcategory)
+  const post = getPostBySlug(params.slug, params.category, params.type)
 
   if (!post) {
     notFound()
@@ -71,12 +58,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             <span className="px-3 py-1 text-sm bg-primary-100 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 rounded-full">
               {getCategoryDisplayName(post.frontMatter.category)}
             </span>
-            {post.frontMatter.subcategory && (
-              <span className="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full">
-                {getSubcategoryDisplayName(post.frontMatter.subcategory)}
-              </span>
-            )}
-            {post.frontMatter.category === 'review' && post.frontMatter.rating && (
+            <span className="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full">
+              {getTypeDisplayName(post.frontMatter.type)}
+            </span>
+            {post.frontMatter.type === 'review' && post.frontMatter.rating && (
               <Rating score={post.frontMatter.rating} />
             )}
           </div>
@@ -112,4 +97,3 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     </article>
   )
 }
-

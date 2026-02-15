@@ -2,16 +2,17 @@
 // These functions don't use fs and can be used in client components
 
 export const categoryMap = {
-  review: 'Review',
-  casual: 'Casual',
+  photography: 'Photography',
+  illustration: 'Illustration',
+  'films-shows': 'Films & Shows',
+  music: 'Music',
+  'video-games': 'Video Games',
+  books: 'Books',
 } as const
 
-export const subcategoryMap = {
-  music: 'Music',
-  movies: 'Movies',
-  'video-games': 'Video Games',
-  shows: 'Shows',
-  books: 'Books',
+export const typeMap = {
+  review: 'Review',
+  casual: 'Casual',
 } as const
 
 export function getCategoryDisplayName(
@@ -20,9 +21,9 @@ export function getCategoryDisplayName(
   return categoryMap[category] || category
 }
 
-export function getSubcategoryDisplayName(
-  subcategory: keyof typeof subcategoryMap
+export function getTypeDisplayName(
+  type: keyof typeof typeMap
 ): string {
-  return subcategoryMap[subcategory] || subcategory
+  return typeMap[type] || type
 }
 

@@ -11,22 +11,28 @@ interface CategoryPageProps {
 
 export function generateStaticParams() {
   return [
-    { category: 'review' },
-    { category: 'casual' },
+    { category: 'photography' },
+    { category: 'illustration' },
+    { category: 'films-shows' },
+    { category: 'music' },
+    { category: 'video-games' },
+    { category: 'books' },
   ]
 }
 
 export default function CategoryPage({ params }: CategoryPageProps) {
-  if (params.category !== 'review' && params.category !== 'casual') {
+  const validCategories = ['photography', 'illustration', 'films-shows', 'music', 'video-games', 'books']
+  
+  if (!validCategories.includes(params.category)) {
     notFound()
   }
 
-  const posts = getPostsByCategory(params.category)
+  const posts = getPostsByCategory(params.category as any)
 
   return (
     <section className="section bg-white dark:bg-gray-900">
       <div className="container">
-        <h1 className="section-title">{getCategoryDisplayName(params.category)}</h1>
+        <h1 className="section-title">{getCategoryDisplayName(params.category as any)}</h1>
         <span className="section-subtitle">Browse by category</span>
         <BlogList posts={posts} showFilters={false} />
       </div>
