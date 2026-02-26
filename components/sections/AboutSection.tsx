@@ -18,14 +18,14 @@ export default function AboutSection() {
           <div className="grid grid-cols-2 gap-4">
             <div className="relative rounded-lg overflow-hidden shadow-lg h-64">
               <img
-                src={withBasePath('/images/about/aboutImg1.jpg')}
+                src={withBasePath('/images/about/aboutImg2.jpg')}
                 alt="About me"
                 className="w-full h-full object-cover"
               />
             </div>
             <div className="relative rounded-lg overflow-hidden shadow-lg mt-8 h-64">
               <img
-                src={withBasePath('/images/about/aboutImg3.jpg')}
+                src={withBasePath('/images/about/aboutImg3.jpeg')}
                 alt="About me"
                 className="w-full h-full object-cover"
               />
