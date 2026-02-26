@@ -21,6 +21,31 @@
   section[id] {
     scroll-margin-top: 5rem;
   }
+
+  /* Identity theme variables */
+  .identity-engineer {
+    --identity-primary: #0ea5e9; /* primary-500 */
+    --identity-primary-soft: #e0f2fe; /* primary-100 */
+    --identity-primary-strong: #0369a1; /* primary-700 */
+    --identity-bg: #020617; /* slate-950 */
+    --identity-bg-soft: #0f172a; /* slate-900 */
+  }
+
+  .identity-creator {
+    --identity-primary: #22c55e; /* emerald-500 */
+    --identity-primary-soft: #dcfce7; /* emerald-100 */
+    --identity-primary-strong: #15803d; /* emerald-700 */
+    --identity-bg: #022c22; /* emerald-950 */
+    --identity-bg-soft: #064e3b; /* emerald-900 */
+  }
+
+  .identity-adventurer {
+    --identity-primary: #eab308; /* amber-500 */
+    --identity-primary-soft: #fef3c7; /* amber-100 */
+    --identity-primary-strong: #b45309; /* amber-700 */
+    --identity-bg: #451a03; /* amber-950 */
+    --identity-bg-soft: #713f12; /* amber-900 */
+  }
 }
 
 @layer components {
@@ -51,6 +76,40 @@
   .button-secondary {
     @apply button bg-gray-200 text-gray-900 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-700;
   }
+
+  /* Identity-based accent helpers */
+  .identity-accent-text {
+    color: var(--identity-primary);
+  }
+
+  .identity-accent-bg-soft {
+    background-color: var(--identity-primary-soft);
+  }
+
+  .identity-card-ring-active {
+    box-shadow: 0 0 0 2px var(--identity-primary);
+  }
+
+  /* Skill level badges */
+  .identity-badge {
+    @apply inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium;
+  }
+
+  .identity-badge-expert {
+    background-color: var(--identity-primary);
+    color: #ffffff;
+  }
+
+  .identity-badge-proficient {
+    background-color: var(--identity-primary-soft);
+    color: var(--identity-primary-strong);
+  }
+
+  .identity-badge-familiar {
+    background-color: transparent;
+    border: 1px solid var(--identity-primary-soft);
+    color: var(--identity-primary-strong);
+  }
 }
 
 /* Animations */
@@ -62,6 +121,28 @@
   to {
     opacity: 1;
     transform: scale(1);
+  }
+}
+
+@keyframes slideInLeftSoft {
+  from {
+    opacity: 0;
+    transform: translateX(32px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRightSoft {
+  from {
+    opacity: 0;
+    transform: translateX(-32px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
   }
 }
 
@@ -109,6 +190,14 @@
   
   .prose img {
     @apply rounded-lg my-4;
+  }
+
+  .slide-in-left-soft {
+    animation: slideInLeftSoft 0.5s ease-out;
+  }
+
+  .slide-in-right-soft {
+    animation: slideInRightSoft 0.5s ease-out;
   }
 }
 
