@@ -90,25 +90,21 @@
     box-shadow: 0 0 0 2px var(--identity-primary);
   }
 
-  /* Skill level badges */
-  .identity-badge {
-    @apply inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium;
-  }
-
-  .identity-badge-expert {
-    background-color: var(--identity-primary);
-    color: #ffffff;
-  }
-
-  .identity-badge-proficient {
+  .identity-card-surface {
+    border-radius: 1.5rem; /* roughly rounded-3xl */
+    padding: 1.5rem; /* base px-6 py-6 */
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.05); /* shadow-sm */
     background-color: var(--identity-primary-soft);
-    color: var(--identity-primary-strong);
   }
 
-  .identity-badge-familiar {
-    background-color: transparent;
-    border: 1px solid var(--identity-primary-soft);
-    color: var(--identity-primary-strong);
+  @media (min-width: 768px) {
+    .identity-card-surface {
+      padding: 2rem; /* md:px-8 md:py-8 */
+    }
+  }
+
+  .identity-level-fill {
+    background-color: var(--identity-primary);
   }
 }
 

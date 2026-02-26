@@ -4,7 +4,7 @@ export const orderedIdentities: Identity[] = ['engineer', 'creator', 'adventurer
 
 export const identityLabels: Record<Identity, string> = {
   engineer: 'Software Engineer',
-  creator: 'Creator / Designer',
+  creator: 'Creator',
   adventurer: 'Adventurer',
 }
 

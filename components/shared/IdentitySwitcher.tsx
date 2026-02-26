@@ -29,16 +29,9 @@ export default function IdentitySwitcher({ currentIdentity, onIdentityChange }: 
     handleChange(orderedIdentities[nextIndex])
   }
 
-  const identityTagline =
-    currentIdentity === 'engineer'
-      ? 'Systems & Engineering'
-      : currentIdentity === 'creator'
-      ? 'Art & Creation'
-      : 'Life & Exploration'
-
   return (
     <div className="w-full">
-      <div className="max-w-4xl mx-auto rounded-3xl border border-gray-200/60 dark:border-gray-800 bg-white/60 dark:bg-gray-900/60 backdrop-blur-sm px-6 py-6 md:px-8 md:py-7 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
+      <div className="max-w-4xl mx-auto px-2 md:px-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
         <div className="space-y-2">
           <div>
             <h3 className="text-xl md:text-2xl font-semibold identity-accent-text">
@@ -47,9 +40,6 @@ export default function IdentitySwitcher({ currentIdentity, onIdentityChange }: 
             <p className="mt-1 text-sm md:text-base text-gray-600 dark:text-gray-400">
               {identityShortDescriptions[currentIdentity]}
             </p>
-          </div>
-          <div className="text-xs font-medium text-gray-500 dark:text-gray-400">
-            {identityTagline}
           </div>
         </div>
 

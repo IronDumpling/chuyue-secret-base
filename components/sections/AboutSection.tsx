@@ -38,8 +38,6 @@ const aboutContentByIdentity: Record<Identity, AboutContent> = {
     stats: [
       { value: '07+', label: 'Years\nin software' },
       { value: '26+', label: 'Shipped\nprojects' },
-      { value: '07+', label: 'Programming\nlanguages' },
-      { value: '10+', label: 'Domains of\nknowledge' },
     ],
   },
   creator: {
@@ -53,8 +51,6 @@ const aboutContentByIdentity: Record<Identity, AboutContent> = {
     stats: [
       { value: '03+', label: 'Years in\nindie creation' },
       { value: '10+', label: 'Game & art\nexperiments' },
-      { value: '50+', label: 'Essays &\nreviews' },
-      { value: '∞', label: 'Ideas in\nsketchbooks' },
     ],
   },
   adventurer: {
@@ -68,7 +64,6 @@ const aboutContentByIdentity: Record<Identity, AboutContent> = {
     stats: [
       { value: '20+', label: 'Cities\nvisited' },
       { value: '10+', label: 'Sports &\nactivities' },
-      { value: '∞', label: 'Stories\nwith friends' },
     ],
   },
 }
@@ -85,7 +80,7 @@ const socialLinksByIdentity: Record<Identity, SocialLink[]> = {
   ],
   adventurer: [
     { href: 'https://twitter.com/Irondump1ing', icon: 'twitter', label: 'Twitter' },
-    { href: 'https://www.instagram.com/', icon: 'instagram', label: 'Instagram' },
+    { href: 'https://www.instagram.com/chuyue_charlie', icon: 'instagram', label: 'Instagram' },
   ],
 }
 
@@ -168,19 +163,17 @@ export default function AboutSection({ identity, direction, onIdentityChange }: 
 
   return (
     <section id="about-section" className="section">
-      <div className="container space-y-10">
-        <div>
-          <h2 className="section-title">About Me</h2>
-        </div>
+      <div className="container">
+        <div className={`identity-card-surface space-y-8 ${slideClass}`}>
+          <div>
+            <h2 className="section-title">About Me</h2>
+          </div>
 
-        <IdentitySwitcher currentIdentity={identity} onIdentityChange={onIdentityChange} />
+          <IdentitySwitcher currentIdentity={identity} onIdentityChange={onIdentityChange} />
 
-        <div
-          key={identity}
-          className={`grid grid-cols-1 md:grid-cols-2 gap-12 items-center ${slideClass}`}
-        >
-          {/* Images */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            {/* Images */}
+            <div className="grid grid-cols-2 gap-4">
             {content.images.map((image, index) => (
               <div
                 key={image.src}
@@ -195,7 +188,7 @@ export default function AboutSection({ identity, direction, onIdentityChange }: 
                 />
               </div>
             ))}
-          </div>
+            </div>
 
           {/* Content */}
           <div>
@@ -227,7 +220,7 @@ export default function AboutSection({ identity, direction, onIdentityChange }: 
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+            <div className="grid grid-cols-2 md:grid-cols-2 gap-6 mb-8">
               {content.stats.map((stat, index) => (
                 <div key={index} className="text-center">
                   <div className="text-3xl md:text-4xl font-bold identity-accent-text mb-2">
@@ -256,6 +249,7 @@ export default function AboutSection({ identity, direction, onIdentityChange }: 
             )}
           </div>
         </div>
+      </div>
       </div>
     </section>
   )
