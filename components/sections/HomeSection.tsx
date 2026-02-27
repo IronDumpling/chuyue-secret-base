@@ -28,7 +28,7 @@ export default function HomeSection() {
           <div className="w-full lg:w-1/2 space-y-4 text-gray-900 dark:text-white text-center lg:text-left">
             <h1 className="text-5xl md:text-7xl font-bold tracking-tight leading-tight">
               Hi, I am{' '}
-              <span className="bg-gradient-to-r from-blue-500 to-cyan-400 dark:from-sky-400 dark:to-cyan-300 bg-clip-text text-transparent">
+              <span className="text-primary-600 dark:text-primary-400">
                 Chuyue
               </span>
             </h1>
