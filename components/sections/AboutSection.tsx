@@ -35,7 +35,7 @@ const aboutContentByIdentity: Record<Identity, AboutContent> = {
       { src: '/images/about/aboutImg2.jpeg', alt: 'Graduation photo' },
     ],
     paragraphs: [
-      'I build reliable, high-performance systems as a software engineer, with experience across databases, distributed systems, and backend infrastructure.'
+      'As a software engineer, I build reliable, high-performance systems with experience across databases, distributed systems, and backend infrastructure.'
     ],
     stats: [
       { value: '07+', label: 'Years\nin software' },
@@ -57,8 +57,8 @@ const aboutContentByIdentity: Record<Identity, AboutContent> = {
   },
   adventurer: {
     images: [
-      { src: '/images/about/aboutImg5.jpeg', alt: 'Skiing' },
-      { src: '/images/about/aboutImg6.jpeg', alt: 'Explore the beauty of nature' },
+      { src: '/images/about/aboutImg5.jpeg', alt: 'Explore the beauty of nature' },
+      { src: '/images/about/aboutImg6.jpeg', alt: 'Skiing' },
     ],
     paragraphs: [
       'As an adventurer, I seek out new places, sports, and conversations that push me out of my comfort zone and widen my perspective.'
@@ -76,13 +76,13 @@ const socialLinksByIdentity: Record<Identity, SocialLink[]> = {
     { href: 'https://www.linkedin.com/in/chuyuez/', icon: 'linkedin', label: 'LinkedIn' },
   ],
   creator: [
-    { href: 'https://www.zhihu.com/people/zhang-chu-yue-13-47', icon: 'zhihu', label: 'Zhihu' },
     { href: 'https://space.bilibili.com/26023645', icon: 'bilibili', label: 'Bilibili' },
+    { href: 'https://www.zhihu.com/people/zhang-chu-yue-13-47', icon: 'zhihu', label: 'Zhihu' },
     { href: 'https://www.pixiv.net/users/56079335', icon: 'pixiv', label: 'Pixiv' },
   ],
   adventurer: [
-    { href: 'https://twitter.com/Irondump1ing', icon: 'twitter', label: 'Twitter' },
     { href: 'https://www.instagram.com/chuyue_charlie', icon: 'instagram', label: 'Instagram' },
+    { href: 'https://twitter.com/Irondump1ing', icon: 'twitter', label: 'Twitter' },
   ],
 }
 

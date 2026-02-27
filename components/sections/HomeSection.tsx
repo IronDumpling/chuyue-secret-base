@@ -11,11 +11,11 @@ export default function HomeSection() {
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full blur-[110px] bg-blue-200/40 dark:bg-white/10" />
       </div>
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col items-center text-center gap-8">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-10 xl:px-16">
+        <div className="flex flex-col lg:flex-row items-center gap-10">
           {/* Profile Image */}
-          <div className="flex justify-center">
-            <div className="w-40 h-40 md:w-48 md:h-48 rounded-full overflow-hidden shadow-2xl ring-1 ring-white/10 bg-white/5">
+          <div className="flex justify-center lg:justify-start w-full lg:w-1/2 lg:pl-4">
+            <div className="w-40 h-40 md:w-48 md:h-48 lg:w-60 lg:h-60 xl:w-72 xl:h-72 rounded-full overflow-hidden shadow-2xl ring-1 ring-white/10 bg-white/5">
               <img
                 src={withBasePath('/images/home/profileImg2.jpeg')}
                 alt="Chuyue Zhang"
@@ -25,14 +25,14 @@ export default function HomeSection() {
           </div>
 
           {/* Content */}
-          <div className="space-y-4 text-gray-900 dark:text-white">
+          <div className="w-full lg:w-1/2 space-y-4 text-gray-900 dark:text-white text-center lg:text-left">
             <h1 className="text-5xl md:text-7xl font-bold tracking-tight leading-tight">
               Hi, I am{' '}
               <span className="bg-gradient-to-r from-blue-500 to-cyan-400 dark:from-sky-400 dark:to-cyan-300 bg-clip-text text-transparent">
                 Chuyue
               </span>
             </h1>
-            <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-lg mx-auto font-light">
+            <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-lg mx-auto lg:mx-0 font-light">
               Who am I?
             </p>
           </div>
