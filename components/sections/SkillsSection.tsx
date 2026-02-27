@@ -115,72 +115,69 @@ const engineerSkillCategories: SkillCategory[] = [
 
 const creatorSkillCategories: SkillCategory[] = [
   {
-    title: 'Video Games',
+    title: 'Game Design',
     icon: 'game',
     skills: [
+      { name: 'Game Systems Design', level: 'proficient' },
+      { name: 'Level Design', level: 'proficient' },
       { name: 'Gameplay Prototyping', level: 'proficient' },
-      { name: 'Unity', level: 'proficient' },
-      { name: 'Level & Gameplay Design', level: 'proficient' },
     ],
   },
   {
-    title: 'Visuals & Illustration',
-    icon: 'graphics',
-    skills: [
-      { name: 'Photography', level: 'proficient' },
-      { name: 'Procreate', level: 'expert' },
-      { name: 'Photoshop', level: 'familiar' },
-      { name: 'Maya', level: 'familiar' },
-      { name: 'Color & Lighting Studies', level: 'proficient' },
-    ],
-  },
-  {
-    title: 'Writing & Storytelling',
+    title: 'Writing',
     icon: 'tools',
     skills: [
-      { name: 'Screenwriting & Story Structure', level: 'proficient' },
-      { name: 'Game Narrative & Worldbuilding', level: 'proficient' },
-      { name: 'Film Reviews & Analysis', level: 'proficient' },
-      { name: 'Album Reviews', level: 'proficient' },
+      { name: 'Film Reviews', level: 'proficient' },
+      { name: 'Fiction', level: 'proficient' },
+      { name: 'Screenplays', level: 'proficient' },
+      { name: 'Essays & Commentary', level: 'proficient' },
     ],
   },
   {
-    title: 'Music & Sound',
-    icon: 'cloud',
+    title: 'Visuals',
+    icon: 'graphics',
     skills: [
-      { name: 'Basic Music Production', level: 'familiar' },
-      { name: 'Soundscapes for Games', level: 'familiar' },
+      { name: 'Procreate Illustration', level: 'expert' },
+      { name: 'Photography', level: 'proficient' },
+      { name: 'Video Editing', level: 'proficient' },
+      { name: 'Image Editing', level: 'proficient' },
+      { name: 'Maya', level: 'familiar' },
+      { name: 'Blender', level: 'familiar' },
     ],
+  },
+  {
+    title: 'Music',
+    icon: 'cloud',
+    skills: [{ name: 'FL Studio Remix', level: 'familiar' }],
   },
 ]
 
 const adventurerSkillCategories: SkillCategory[] = [
   {
-    title: 'Outdoor & Sports',
-    icon: 'cpu',
+    title: 'Sports',
+    icon: 'game',
     skills: [
-      { name: 'Hiking & City Walking', level: 'expert' },
-      { name: 'Badminton / Table Tennis', level: 'proficient' },
+      { name: 'Badminton', level: 'proficient' },
+      { name: 'Swimming', level: 'proficient' },
+      { name: 'Skiing', level: 'familiar' },
+      { name: 'Skating', level: 'familiar' },
+      { name: 'Long-distance Running', level: 'proficient' },
+      { name: 'Hiking', level: 'proficient' },
       { name: 'Cycling', level: 'proficient' },
-      { name: 'Trying new sports', level: 'expert' },
+      { name: 'Bowling', level: 'familiar' },
+      { name: 'Volleyball', level: 'familiar' },
     ],
   },
   {
-    title: 'Travel & Exploration',
+    title: 'Activities',
     icon: 'web',
     skills: [
-      { name: 'City Hopping & Short Trips', level: 'expert' },
-      { name: 'Long Walks with Camera', level: 'expert' },
-      { name: 'Planning Itineraries', level: 'proficient' },
-    ],
-  },
-  {
-    title: 'Community & Conversations',
-    icon: 'tools',
-    skills: [
-      { name: 'Meeting New People', level: 'proficient' },
-      { name: 'Deep One-on-one Chats', level: 'proficient' },
-      { name: 'Joining Events & Meetups', level: 'proficient' },
+      { name: 'Murder Mystery', level: 'proficient' },
+      { name: 'Escape Rooms', level: 'proficient' },
+      { name: 'Board Games', level: 'expert' },
+      { name: 'Theatre', level: 'expert' },
+      { name: 'Concert', level: 'expert' },
+      { name: 'Go-karting', level: 'familiar' },
     ],
   },
 ]
