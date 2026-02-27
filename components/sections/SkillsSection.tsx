@@ -12,7 +12,6 @@ interface Skill {
 
 interface SkillCategory {
   title: string
-  subtitle: string
   icon: string
   skills: Skill[]
 }
@@ -20,7 +19,6 @@ interface SkillCategory {
 const engineerSkillCategories: SkillCategory[] = [
   {
     title: 'Programming Languages',
-    subtitle: 'Core competencies',
     icon: 'code',
     skills: [
       { name: 'C#', level: 'expert' },
@@ -34,7 +32,6 @@ const engineerSkillCategories: SkillCategory[] = [
   },
   {
     title: 'Databases & Data Platforms',
-    subtitle: 'Production experience',
     icon: 'database',
     skills: [
       { name: 'PostgreSQL', level: 'expert' },
@@ -51,7 +48,6 @@ const engineerSkillCategories: SkillCategory[] = [
   },
   {
     title: 'Distributed Systems',
-    subtitle: 'Architecture & design',
     icon: 'cpu',
     skills: [
       { name: 'ACID & Distributed Transactions', level: 'expert' },
@@ -66,7 +62,6 @@ const engineerSkillCategories: SkillCategory[] = [
   },
   {
     title: 'Web & API Development',
-    subtitle: 'Full-stack experience',
     icon: 'web',
     skills: [
       { name: 'Node.js / Express.js', level: 'proficient' },
@@ -81,7 +76,6 @@ const engineerSkillCategories: SkillCategory[] = [
   },
   {
     title: 'DevOps & Cloud',
-    subtitle: 'Infrastructure & automation',
     icon: 'cloud',
     skills: [
       { name: 'Docker', level: 'proficient' },
@@ -95,8 +89,7 @@ const engineerSkillCategories: SkillCategory[] = [
     ],
   },
   {
-    title: 'Systems & Performance',
-    subtitle: 'Low-level understanding',
+    title: 'System-level Skills',
     icon: 'tools',
     skills: [
       { name: 'LLVM / Compiler Design', level: 'proficient' },
@@ -109,7 +102,6 @@ const engineerSkillCategories: SkillCategory[] = [
   },
   {
     title: 'Machine Learning & AI',
-    subtitle: 'Research & applications',
     icon: 'brain',
     skills: [
       { name: 'AI Agent Development', level: 'proficient' },
@@ -123,30 +115,27 @@ const engineerSkillCategories: SkillCategory[] = [
 
 const creatorSkillCategories: SkillCategory[] = [
   {
-    title: 'Game Creation',
-    subtitle: 'From mechanics to feel',
+    title: 'Video Games',
     icon: 'game',
     skills: [
       { name: 'Gameplay Prototyping', level: 'proficient' },
       { name: 'Unity', level: 'proficient' },
-      { name: 'Level & Encounter Design', level: 'proficient' },
-      { name: 'Narrative Systems', level: 'familiar' },
+      { name: 'Level & Gameplay Design', level: 'proficient' },
     ],
   },
   {
     title: 'Visuals & Illustration',
-    subtitle: 'Drawing and composition',
     icon: 'graphics',
     skills: [
+      { name: 'Photography', level: 'proficient' },
       { name: 'Procreate', level: 'expert' },
       { name: 'Photoshop', level: 'familiar' },
+      { name: 'Maya', level: 'familiar' },
       { name: 'Color & Lighting Studies', level: 'proficient' },
-      { name: 'UI Sketching & Wireframes', level: 'proficient' },
     ],
   },
   {
     title: 'Writing & Storytelling',
-    subtitle: 'Scripts, essays, and reviews',
     icon: 'tools',
     skills: [
       { name: 'Screenwriting & Story Structure', level: 'proficient' },
@@ -157,7 +146,6 @@ const creatorSkillCategories: SkillCategory[] = [
   },
   {
     title: 'Music & Sound',
-    subtitle: 'Atmosphere and rhythm',
     icon: 'cloud',
     skills: [
       { name: 'Basic Music Production', level: 'familiar' },
@@ -169,7 +157,6 @@ const creatorSkillCategories: SkillCategory[] = [
 const adventurerSkillCategories: SkillCategory[] = [
   {
     title: 'Outdoor & Sports',
-    subtitle: 'Activities I return to',
     icon: 'cpu',
     skills: [
       { name: 'Hiking & City Walking', level: 'expert' },
@@ -180,7 +167,6 @@ const adventurerSkillCategories: SkillCategory[] = [
   },
   {
     title: 'Travel & Exploration',
-    subtitle: 'Moving through spaces',
     icon: 'web',
     skills: [
       { name: 'City Hopping & Short Trips', level: 'expert' },
@@ -190,7 +176,6 @@ const adventurerSkillCategories: SkillCategory[] = [
   },
   {
     title: 'Community & Conversations',
-    subtitle: 'People and perspectives',
     icon: 'tools',
     skills: [
       { name: 'Meeting New People', level: 'proficient' },
@@ -289,7 +274,9 @@ export function SkillsAccordion({ identity }: { identity: Identity }) {
           <button
             type="button"
             onClick={() => toggleCategory(index)}
-            className="w-full p-4 flex items-center justify-between identity-accordion-header"
+            className={`w-full p-4 flex items-center justify-between identity-accordion-header ${
+              openCategory === index ? 'rounded-t-xl' : 'rounded-xl'
+            }`}
           >
               <div className="flex items-center gap-4">
                 <div className="identity-accent-text">{iconMap[category.icon]}</div>
@@ -297,7 +284,6 @@ export function SkillsAccordion({ identity }: { identity: Identity }) {
                   <h4 className="font-semibold text-base md:text-lg text-gray-900 dark:text-gray-50">
                     {category.title}
                   </h4>
-                  <p className="text-sm text-gray-600 dark:text-slate-400">{category.subtitle}</p>
                 </div>
               </div>
             <svg

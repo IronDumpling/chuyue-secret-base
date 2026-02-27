@@ -1,8 +1,10 @@
+'use client'
+
 import Link from 'next/link'
-import SafeImage from '@/components/shared/SafeImage'
 import type { BlogPost } from '@/lib/blog-types'
 import { getCategoryDisplayName, getTypeDisplayName } from '@/lib/blog-utils'
 import Rating from '@/components/blog/Rating'
+import RotatingImage from '@/components/shared/RotatingImage'
 
 interface BlogCardProps {
   post: BlogPost
@@ -11,7 +13,8 @@ interface BlogCardProps {
 export default function BlogCard({ post }: BlogCardProps) {
   // URL structure: /blog/{category}/{type}/{slug}
   const url = `/blog/${post.frontMatter.category}/${post.frontMatter.type}/${post.slug}`
-  const image = post.frontMatter.images?.[0] || '/images/placeholder/blog-default.jpg'
+  const images = post.frontMatter.images
+  const defaultImage = '/images/placeholder/blog-default.jpg'
 
   return (
     <Link
@@ -20,10 +23,10 @@ export default function BlogCard({ post }: BlogCardProps) {
     >
       {/* Header Image Section */}
       <div className="relative h-48 overflow-hidden">
-        <SafeImage
-          src={image}
+        <RotatingImage
+          images={images}
           alt={post.frontMatter.title}
-          fill
+          defaultSrc={defaultImage}
           className="object-cover group-hover:scale-110 transition-transform duration-300"
         />
       </div>

@@ -5,6 +5,7 @@ import { Identity } from '@/lib/identity'
 import { withBasePath } from '@/lib/utils'
 import Link from 'next/link'
 import { SkillsAccordion } from '@/components/sections/SkillsSection'
+import RotatingImage from '@/components/shared/RotatingImage'
 
 interface AboutImage {
   src: string
@@ -191,9 +192,10 @@ export default function AboutSection({ identity, direction, onIdentityChange }: 
 
                 <div className="relative w-full aspect-[4/5] rounded-2xl overflow-hidden group">
                   <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-80 group-hover:opacity-60 transition-opacity duration-500 z-10" />
-                  <img
-                    src={withBasePath(content.images[0]?.src ?? '')}
+                  <RotatingImage
+                    images={content.images.map((image) => image.src)}
                     alt={content.images[0]?.alt ?? 'Identity image'}
+                    defaultSrc={content.images[0]?.src ?? '/images/about/aboutImg1.jpeg'}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
                 </div>

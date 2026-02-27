@@ -3,10 +3,11 @@ import { withBasePath } from '@/lib/utils'
 
 const socialLinks = [
   { href: 'https://github.com/IronDumpling', label: 'GitHub', icon: 'github' },
+  { href: 'https://www.instagram.com/chuyue_charlie', label: 'Instagram', icon: 'instagram' },
   { href: 'https://twitter.com/Irondump1ing', label: 'Twitter', icon: 'twitter' },
   { href: 'https://www.linkedin.com/in/chuyuez/', label: 'LinkedIn', icon: 'linkedin' },
-  { href: 'https://www.zhihu.com/people/zhang-chu-yue-13-47', label: 'Zhihu', icon: 'zhihu' },
   { href: 'https://space.bilibili.com/26023645', label: 'Bilibili', icon: 'bilibili' },
+  { href: 'https://www.zhihu.com/people/zhang-chu-yue-13-47', label: 'Zhihu', icon: 'zhihu' },
   { href: 'https://www.pixiv.net/users/56079335', label: 'Pixiv', icon: 'pixiv' },
 ]
 
@@ -67,6 +68,13 @@ export default function Footer() {
                     <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/>
                     </svg>
+                  )}
+                  {social.icon === 'instagram' && (
+                    <img
+                      src={withBasePath('/images/logo/instagram.svg')}
+                      alt="Instagram"
+                      className="w-6 h-6 dark:invert"
+                    />
                   )}
                   {social.icon === 'linkedin' && (
                     <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
