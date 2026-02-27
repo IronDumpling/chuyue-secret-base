@@ -1,11 +1,36 @@
 'use client'
 
 import { useMemo } from 'react'
-import { Identity, orderedIdentities, identityLabels, identityShortDescriptions } from '@/lib/identity'
+import { Identity, orderedIdentities, identityLabels } from '@/lib/identity'
 
 interface IdentitySwitcherProps {
   currentIdentity: Identity
   onIdentityChange: (identity: Identity) => void
+}
+
+function IdentityIcon({ identity }: { identity: Identity }) {
+  if (identity === 'engineer') {
+    return (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 18l6-6-6-6M8 6l-6 6 6 6" />
+      </svg>
+    )
+  }
+
+  if (identity === 'creator') {
+    return (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5h2M7 8h10M7 16h10M9 19h6M6 10h.01M18 10h.01M6 14h.01M18 14h.01" />
+      </svg>
+    )
+  }
+
+  return (
+    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 21a9 9 0 100-18 9 9 0 000 18z" />
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 7v5l3 2" />
+    </svg>
+  )
 }
 
 export default function IdentitySwitcher({ currentIdentity, onIdentityChange }: IdentitySwitcherProps) {
@@ -19,67 +44,24 @@ export default function IdentitySwitcher({ currentIdentity, onIdentityChange }: 
     onIdentityChange(identity)
   }
 
-  const handlePrev = () => {
-    const nextIndex = (currentIndex - 1 + orderedIdentities.length) % orderedIdentities.length
-    handleChange(orderedIdentities[nextIndex])
-  }
-
-  const handleNext = () => {
-    const nextIndex = (currentIndex + 1) % orderedIdentities.length
-    handleChange(orderedIdentities[nextIndex])
-  }
-
   return (
     <div className="w-full">
-      <div className="max-w-4xl mx-auto px-2 md:px-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
-        <div className="space-y-2">
-          <div>
-            <h3 className="text-xl md:text-2xl font-semibold identity-accent-text">
-              {identityLabels[currentIdentity]}
-            </h3>
-            <p className="mt-1 text-sm md:text-base text-gray-600 dark:text-gray-400">
-              {identityShortDescriptions[currentIdentity]}
-            </p>
-          </div>
-        </div>
-
-        <div className="flex items-center justify-between sm:flex-col sm:items-end sm:space-y-4 gap-4">
-          <div className="flex items-center gap-2">
+      <div className="flex flex-wrap justify-center gap-2 md:gap-4">
+        {orderedIdentities.map((id) => {
+          const active = id === currentIdentity
+          return (
             <button
+              key={id}
               type="button"
-              onClick={handlePrev}
-              className="p-2 rounded-full border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-              aria-label="Previous identity"
+              onClick={() => handleChange(id)}
+              className={`identity-tab ${active ? 'identity-tab-active' : ''}`}
+              aria-current={active ? 'true' : undefined}
             >
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
+              <IdentityIcon identity={id} />
+              <span className="font-medium tracking-wide">{identityLabels[id]}</span>
             </button>
-            <button
-              type="button"
-              onClick={handleNext}
-              className="p-2 rounded-full border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-              aria-label="Next identity"
-            >
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-          </div>
-
-          <div className="flex items-center gap-1">
-            {orderedIdentities.map((id) => (
-              <span
-                key={id}
-                className={`h-1.5 w-4 rounded-full transition-colors ${
-                  id === currentIdentity
-                    ? 'bg-gray-900 dark:bg-gray-100'
-                    : 'bg-gray-300 dark:bg-gray-700'
-                }`}
-              />
-            ))}
-          </div>
-        </div>
+          )
+        })}
       </div>
     </div>
   )

@@ -5,7 +5,6 @@ import type { Identity } from '@/lib/identity'
 import { orderedIdentities } from '@/lib/identity'
 import HomeSection from '@/components/sections/HomeSection'
 import AboutSection from '@/components/sections/AboutSection'
-import SkillsSection from '@/components/sections/SkillsSection'
 import ExperiencesSection from '@/components/sections/ExperiencesSection'
 import PortfolioSection from '@/components/sections/PortfolioSection'
 import BlogSection from '@/components/sections/BlogSection'
@@ -39,7 +38,6 @@ export default function Home() {
       >
         <HomeSection />
         <AboutSection identity={identity} direction={direction} onIdentityChange={handleIdentityChange} />
-        <SkillsSection identity={identity} direction={direction} />
         <ExperiencesSection />
         <PortfolioSection />
         <BlogSection />

@@ -1,14 +1,21 @@
-import Link from 'next/link'
 import { withBasePath } from '@/lib/utils'
 
 export default function HomeSection() {
   return (
-    <section id="home-section" className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-800">
+    <section
+      id="home-section"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-white to-gray-50 dark:from-gray-950 dark:to-gray-900"
+    >
+      <div className="absolute inset-0 pointer-events-none opacity-25">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full blur-[110px] bg-primary-400/30 dark:bg-[color:var(--identity-primary)]/25" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full blur-[110px] bg-blue-200/40 dark:bg-white/10" />
+      </div>
+
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+        <div className="flex flex-col items-center text-center gap-8">
           {/* Profile Image */}
-          <div className="flex justify-center md:justify-start order-2 md:order-1">
-            <div className="w-64 h-64 rounded-full overflow-hidden shadow-2xl bg-gradient-to-br from-primary-400 to-primary-600">
+          <div className="flex justify-center">
+            <div className="w-40 h-40 md:w-48 md:h-48 rounded-full overflow-hidden shadow-2xl ring-1 ring-white/10 bg-white/5">
               <img
                 src={withBasePath('/images/home/profileImg2.jpeg')}
                 alt="Chuyue Zhang"
@@ -18,39 +25,26 @@ export default function HomeSection() {
           </div>
 
           {/* Content */}
-          <div className="text-center md:text-left order-1 md:order-2">
-            <h1 className="text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-primary-600 to-primary-400 bg-clip-text text-transparent leading-relaxed pb-3">
-              Hi, I am Chuyue
+          <div className="space-y-4 text-gray-900 dark:text-white">
+            <h1 className="text-5xl md:text-7xl font-bold tracking-tight leading-tight">
+              Hi, I am{' '}
+              <span className="bg-gradient-to-r from-blue-500 to-cyan-400 dark:from-sky-400 dark:to-cyan-300 bg-clip-text text-transparent">
+                Chuyue
+              </span>
             </h1>
-            <h3 className="text-2xl md:text-3xl font-semibold mb-4 text-gray-700 dark:text-gray-300">
-              More than just one title
-            </h3>
-            <p className="text-lg text-gray-600 dark:text-gray-400 mb-8 max-w-md mx-auto md:mx-0">
-              I live as a{' '}
-              <span className="identity-accent-text font-semibold">software engineer</span>, a{' '}
-              <span className="identity-accent-text font-semibold">creator</span>, and an{' '}
-              <span className="identity-accent-text font-semibold">adventurer</span>. Scroll down to
-              see how these three identities connect through my work and life.
+            <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-lg mx-auto font-light">
+              Who am I?
             </p>
-            <Link
-              href="/contact"
-              className="button-primary inline-flex items-center gap-2"
-            >
-              Contact Me
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-              </svg>
-            </Link>
           </div>
         </div>
 
         {/* Scroll Indicator */}
         <div className="mt-16 flex justify-center">
           <a
-            href="#about-section"
+            href="#identity-card-section"
             className="flex flex-col items-center text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors animate-bounce"
           >
-            <span className="text-sm mb-2">Scroll down</span>
+            <span className="text-sm tracking-widest uppercase mb-2">Scroll down</span>
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
             </svg>

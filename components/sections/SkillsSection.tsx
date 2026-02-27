@@ -254,29 +254,12 @@ const iconMap: Record<string, JSX.Element> = {
   ),
 }
 
-function LevelBadge({ level }: { level: SkillLevel }) {
-  const filledSegments = level === 'expert' ? 3 : level === 'proficient' ? 2 : 1
-
-  return (
-    <div className="flex items-center gap-1" aria-hidden="true">
-      {Array.from({ length: 3 }).map((_, index) => (
-        <span
-          key={index}
-          className={`h-1.5 w-3 rounded-full ${
-            index < filledSegments ? 'identity-level-fill' : 'bg-gray-300 dark:bg-gray-700'
-          }`}
-        />
-      ))}
-    </div>
-  )
-}
-
 interface SkillsSectionProps {
   identity: Identity
   direction: 'left' | 'right'
 }
 
-export default function SkillsSection({ identity, direction }: SkillsSectionProps) {
+export function SkillsAccordion({ identity }: { identity: Identity }) {
   const [openCategory, setOpenCategory] = useState<number | null>(null)
 
   const toggleCategory = (index: number) => {
@@ -288,6 +271,81 @@ export default function SkillsSection({ identity, direction }: SkillsSectionProp
   }, [identity])
 
   const categories = skillCategoriesByIdentity[identity]
+  const levelOrder: Record<SkillLevel, number> = {
+    expert: 0,
+    proficient: 1,
+    familiar: 2,
+  }
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-900 dark:text-gray-50">
+      {categories.map((category, index) => (
+        <div
+          key={index}
+          className={`rounded-xl overflow-hidden transition-all duration-300 ${
+            openCategory === index ? 'identity-card-ring-active' : ''
+          }`}
+        >
+          <button
+            type="button"
+            onClick={() => toggleCategory(index)}
+            className="w-full p-4 flex items-center justify-between identity-accordion-header"
+          >
+              <div className="flex items-center gap-4">
+                <div className="identity-accent-text">{iconMap[category.icon]}</div>
+                <div className="text-left">
+                  <h4 className="font-semibold text-base md:text-lg text-gray-900 dark:text-gray-50">
+                    {category.title}
+                  </h4>
+                  <p className="text-sm text-gray-600 dark:text-slate-400">{category.subtitle}</p>
+                </div>
+              </div>
+            <svg
+              className={`w-5 h-5 text-gray-500 dark:text-slate-400 transition-transform ${
+                openCategory === index ? 'rotate-180' : ''
+              }`}
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+
+          <div
+            className={`overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
+              openCategory === index ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'
+            }`}
+          >
+            <div
+              className={`p-4 pt-0 space-y-4 transform-gpu origin-top transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
+                openCategory === index ? 'scale-100 translate-y-0' : 'scale-95 -translate-y-2'
+              }`}
+            >
+              <div className="mt-3 pt-3 flex flex-wrap gap-2 border-t border-gray-200 dark:border-white/10">
+                {[...category.skills]
+                  .sort((a, b) => levelOrder[a.level] - levelOrder[b.level])
+                  .map((skill, skillIndex) => (
+                    <span
+                      key={skillIndex}
+                      className={`identity-chip ${
+                        skill.level === 'expert' ? 'identity-chip-expert' : 'identity-chip-normal'
+                      }`}
+                    >
+                      {skill.name}
+                    </span>
+                  ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+export default function SkillsSection({ identity, direction }: SkillsSectionProps) {
   const slideClass = direction === 'left' ? 'slide-in-left-soft' : 'slide-in-right-soft'
 
   return (
@@ -295,67 +353,7 @@ export default function SkillsSection({ identity, direction }: SkillsSectionProp
       <div className="container">
         <div className={`identity-card-surface space-y-8 ${slideClass}`}>
           <h2 className="section-title">Skills</h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {categories.map((category, index) => (
-              <div
-                key={index}
-                className={`bg-white/80 dark:bg-gray-900/80 rounded-xl shadow-md overflow-hidden transition-all duration-300 ${
-                  openCategory === index ? 'identity-card-ring-active' : ''
-                }`}
-              >
-                <button
-                  onClick={() => toggleCategory(index)}
-                  className="w-full p-4 flex items-center justify-between hover:bg-gray-50/70 dark:hover:bg-gray-800/80 transition-colors"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="identity-accent-text">
-                      {iconMap[category.icon]}
-                    </div>
-                    <div className="text-left">
-                      <h3 className="font-semibold text-lg">{category.title}</h3>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">{category.subtitle}</p>
-                    </div>
-                  </div>
-                  <svg
-                    className={`w-5 h-5 text-gray-600 dark:text-gray-400 transition-transform ${
-                      openCategory === index ? 'rotate-180' : ''
-                    }`}
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
-
-                <div
-                  className={`overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
-                    openCategory === index
-                      ? 'max-h-[1000px] opacity-100'
-                      : 'max-h-0 opacity-0'
-                  }`}
-                >
-                  <div
-                    className={`p-4 pt-0 space-y-4 transform-gpu origin-top transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
-                      openCategory === index
-                        ? 'scale-100 translate-y-0'
-                        : 'scale-95 -translate-y-2'
-                    }`}
-                  >
-                    {category.skills.map((skill, skillIndex) => (
-                      <div key={skillIndex}>
-                        <div className="flex justify-between items-center mb-2">
-                          <span className="text-sm font-medium">{skill.name}</span>
-                          <LevelBadge level={skill.level} />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+          <SkillsAccordion identity={identity} />
         </div>
       </div>
     </section>
