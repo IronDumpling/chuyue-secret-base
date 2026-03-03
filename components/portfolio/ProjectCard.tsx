@@ -1,13 +1,16 @@
+'use client'
+
 import Link from 'next/link'
-import SafeImage from '@/components/shared/SafeImage'
 import type { PortfolioProject } from '@/lib/portfolio-types'
+import RotatingImage from '@/components/shared/RotatingImage'
 
 interface ProjectCardProps {
   project: PortfolioProject
 }
 
 export default function ProjectCard({ project }: ProjectCardProps) {
-  const image = project.frontMatter.images?.[0] || '/images/placeholder/portofolio-default.jpg'
+  const images = project.frontMatter.images
+  const defaultImage = '/images/placeholder/portofolio-default.jpg'
 
   return (
     <Link
@@ -15,10 +18,10 @@ export default function ProjectCard({ project }: ProjectCardProps) {
       className="group block bg-white dark:bg-gray-900 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300"
     >
       <div className="relative h-48 overflow-hidden">
-        <SafeImage
-          src={image}
+        <RotatingImage
+          images={images}
           alt={project.frontMatter.title}
-          fill
+          defaultSrc={defaultImage}
           className="object-cover group-hover:scale-110 transition-transform duration-300"
         />
       </div>

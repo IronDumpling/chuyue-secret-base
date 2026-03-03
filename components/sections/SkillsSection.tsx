@@ -1,147 +1,192 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import type { Identity } from '@/lib/identity'
+
+type SkillLevel = 'expert' | 'proficient' | 'familiar'
 
 interface Skill {
   name: string
-  percentage: number
+  level: SkillLevel
 }
 
 interface SkillCategory {
   title: string
-  subtitle: string
   icon: string
   skills: Skill[]
 }
 
-const skillCategories: SkillCategory[] = [
+const engineerSkillCategories: SkillCategory[] = [
   {
     title: 'Programming Languages',
-    subtitle: 'Core competencies',
     icon: 'code',
     skills: [
-      { name: 'C#', percentage: 90 },
-      { name: 'Java', percentage: 80 },
-      { name: 'Python', percentage: 80 },
-      { name: 'C', percentage: 80 },
-      { name: 'Rust', percentage: 75 },
-      { name: 'TypeScript', percentage: 70 },
-      { name: 'C++ (11/14/17/20)', percentage: 60 },
+      { name: 'C#', level: 'expert' },
+      { name: 'Java', level: 'proficient' },
+      { name: 'Python', level: 'proficient' },
+      { name: 'C', level: 'proficient' },
+      { name: 'Rust', level: 'proficient' },
+      { name: 'TypeScript', level: 'proficient' },
+      { name: 'C++ (11/14/17/20)', level: 'familiar' },
     ],
   },
   {
     title: 'Databases & Data Platforms',
-    subtitle: 'Production experience',
     icon: 'database',
     skills: [
-      { name: 'PostgreSQL', percentage: 90 },
-      { name: 'MySQL', percentage: 85 },
-      { name: 'Redis', percentage: 80 },
-      { name: 'ClickHouse', percentage: 75 },
-      { name: 'MongoDB', percentage: 70 },
-      { name: 'Cassandra', percentage: 70 },
-      { name: 'DynamoDB', percentage: 65 },
-      { name: 'Query Optimization', percentage: 85 },
-      { name: 'Data Modeling (OLTP/OLAP)', percentage: 80 },
-      { name: 'Parquet/Columnar Storage', percentage: 80 },
+      { name: 'PostgreSQL', level: 'expert' },
+      { name: 'MySQL', level: 'expert' },
+      { name: 'Redis', level: 'proficient' },
+      { name: 'ClickHouse', level: 'proficient' },
+      { name: 'MongoDB', level: 'proficient' },
+      { name: 'Cassandra', level: 'proficient' },
+      { name: 'DynamoDB', level: 'familiar' },
+      { name: 'Query Optimization', level: 'expert' },
+      { name: 'Data Modeling (OLTP/OLAP)', level: 'proficient' },
+      { name: 'Parquet/Columnar Storage', level: 'proficient' },
     ],
   },
   {
     title: 'Distributed Systems',
-    subtitle: 'Architecture & Design',
     icon: 'cpu',
     skills: [
-      { name: 'ACID & Distributed Transactions', percentage: 85 },
-      { name: 'Consensus Algorithms (Raft, Paxos)', percentage: 80 },
-      { name: 'Sharding & Replication', percentage: 85 },
-      { name: 'CAP Theorem & Trade-offs', percentage: 80 },
-      { name: 'Message Queues (Kafka)', percentage: 70 },
-      { name: 'Distributed Caching', percentage: 80 },
-      { name: 'RDMA Programming', percentage: 75 },
-      { name: 'Performance Benchmarking', percentage: 85 },
+      { name: 'ACID & Distributed Transactions', level: 'expert' },
+      { name: 'Consensus Algorithms (Raft, Paxos)', level: 'proficient' },
+      { name: 'Sharding & Replication', level: 'expert' },
+      { name: 'CAP Theorem & Trade-offs', level: 'proficient' },
+      { name: 'Message Queues (Kafka)', level: 'proficient' },
+      { name: 'Distributed Caching', level: 'proficient' },
+      { name: 'RDMA Programming', level: 'proficient' },
+      { name: 'Performance Benchmarking', level: 'expert' },
     ],
   },
   {
     title: 'Web & API Development',
-    subtitle: 'Full-stack experience',
     icon: 'web',
     skills: [
-      { name: 'Node.js/Express.js', percentage: 80 },
-      { name: 'Django', percentage: 75 },
-      { name: '.NET Core', percentage: 70 },
-      { name: 'React.js', percentage: 75 },
-      { name: 'RESTful APIs', percentage: 85 },
-      { name: 'Microservices', percentage: 75 },
-      { name: 'HTML/CSS', percentage: 85 },
-      { name: 'JavaScript', percentage: 80 },
+      { name: 'Node.js / Express.js', level: 'proficient' },
+      { name: 'Django', level: 'proficient' },
+      { name: '.NET Core', level: 'familiar' },
+      { name: 'React.js', level: 'proficient' },
+      { name: 'RESTful APIs', level: 'expert' },
+      { name: 'Microservices', level: 'proficient' },
+      { name: 'HTML / CSS', level: 'expert' },
+      { name: 'JavaScript', level: 'proficient' },
     ],
   },
   {
     title: 'DevOps & Cloud',
-    subtitle: 'Infrastructure & Automation',
     icon: 'cloud',
     skills: [
-      { name: 'Docker', percentage: 80 },
-      { name: 'Kubernetes', percentage: 70 },
-      { name: 'Jenkins CI/CD', percentage: 85 },
-      { name: 'Git/Version Control', percentage: 90 },
-      { name: 'AWS S3', percentage: 70 },
-      { name: 'Microsoft Azure', percentage: 65 },
-      { name: 'Shell Scripting', percentage: 85 },
-      { name: 'Linux Kernel', percentage: 75 },
+      { name: 'Docker', level: 'proficient' },
+      { name: 'Kubernetes', level: 'familiar' },
+      { name: 'Jenkins CI/CD', level: 'expert' },
+      { name: 'Git / Version Control', level: 'expert' },
+      { name: 'AWS S3', level: 'familiar' },
+      { name: 'Microsoft Azure', level: 'familiar' },
+      { name: 'Shell Scripting', level: 'expert' },
+      { name: 'Linux Kernel', level: 'proficient' },
     ],
   },
   {
-    title: 'Game Development',
-    subtitle: 'More than 3 years',
-    icon: 'game',
+    title: 'System-level Skills',
+    icon: 'tools',
     skills: [
-      { name: 'Unity', percentage: 80 },
-      { name: 'MAYA', percentage: 50 },
-      { name: 'Photoshop', percentage: 50 },
-      { name: 'Procreate', percentage: 95 },
-      { name: 'Shader Programming', percentage: 70 },
+      { name: 'LLVM / Compiler Design', level: 'proficient' },
+      { name: 'TCP/IP & Socket Programming', level: 'proficient' },
+      { name: 'Parallel Programming', level: 'proficient' },
+      { name: 'Performance Profiling (perf)', level: 'proficient' },
+      { name: 'Operating Systems', level: 'proficient' },
+      { name: 'Computer Networks', level: 'proficient' },
     ],
   },
   {
     title: 'Machine Learning & AI',
-    subtitle: 'Research & Applications',
     icon: 'brain',
     skills: [
-      { name: 'AI Agent Development', percentage: 70 },
-      { name: 'PyTorch', percentage: 70 },
-      { name: 'Deep Learning', percentage: 65 },
-      { name: 'Reinforcement Learning', percentage: 50 },
-      { name: 'RAG (Retrieval-Augmented Generation)', percentage: 60 },
-    ],
-  },
-  {
-    title: 'Computer Graphics',
-    subtitle: 'More than 4 projects',
-    icon: 'graphics',
-    skills: [
-      { name: 'Shader Programming', percentage: 70 },
-      { name: 'Geometry Processing', percentage: 65 },
-      { name: 'Rendering Techniques', percentage: 75 },
-      { name: 'Animation Systems', percentage: 70 },
-      { name: 'GPU Programming', percentage: 65 },
-    ],
-  },
-  {
-    title: 'Additional Skills',
-    subtitle: 'Tools & Technologies',
-    icon: 'tools',
-    skills: [
-      { name: 'LLVM/Compiler Design', percentage: 70 },
-      { name: 'TCP/IP & Socket Programming', percentage: 80 },
-      { name: 'Parallel Programming', percentage: 75 },
-      { name: 'Performance Profiling (perf)', percentage: 80 },
-      { name: 'Operating Systems', percentage: 75 },
-      { name: 'Computer Networks', percentage: 80 },
+      { name: 'AI Agent Development', level: 'proficient' },
+      { name: 'PyTorch', level: 'proficient' },
+      { name: 'Deep Learning', level: 'familiar' },
+      { name: 'Reinforcement Learning', level: 'familiar' },
+      { name: 'RAG (Retrieval-Augmented Generation)', level: 'familiar' },
     ],
   },
 ]
 
+const creatorSkillCategories: SkillCategory[] = [
+  {
+    title: 'Game Design',
+    icon: 'game',
+    skills: [
+      { name: 'Game Systems Design', level: 'proficient' },
+      { name: 'Level Design', level: 'proficient' },
+      { name: 'Gameplay Prototyping', level: 'proficient' },
+    ],
+  },
+  {
+    title: 'Writing',
+    icon: 'tools',
+    skills: [
+      { name: 'Film Reviews', level: 'proficient' },
+      { name: 'Fiction', level: 'proficient' },
+      { name: 'Screenplays', level: 'proficient' },
+      { name: 'Essays & Commentary', level: 'proficient' },
+    ],
+  },
+  {
+    title: 'Visuals',
+    icon: 'graphics',
+    skills: [
+      { name: 'Procreate Illustration', level: 'expert' },
+      { name: 'Photography', level: 'proficient' },
+      { name: 'Video Editing', level: 'proficient' },
+      { name: 'Image Editing', level: 'proficient' },
+      { name: 'Maya', level: 'familiar' },
+      { name: 'Blender', level: 'familiar' },
+    ],
+  },
+  {
+    title: 'Music',
+    icon: 'cloud',
+    skills: [{ name: 'FL Studio Remix', level: 'familiar' }],
+  },
+]
+
+const adventurerSkillCategories: SkillCategory[] = [
+  {
+    title: 'Sports',
+    icon: 'game',
+    skills: [
+      { name: 'Badminton', level: 'proficient' },
+      { name: 'Swimming', level: 'proficient' },
+      { name: 'Skiing', level: 'familiar' },
+      { name: 'Skating', level: 'familiar' },
+      { name: 'Long-distance Running', level: 'proficient' },
+      { name: 'Hiking', level: 'proficient' },
+      { name: 'Cycling', level: 'proficient' },
+      { name: 'Bowling', level: 'familiar' },
+      { name: 'Volleyball', level: 'familiar' },
+    ],
+  },
+  {
+    title: 'Activities',
+    icon: 'web',
+    skills: [
+      { name: 'Murder Mystery', level: 'proficient' },
+      { name: 'Escape Rooms', level: 'proficient' },
+      { name: 'Board Games', level: 'expert' },
+      { name: 'Theatre', level: 'expert' },
+      { name: 'Concert', level: 'expert' },
+      { name: 'Go-karting', level: 'familiar' },
+    ],
+  },
+]
+
+const skillCategoriesByIdentity: Record<Identity, SkillCategory[]> = {
+  engineer: engineerSkillCategories,
+  creator: creatorSkillCategories,
+  adventurer: adventurerSkillCategories,
+}
 const iconMap: Record<string, JSX.Element> = {
   code: (
     <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -191,83 +236,107 @@ const iconMap: Record<string, JSX.Element> = {
   ),
 }
 
-export default function SkillsSection() {
+interface SkillsSectionProps {
+  identity: Identity
+  direction: 'left' | 'right'
+}
+
+export function SkillsAccordion({ identity }: { identity: Identity }) {
   const [openCategory, setOpenCategory] = useState<number | null>(null)
 
   const toggleCategory = (index: number) => {
     setOpenCategory(openCategory === index ? null : index)
   }
 
+  useEffect(() => {
+    setOpenCategory(null)
+  }, [identity])
+
+  const categories = skillCategoriesByIdentity[identity]
+  const levelOrder: Record<SkillLevel, number> = {
+    expert: 0,
+    proficient: 1,
+    familiar: 2,
+  }
+
   return (
-    <section id="skills-section" className="section bg-gray-50 dark:bg-gray-800">
-      <div className="container">
-        <h2 className="section-title">Skills</h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {skillCategories.map((category, index) => (
-            <div
-              key={index}
-              className={`bg-white dark:bg-gray-900 rounded-lg shadow-md overflow-hidden transition-all duration-300 ${
-                openCategory === index ? 'ring-2 ring-primary-500' : ''
-              }`}
-            >
-              <button
-                onClick={() => toggleCategory(index)}
-                className="w-full p-4 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="text-primary-600 dark:text-primary-400">
-                    {iconMap[category.icon]}
-                  </div>
-                  <div className="text-left">
-                    <h3 className="font-semibold text-lg">{category.title}</h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">{category.subtitle}</p>
-                  </div>
-                </div>
-                <svg
-                  className={`w-5 h-5 text-gray-600 dark:text-gray-400 transition-transform ${
-                    openCategory === index ? 'rotate-180' : ''
-                  }`}
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-
-              <div
-                className={`overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
-                  openCategory === index
-                    ? 'max-h-[1000px] opacity-100'
-                    : 'max-h-0 opacity-0'
-                }`}
-              >
-                <div
-                  className={`p-4 pt-0 space-y-4 transform-gpu origin-top transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
-                    openCategory === index
-                      ? 'scale-100 translate-y-0'
-                      : 'scale-95 -translate-y-2'
-                  }`}
-                >
-                  {category.skills.map((skill, skillIndex) => (
-                    <div key={skillIndex}>
-                      <div className="flex justify-between items-center mb-2">
-                        <span className="text-sm font-medium">{skill.name}</span>
-                        <span className="text-sm text-gray-600 dark:text-gray-400">{skill.percentage}%</span>
-                      </div>
-                      <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                        <div
-                          className="bg-primary-600 dark:bg-primary-500 h-2 rounded-full transition-all duration-500"
-                          style={{ width: `${skill.percentage}%` }}
-                        />
-                      </div>
-                    </div>
-                  ))}
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-900 dark:text-gray-50">
+      {categories.map((category, index) => (
+        <div
+          key={index}
+          className={`rounded-xl overflow-hidden transition-all duration-300 ${
+            openCategory === index ? 'identity-card-ring-active' : ''
+          }`}
+        >
+          <button
+            type="button"
+            onClick={() => toggleCategory(index)}
+            className={`w-full p-4 flex items-center justify-between identity-accordion-header ${
+              openCategory === index ? 'rounded-t-xl' : 'rounded-xl'
+            }`}
+          >
+              <div className="flex items-center gap-4">
+                <div className="identity-accent-text">{iconMap[category.icon]}</div>
+                <div className="text-left">
+                  <h4 className="font-semibold text-base md:text-lg text-gray-900 dark:text-gray-50">
+                    {category.title}
+                  </h4>
                 </div>
               </div>
+            <svg
+              className={`w-5 h-5 text-gray-500 dark:text-slate-400 transition-transform ${
+                openCategory === index ? 'rotate-180' : ''
+              }`}
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+
+          <div
+            className={`overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
+              openCategory === index ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'
+            }`}
+          >
+            <div
+              className={`p-4 pt-0 space-y-4 transform-gpu origin-top transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
+                openCategory === index ? 'scale-100 translate-y-0' : 'scale-95 -translate-y-2'
+              }`}
+            >
+              <div className="mt-3 pt-3 flex flex-wrap gap-2 border-t border-gray-200 dark:border-white/10">
+                {[...category.skills]
+                  .sort((a, b) => levelOrder[a.level] - levelOrder[b.level])
+                  .map((skill, skillIndex) => (
+                    <span
+                      key={skillIndex}
+                      className={`identity-chip ${
+                        skill.level === 'expert' ? 'identity-chip-expert' : 'identity-chip-normal'
+                      }`}
+                    >
+                      {skill.name}
+                    </span>
+                  ))}
+              </div>
             </div>
-          ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+export default function SkillsSection({ identity, direction }: SkillsSectionProps) {
+  const slideClass = direction === 'left' ? 'slide-in-left-soft' : 'slide-in-right-soft'
+
+  return (
+    <section id="skills-section" className="section">
+      <div className="container">
+        <div className={`identity-card-surface space-y-8 ${slideClass}`}>
+          <h2 className="section-title">Skills</h2>
+          <SkillsAccordion identity={identity} />
         </div>
       </div>
     </section>
