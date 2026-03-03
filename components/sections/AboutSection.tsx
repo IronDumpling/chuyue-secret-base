@@ -60,6 +60,7 @@ const aboutContentByIdentity: Record<Identity, AboutContent> = {
     images: [
       { src: '/images/about/aboutImg5.jpeg', alt: 'Explore the beauty of nature' },
       { src: '/images/about/aboutImg6.jpeg', alt: 'Skiing' },
+      { src: '/images/about/aboutImg7.jpeg', alt: 'Feeding the birds' },
     ],
     paragraphs: [
       'As an adventurer, I seek out new places, sports, and conversations that push me out of my comfort zone and widen my perspective.'
