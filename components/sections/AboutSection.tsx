@@ -46,7 +46,8 @@ const aboutContentByIdentity: Record<Identity, AboutContent> = {
   creator: {
     images: [
       { src: '/images/about/aboutImg3.jpg', alt: 'Photographer' },
-      { src: '/images/about/aboutImg4.jpeg', alt: 'Visual artist' },
+      { src: '/images/about/aboutImg4.jpg', alt: 'Photographer' },
+      { src: '/images/about/aboutImg5.jpeg', alt: 'Traditional Chinese Costume' },
     ],
     paragraphs: [
       'As a creator, I explore games, photography, writing, illustration, and music as different ways of telling stories and shaping experiences.'
@@ -58,9 +59,9 @@ const aboutContentByIdentity: Record<Identity, AboutContent> = {
   },
   adventurer: {
     images: [
-      { src: '/images/about/aboutImg5.jpeg', alt: 'Explore the beauty of nature' },
-      { src: '/images/about/aboutImg6.jpeg', alt: 'Skiing' },
-      { src: '/images/about/aboutImg7.jpeg', alt: 'Feeding the birds' },
+      { src: '/images/about/aboutImg6.JPG', alt: 'Hiking in the mountains' },
+      { src: '/images/about/aboutImg7.jpeg', alt: 'Feeding the gulls' },
+      { src: '/images/about/aboutImg8.jpeg', alt: 'Skiing with friends' },
     ],
     paragraphs: [
       'As an adventurer, I seek out new places, sports, and conversations that push me out of my comfort zone and widen my perspective.'
