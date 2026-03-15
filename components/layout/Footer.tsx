@@ -3,7 +3,7 @@ import { withBasePath } from '@/lib/utils'
 
 const socialLinks = [
   { href: 'https://github.com/IronDumpling', label: 'GitHub', icon: 'github' },
-  { href: 'https://www.instagram.com/chuyue_charlie', label: 'Instagram', icon: 'instagram' },
+  { href: 'https://www.instagram.com/chuyue.charlie', label: 'Instagram', icon: 'instagram' },
   { href: 'https://twitter.com/Irondump1ing', label: 'Twitter', icon: 'twitter' },
   { href: 'https://www.linkedin.com/in/chuyuez/', label: 'LinkedIn', icon: 'linkedin' },
   { href: 'https://space.bilibili.com/26023645', label: 'Bilibili', icon: 'bilibili' },

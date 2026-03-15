@@ -83,7 +83,7 @@ const socialLinksByIdentity: Record<Identity, SocialLink[]> = {
     { href: 'https://www.pixiv.net/users/56079335', icon: 'pixiv', label: 'Pixiv' },
   ],
   adventurer: [
-    { href: 'https://www.instagram.com/chuyue_charlie', icon: 'instagram', label: 'Instagram' },
+    { href: 'https://www.instagram.com/chuyue.charlie', icon: 'instagram', label: 'Instagram' },
     { href: 'https://twitter.com/Irondump1ing', icon: 'twitter', label: 'Twitter' },
   ],
 }
