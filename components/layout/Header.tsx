@@ -8,8 +8,7 @@ import { scrollToSection } from '@/lib/smooth-scroll'
 
 const navLinks = [
   { href: '/#home-section', label: 'Home' },
-  { href: '/#about-section', label: 'About' },
-  { href: '/#skills-section', label: 'Skills' },
+  { href: '/#identity-card-section', label: 'Identity' },
   { href: '/#experiences-section', label: 'Experiences' },
   { href: '/portfolio', label: 'Portfolio' },
   { href: '/blog', label: 'Blog' },
