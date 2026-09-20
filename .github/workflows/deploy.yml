@@ -5,6 +5,8 @@ on:
     branches:
       - main
   workflow_dispatch:
+  repository_dispatch:
+    types: [content-updated]
 
 permissions:
   contents: read
@@ -21,7 +23,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      
+
+      - name: Checkout content
+        uses: actions/checkout@v4
+        with:
+          repository: IronDumpling/chuyue-content
+          path: content
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:

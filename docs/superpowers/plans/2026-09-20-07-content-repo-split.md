@@ -127,7 +127,7 @@ Expected: 76 pages. This is what the split site must reproduce.
 
 - [ ] **Step 2: Install the test tools**
 
-Run: `npm install --save-dev vitest tsx`
+Run: `npm install --save-dev vitest@^3 tsx` (vitest 5 requires `@types/node` 22+, which conflicts with this repo's `@types/node` 20, so pin the 3.x line)
 In `package.json` `"scripts"` add `"test": "vitest run"`. Create `vitest.config.ts`:
 ```ts
 import { defineConfig } from 'vitest/config'
