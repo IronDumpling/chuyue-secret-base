@@ -42,3 +42,7 @@ next-env.d.ts
 /content/
 /public/images/blog/
 /public/images/portfolio/
+
+# generated at build time
+/public/share/
+/.cache/
