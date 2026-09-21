@@ -31,7 +31,13 @@ describe('social links', () => {
   it('hides links that have no address yet', () => {
     const visible = ids(visibleSocialLinks(allSocialLinks()))
     expect(visible).toContain('github')
-    expect(visible).not.toContain('xiaohongshu')
-    expect(visible).not.toContain('wechat')
+    expect(visible).toContain('xiaohongshu')
+    expect(visible).not.toContain('shutterstock')
+  })
+
+  it('shows a platform that has only a QR code, and opens it as an image, not a link', () => {
+    const wechat = visibleSocialLinks(allSocialLinks()).find(link => link.id === 'wechat')
+    expect(wechat).toMatchObject({ qr: '/images/logo/wechat-qr.jpg' })
+    expect(wechat?.href).toBeUndefined()
   })
 })

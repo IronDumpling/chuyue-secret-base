@@ -6,29 +6,24 @@ import { withBasePath } from '@/lib/utils'
 import Link from 'next/link'
 import { SkillsAccordion } from '@/components/sections/SkillsSection'
 import RotatingImage from '@/components/shared/RotatingImage'
-import { useLocale, useLocalePath, useT } from '@/components/shared/LocaleProvider'
+import { useLocalePath, useT } from '@/components/shared/LocaleProvider'
 import SocialIcon from '@/components/shared/SocialIcon'
+import SocialLinkItem from '@/components/shared/SocialLinkItem'
 import { socialLinksByIdentity, visibleSocialLinks } from '@/lib/social-links'
-import { pick } from '@/lib/i18n/localized'
+import aboutImages from '@/lib/generated/about-images.json'
+
+const DEFAULT_IMAGE = '/images/placeholder/portofolio-default.jpg'
 
 interface AboutContent {
-  images: string[] // alt text for each comes from the dictionary, in the same order
   statValues: string[] // labels come from the dictionary, in the same order
 }
 
+// The pictures are not listed here: they are the <identity>-<n>.* files in
+// public/images/about, found by scripts/generate-about-images.ts.
 const aboutContentByIdentity: Record<Identity, AboutContent> = {
-  engineer: {
-    images: ['/images/about/aboutImg1.jpeg', '/images/about/aboutImg2.jpeg'],
-    statValues: ['07+', '26+'],
-  },
-  creator: {
-    images: ['/images/about/aboutImg3.jpg', '/images/about/aboutImg4.jpg', '/images/about/aboutImg5.jpeg'],
-    statValues: ['03+', '10+'],
-  },
-  adventurer: {
-    images: ['/images/about/aboutImg6.JPG', '/images/about/aboutImg7.jpeg', '/images/about/aboutImg8.jpeg'],
-    statValues: ['20+', '10+'],
-  },
+  engineer: { statValues: ['07+', '26+'] },
+  creator: { statValues: ['03+', '10+'] },
+  adventurer: { statValues: ['20+', '10+'] },
 }
 
 interface AboutSectionProps {
@@ -39,9 +34,9 @@ interface AboutSectionProps {
 
 export default function AboutSection({ identity, direction, onIdentityChange }: AboutSectionProps) {
   const lp = useLocalePath()
-  const locale = useLocale()
   const t = useT()
   const content = aboutContentByIdentity[identity]
+  const images: string[] = aboutImages[identity]
   const text = t.about.identities[identity]
   const socialLinks = visibleSocialLinks(socialLinksByIdentity[identity])
   const slideClass = direction === 'left' ? 'slide-in-left-soft' : 'slide-in-right-soft'
@@ -76,25 +71,18 @@ export default function AboutSection({ identity, direction, onIdentityChange }: 
                 <div className="relative w-full aspect-[4/5] rounded-2xl overflow-hidden group">
                   <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-80 group-hover:opacity-60 transition-opacity duration-500 z-10" />
                   <RotatingImage
-                    images={content.images}
+                    images={images}
                     alt={text.imageAlts[0]}
-                    defaultSrc={content.images[0] ?? '/images/about/aboutImg1.jpeg'}
+                    defaultSrc={images[0] ?? DEFAULT_IMAGE}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
                 </div>
 
                 <div className="flex gap-3 mt-auto">
                   {socialLinks.map((social) => (
-                    <a
-                      key={social.id}
-                      href={social.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="identity-social-button"
-                      aria-label={pick(social.label, locale)}
-                    >
+                    <SocialLinkItem key={social.id} link={social} className="identity-social-button">
                       <SocialIcon id={social.id} className="text-slate-200" />
-                    </a>
+                    </SocialLinkItem>
                   ))}
                 </div>
               </div>
