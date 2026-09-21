@@ -37,3 +37,8 @@ next-env.d.ts
 # IDE
 *.iml
 
+
+# content lives in the chuyue-content repository (cloned to ./content, images synced to public/images)
+/content/
+/public/images/blog/
+/public/images/portfolio/
