@@ -39,12 +39,19 @@ cd chuyue-secret-base
 npm install
 ```
 
-3. Run the development server:
+3. Clone the content repository into `content/` (blog posts, portfolio projects and their images live there, not in this repo):
+```bash
+git clone https://github.com/IronDumpling/chuyue-content.git content
+```
+
+4. Run the development server:
 ```bash
 npm run dev
 ```
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+5. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+`npm run dev` and `npm run build` first run `npm run sync:content`, which copies `content/images/*` into `public/images/` and stops with an error if `content/` is missing or has no posts, so an empty site is never built.
 
 ## Project Structure
 
@@ -52,9 +59,10 @@ npm run dev
 chuyue-secret-base/
 ├── app/                    # Next.js App Router pages
 ├── components/             # React components
-├── content/                # MDX content files
+├── content/                # clone of the chuyue-content repository (git-ignored)
+│   ├── blog/              # Blog post MDX files
 │   ├── portfolio/         # Portfolio project MDX files
-│   └── blog/              # Blog post MDX files
+│   └── images/            # Blog and portfolio images (synced to public/images)
 ├── lib/                   # Utility functions
 ├── public/                # Static assets
 └── .github/workflows/     # GitHub Actions workflows
@@ -62,9 +70,11 @@ chuyue-secret-base/
 
 ## Adding Content
 
+Content lives in the separate repository [`chuyue-content`](https://github.com/IronDumpling/chuyue-content). Commit and push there (from your clone in `content/`, or on GitHub). Every push to its `main` branch triggers a rebuild and deploy of this site through GitHub Actions (`repository_dispatch`, see `.github/workflows/deploy.yml`). Put images in `content/images/blog/...` or `content/images/portfolio/...` and reference them as `/images/blog/...` or `/images/portfolio/...`.
+
 ### Portfolio Projects
 
-Create a new MDX file in `content/portfolio/{category}/{slug}.mdx`:
+Create a new MDX file in `content/portfolio/{category}/{slug}.mdx` (in the content repo):
 
 ```mdx
 ---
@@ -86,9 +96,7 @@ Your project content here...
 
 ### Blog Posts
 
-For review posts (with subcategory), create a new MDX file in `content/blog/review/{subcategory}/{slug}.mdx`:
-
-For casual posts (no subcategory), create a new MDX file in `content/blog/casual/{slug}.mdx`:
+Create a new MDX file in `content/blog/{category}/{type}/{slug}.mdx` (in the content repo), where `category` is one of `photography`, `illustration`, `films-shows`, `music`, `video-games`, `books` and `type` is `review` or `casual`:
 
 ```mdx
 ---
