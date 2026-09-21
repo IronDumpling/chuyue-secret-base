@@ -1,8 +1,10 @@
 'use client'
 
 import { FormEvent, useState } from 'react'
+import { useT } from '@/components/shared/LocaleProvider'
 
 export default function ContactSection() {
+  const t = useT()
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -18,7 +20,7 @@ export default function ContactSection() {
     console.log('Form submitted:', formData)
     setTimeout(() => {
       setIsSubmitting(false)
-      alert('Thank you for your message! I will get back to you soon.')
+      alert(t.contact.thanks)
       setFormData({ name: '', email: '', project: '', message: '' })
     }, 1000)
   }
@@ -26,8 +28,8 @@ export default function ContactSection() {
   return (
     <section id="contact" className="section bg-gray-50 dark:bg-gray-800">
       <div className="container">
-        <h2 className="section-title">Contact Me</h2>
-        <span className="section-subtitle">Get in touch</span>
+        <h2 className="section-title">{t.contact.heading}</h2>
+        <span className="section-subtitle">{t.contact.subtitle}</span>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
           {/* Contact Information */}
@@ -39,7 +41,7 @@ export default function ContactSection() {
                 </svg>
               </div>
               <div>
-                <h3 className="font-semibold mb-1">Call Me</h3>
+                <h3 className="font-semibold mb-1">{t.contact.call}</h3>
                 <p className="text-gray-600 dark:text-gray-400">+1 437-343-8066</p>
               </div>
             </div>
@@ -51,7 +53,7 @@ export default function ContactSection() {
                 </svg>
               </div>
               <div>
-                <h3 className="font-semibold mb-1">Email</h3>
+                <h3 className="font-semibold mb-1">{t.contact.email}</h3>
                 <p className="text-gray-600 dark:text-gray-400">irondumpling010@gmail.com</p>
                 <p className="text-gray-600 dark:text-gray-400">irondumpling233@outlook.com</p>
               </div>
@@ -65,8 +67,8 @@ export default function ContactSection() {
                 </svg>
               </div>
               <div>
-                <h3 className="font-semibold mb-1">Location</h3>
-                <p className="text-gray-600 dark:text-gray-400">Toronto, ON, Canada</p>
+                <h3 className="font-semibold mb-1">{t.contact.location}</h3>
+                <p className="text-gray-600 dark:text-gray-400">{t.contact.city}</p>
               </div>
             </div>
 
@@ -77,10 +79,10 @@ export default function ContactSection() {
                 </svg>
               </div>
               <div>
-                <h3 className="font-semibold mb-1">Language</h3>
-                <p className="text-gray-600 dark:text-gray-400">English</p>
-                <p className="text-gray-600 dark:text-gray-400">Mandarin</p>
-                <p className="text-gray-600 dark:text-gray-400">French</p>
+                <h3 className="font-semibold mb-1">{t.contact.languages}</h3>
+                <p className="text-gray-600 dark:text-gray-400">{t.contact.languageList[0]}</p>
+                <p className="text-gray-600 dark:text-gray-400">{t.contact.languageList[1]}</p>
+                <p className="text-gray-600 dark:text-gray-400">{t.contact.languageList[2]}</p>
               </div>
             </div>
           </div>
@@ -90,7 +92,7 @@ export default function ContactSection() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label htmlFor="name" className="block text-sm font-medium mb-2">
-                  Name
+                  {t.contact.form.name}
                 </label>
                 <input
                   type="text"
@@ -103,7 +105,7 @@ export default function ContactSection() {
               </div>
               <div>
                 <label htmlFor="email" className="block text-sm font-medium mb-2">
-                  Email
+                  {t.contact.form.email}
                 </label>
                 <input
                   type="email"
@@ -117,7 +119,7 @@ export default function ContactSection() {
             </div>
             <div>
               <label htmlFor="project" className="block text-sm font-medium mb-2">
-                Project
+                {t.contact.form.project}
               </label>
               <input
                 type="text"
@@ -129,7 +131,7 @@ export default function ContactSection() {
             </div>
             <div>
               <label htmlFor="message" className="block text-sm font-medium mb-2">
-                Message
+                {t.contact.form.message}
               </label>
               <textarea
                 id="message"
@@ -145,7 +147,7 @@ export default function ContactSection() {
               disabled={isSubmitting}
               className="button-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isSubmitting ? 'Sending...' : 'Send Message'}
+              {isSubmitting ? t.contact.form.sending : t.contact.form.send}
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
               </svg>

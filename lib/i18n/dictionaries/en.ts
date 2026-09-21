@@ -37,6 +37,57 @@ export const en = {
     question: 'Who am I?',
     scrollDown: 'Scroll down',
   },
+  about: {
+    heading: 'I am...',
+    coreCompetencies: 'Core Competencies',
+    viewResume: 'View Resume',
+    viewDetails: 'View Details',
+    identities: {
+      engineer: {
+        paragraph:
+          'As a software engineer, I build reliable, high-performance systems with experience across databases, distributed systems, and backend infrastructure.',
+        imageAlts: ['Engineer ring ceremony', 'Graduation photo'],
+        statLabels: ['Years\nin software', 'Shipped\nprojects'],
+      },
+      creator: {
+        paragraph:
+          'As a creator, I explore games, photography, writing, illustration, and music as different ways of telling stories and shaping experiences.',
+        imageAlts: ['Photographer', 'Photographer', 'Traditional Chinese Costume'],
+        statLabels: ['Years in\nindie creation', 'Game & art\nexperiments'],
+      },
+      adventurer: {
+        paragraph:
+          'As an adventurer, I seek out new places, sports, and conversations that push me out of my comfort zone and widen my perspective.',
+        imageAlts: ['Hiking in the mountains', 'Feeding the gulls', 'Skiing with friends'],
+        statLabels: ['Cities\nvisited', 'Sports &\nactivities'],
+      },
+    },
+  },
+  skills: {
+    heading: 'Skills',
+  },
+  experiences: {
+    heading: 'Experiences',
+  },
+  contact: {
+    heading: 'Contact Me',
+    subtitle: 'Get in touch',
+    call: 'Call Me',
+    email: 'Email',
+    location: 'Location',
+    city: 'Toronto, ON, Canada',
+    languages: 'Language',
+    languageList: ['English', 'Mandarin', 'French'],
+    thanks: 'Thank you for your message! I will get back to you soon.',
+    form: {
+      name: 'Name',
+      email: 'Email',
+      project: 'Project',
+      message: 'Message',
+      send: 'Send Message',
+      sending: 'Sending...',
+    },
+  },
   identity: {
     labels: {
       engineer: 'Software Engineer',

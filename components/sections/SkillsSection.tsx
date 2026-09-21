@@ -2,23 +2,25 @@
 
 import { useEffect, useState } from 'react'
 import type { Identity } from '@/lib/identity'
+import { pick, type Text } from '@/lib/i18n/localized'
+import { useLocale, useT } from '@/components/shared/LocaleProvider'
 
 type SkillLevel = 'expert' | 'proficient' | 'familiar'
 
 interface Skill {
-  name: string
+  name: Text
   level: SkillLevel
 }
 
 interface SkillCategory {
-  title: string
+  title: Text
   icon: string
   skills: Skill[]
 }
 
 const engineerSkillCategories: SkillCategory[] = [
   {
-    title: 'Programming Languages',
+    title: { en: 'Programming Languages', zh: '编程语言' },
     icon: 'code',
     skills: [
       { name: 'C#', level: 'expert' },
@@ -31,7 +33,7 @@ const engineerSkillCategories: SkillCategory[] = [
     ],
   },
   {
-    title: 'Databases & Data Platforms',
+    title: { en: 'Databases & Data Platforms', zh: '数据库与数据平台' },
     icon: 'database',
     skills: [
       { name: 'PostgreSQL', level: 'expert' },
@@ -41,27 +43,27 @@ const engineerSkillCategories: SkillCategory[] = [
       { name: 'MongoDB', level: 'proficient' },
       { name: 'Cassandra', level: 'proficient' },
       { name: 'DynamoDB', level: 'familiar' },
-      { name: 'Query Optimization', level: 'expert' },
-      { name: 'Data Modeling (OLTP/OLAP)', level: 'proficient' },
-      { name: 'Parquet/Columnar Storage', level: 'proficient' },
+      { name: { en: 'Query Optimization', zh: '查询优化' }, level: 'expert' },
+      { name: { en: 'Data Modeling (OLTP/OLAP)', zh: '数据建模（OLTP/OLAP）' }, level: 'proficient' },
+      { name: { en: 'Parquet/Columnar Storage', zh: 'Parquet / 列式存储' }, level: 'proficient' },
     ],
   },
   {
-    title: 'Distributed Systems',
+    title: { en: 'Distributed Systems', zh: '分布式系统' },
     icon: 'cpu',
     skills: [
-      { name: 'ACID & Distributed Transactions', level: 'expert' },
-      { name: 'Consensus Algorithms (Raft, Paxos)', level: 'proficient' },
-      { name: 'Sharding & Replication', level: 'expert' },
-      { name: 'CAP Theorem & Trade-offs', level: 'proficient' },
-      { name: 'Message Queues (Kafka)', level: 'proficient' },
-      { name: 'Distributed Caching', level: 'proficient' },
-      { name: 'RDMA Programming', level: 'proficient' },
-      { name: 'Performance Benchmarking', level: 'expert' },
+      { name: { en: 'ACID & Distributed Transactions', zh: 'ACID 与分布式事务' }, level: 'expert' },
+      { name: { en: 'Consensus Algorithms (Raft, Paxos)', zh: '共识算法（Raft、Paxos）' }, level: 'proficient' },
+      { name: { en: 'Sharding & Replication', zh: '分片与复制' }, level: 'expert' },
+      { name: { en: 'CAP Theorem & Trade-offs', zh: 'CAP 定理与权衡' }, level: 'proficient' },
+      { name: { en: 'Message Queues (Kafka)', zh: '消息队列（Kafka）' }, level: 'proficient' },
+      { name: { en: 'Distributed Caching', zh: '分布式缓存' }, level: 'proficient' },
+      { name: { en: 'RDMA Programming', zh: 'RDMA 编程' }, level: 'proficient' },
+      { name: { en: 'Performance Benchmarking', zh: '性能基准测试' }, level: 'expert' },
     ],
   },
   {
-    title: 'Web & API Development',
+    title: { en: 'Web & API Development', zh: 'Web 与 API 开发' },
     icon: 'web',
     skills: [
       { name: 'Node.js / Express.js', level: 'proficient' },
@@ -69,115 +71,115 @@ const engineerSkillCategories: SkillCategory[] = [
       { name: '.NET Core', level: 'familiar' },
       { name: 'React.js', level: 'proficient' },
       { name: 'RESTful APIs', level: 'expert' },
-      { name: 'Microservices', level: 'proficient' },
+      { name: { en: 'Microservices', zh: '微服务' }, level: 'proficient' },
       { name: 'HTML / CSS', level: 'expert' },
       { name: 'JavaScript', level: 'proficient' },
     ],
   },
   {
-    title: 'DevOps & Cloud',
+    title: { en: 'DevOps & Cloud', zh: 'DevOps 与云' },
     icon: 'cloud',
     skills: [
       { name: 'Docker', level: 'proficient' },
       { name: 'Kubernetes', level: 'familiar' },
       { name: 'Jenkins CI/CD', level: 'expert' },
-      { name: 'Git / Version Control', level: 'expert' },
+      { name: { en: 'Git / Version Control', zh: 'Git / 版本控制' }, level: 'expert' },
       { name: 'AWS S3', level: 'familiar' },
       { name: 'Microsoft Azure', level: 'familiar' },
-      { name: 'Shell Scripting', level: 'expert' },
-      { name: 'Linux Kernel', level: 'proficient' },
+      { name: { en: 'Shell Scripting', zh: 'Shell 脚本' }, level: 'expert' },
+      { name: { en: 'Linux Kernel', zh: 'Linux 内核' }, level: 'proficient' },
     ],
   },
   {
-    title: 'System-level Skills',
+    title: { en: 'System-level Skills', zh: '系统级技能' },
     icon: 'tools',
     skills: [
-      { name: 'LLVM / Compiler Design', level: 'proficient' },
-      { name: 'TCP/IP & Socket Programming', level: 'proficient' },
-      { name: 'Parallel Programming', level: 'proficient' },
-      { name: 'Performance Profiling (perf)', level: 'proficient' },
-      { name: 'Operating Systems', level: 'proficient' },
-      { name: 'Computer Networks', level: 'proficient' },
+      { name: { en: 'LLVM / Compiler Design', zh: 'LLVM / 编译器设计' }, level: 'proficient' },
+      { name: { en: 'TCP/IP & Socket Programming', zh: 'TCP/IP 与 Socket 编程' }, level: 'proficient' },
+      { name: { en: 'Parallel Programming', zh: '并行编程' }, level: 'proficient' },
+      { name: { en: 'Performance Profiling (perf)', zh: '性能分析（perf）' }, level: 'proficient' },
+      { name: { en: 'Operating Systems', zh: '操作系统' }, level: 'proficient' },
+      { name: { en: 'Computer Networks', zh: '计算机网络' }, level: 'proficient' },
     ],
   },
   {
-    title: 'Machine Learning & AI',
+    title: { en: 'Machine Learning & AI', zh: '机器学习与人工智能' },
     icon: 'brain',
     skills: [
-      { name: 'AI Agent Development', level: 'proficient' },
+      { name: { en: 'AI Agent Development', zh: 'AI Agent 开发' }, level: 'proficient' },
       { name: 'PyTorch', level: 'proficient' },
-      { name: 'Deep Learning', level: 'familiar' },
-      { name: 'Reinforcement Learning', level: 'familiar' },
-      { name: 'RAG (Retrieval-Augmented Generation)', level: 'familiar' },
+      { name: { en: 'Deep Learning', zh: '深度学习' }, level: 'familiar' },
+      { name: { en: 'Reinforcement Learning', zh: '强化学习' }, level: 'familiar' },
+      { name: { en: 'RAG (Retrieval-Augmented Generation)', zh: 'RAG（检索增强生成）' }, level: 'familiar' },
     ],
   },
 ]
 
 const creatorSkillCategories: SkillCategory[] = [
   {
-    title: 'Game Design',
+    title: { en: 'Game Design', zh: '游戏设计' },
     icon: 'game',
     skills: [
-      { name: 'Game Systems Design', level: 'proficient' },
-      { name: 'Level Design', level: 'proficient' },
-      { name: 'Gameplay Prototyping', level: 'proficient' },
+      { name: { en: 'Game Systems Design', zh: '游戏系统设计' }, level: 'proficient' },
+      { name: { en: 'Level Design', zh: '关卡设计' }, level: 'proficient' },
+      { name: { en: 'Gameplay Prototyping', zh: '玩法原型' }, level: 'proficient' },
     ],
   },
   {
-    title: 'Writing',
+    title: { en: 'Writing', zh: '写作' },
     icon: 'tools',
     skills: [
-      { name: 'Film Reviews', level: 'proficient' },
-      { name: 'Fiction', level: 'proficient' },
-      { name: 'Screenplays', level: 'proficient' },
-      { name: 'Essays & Commentary', level: 'proficient' },
+      { name: { en: 'Film Reviews', zh: '影评' }, level: 'proficient' },
+      { name: { en: 'Fiction', zh: '小说' }, level: 'proficient' },
+      { name: { en: 'Screenplays', zh: '剧本' }, level: 'proficient' },
+      { name: { en: 'Essays & Commentary', zh: '随笔与评论' }, level: 'proficient' },
     ],
   },
   {
-    title: 'Visuals',
+    title: { en: 'Visuals', zh: '视觉' },
     icon: 'graphics',
     skills: [
-      { name: 'Procreate Illustration', level: 'expert' },
-      { name: 'Photography', level: 'proficient' },
-      { name: 'Video Editing', level: 'proficient' },
-      { name: 'Image Editing', level: 'proficient' },
+      { name: { en: 'Procreate Illustration', zh: 'Procreate 插画' }, level: 'expert' },
+      { name: { en: 'Photography', zh: '摄影' }, level: 'proficient' },
+      { name: { en: 'Video Editing', zh: '视频剪辑' }, level: 'proficient' },
+      { name: { en: 'Image Editing', zh: '图像编辑' }, level: 'proficient' },
       { name: 'Maya', level: 'familiar' },
       { name: 'Blender', level: 'familiar' },
     ],
   },
   {
-    title: 'Music',
+    title: { en: 'Music', zh: '音乐' },
     icon: 'cloud',
-    skills: [{ name: 'FL Studio Remix', level: 'familiar' }],
+    skills: [{ name: { en: 'FL Studio Remix', zh: 'FL Studio 混音' }, level: 'familiar' }],
   },
 ]
 
 const adventurerSkillCategories: SkillCategory[] = [
   {
-    title: 'Sports',
+    title: { en: 'Sports', zh: '运动' },
     icon: 'game',
     skills: [
-      { name: 'Badminton', level: 'proficient' },
-      { name: 'Swimming', level: 'proficient' },
-      { name: 'Skiing', level: 'familiar' },
-      { name: 'Skating', level: 'familiar' },
-      { name: 'Long-distance Running', level: 'proficient' },
-      { name: 'Hiking', level: 'proficient' },
-      { name: 'Cycling', level: 'proficient' },
-      { name: 'Bowling', level: 'familiar' },
-      { name: 'Volleyball', level: 'familiar' },
+      { name: { en: 'Badminton', zh: '羽毛球' }, level: 'proficient' },
+      { name: { en: 'Swimming', zh: '游泳' }, level: 'proficient' },
+      { name: { en: 'Skiing', zh: '滑雪' }, level: 'familiar' },
+      { name: { en: 'Skating', zh: '滑冰' }, level: 'familiar' },
+      { name: { en: 'Long-distance Running', zh: '长跑' }, level: 'proficient' },
+      { name: { en: 'Hiking', zh: '徒步' }, level: 'proficient' },
+      { name: { en: 'Cycling', zh: '骑行' }, level: 'proficient' },
+      { name: { en: 'Bowling', zh: '保龄球' }, level: 'familiar' },
+      { name: { en: 'Volleyball', zh: '排球' }, level: 'familiar' },
     ],
   },
   {
-    title: 'Activities',
+    title: { en: 'Activities', zh: '活动' },
     icon: 'web',
     skills: [
-      { name: 'Murder Mystery', level: 'proficient' },
-      { name: 'Escape Rooms', level: 'proficient' },
-      { name: 'Board Games', level: 'expert' },
-      { name: 'Theatre', level: 'expert' },
-      { name: 'Concert', level: 'expert' },
-      { name: 'Go-karting', level: 'familiar' },
+      { name: { en: 'Murder Mystery', zh: '剧本杀' }, level: 'proficient' },
+      { name: { en: 'Escape Rooms', zh: '密室逃脱' }, level: 'proficient' },
+      { name: { en: 'Board Games', zh: '桌游' }, level: 'expert' },
+      { name: { en: 'Theatre', zh: '戏剧' }, level: 'expert' },
+      { name: { en: 'Concert', zh: '演唱会' }, level: 'expert' },
+      { name: { en: 'Go-karting', zh: '卡丁车' }, level: 'familiar' },
     ],
   },
 ]
@@ -242,6 +244,7 @@ interface SkillsSectionProps {
 }
 
 export function SkillsAccordion({ identity }: { identity: Identity }) {
+  const locale = useLocale()
   const [openCategory, setOpenCategory] = useState<number | null>(null)
 
   const toggleCategory = (index: number) => {
@@ -279,7 +282,7 @@ export function SkillsAccordion({ identity }: { identity: Identity }) {
                 <div className="identity-accent-text">{iconMap[category.icon]}</div>
                 <div className="text-left">
                   <h4 className="font-semibold text-base md:text-lg text-gray-900 dark:text-gray-50">
-                    {category.title}
+                    {pick(category.title, locale)}
                   </h4>
                 </div>
               </div>
@@ -316,7 +319,7 @@ export function SkillsAccordion({ identity }: { identity: Identity }) {
                         skill.level === 'expert' ? 'identity-chip-expert' : 'identity-chip-normal'
                       }`}
                     >
-                      {skill.name}
+                      {pick(skill.name, locale)}
                     </span>
                   ))}
               </div>
@@ -329,13 +332,14 @@ export function SkillsAccordion({ identity }: { identity: Identity }) {
 }
 
 export default function SkillsSection({ identity, direction }: SkillsSectionProps) {
+  const t = useT()
   const slideClass = direction === 'left' ? 'slide-in-left-soft' : 'slide-in-right-soft'
 
   return (
     <section id="skills-section" className="section">
       <div className="container">
         <div className={`identity-card-surface space-y-8 ${slideClass}`}>
-          <h2 className="section-title">Skills</h2>
+          <h2 className="section-title">{t.skills.heading}</h2>
           <SkillsAccordion identity={identity} />
         </div>
       </div>
