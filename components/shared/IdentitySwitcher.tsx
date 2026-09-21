@@ -1,7 +1,8 @@
 'use client'
 
 import { useMemo } from 'react'
-import { Identity, orderedIdentities, identityLabels } from '@/lib/identity'
+import { Identity, orderedIdentities } from '@/lib/identity'
+import { useT } from '@/components/shared/LocaleProvider'
 
 interface IdentitySwitcherProps {
   currentIdentity: Identity
@@ -34,6 +35,7 @@ function IdentityIcon({ identity }: { identity: Identity }) {
 }
 
 export default function IdentitySwitcher({ currentIdentity, onIdentityChange }: IdentitySwitcherProps) {
+  const t = useT()
   const currentIndex = useMemo(
     () => orderedIdentities.indexOf(currentIdentity),
     [currentIdentity],
@@ -58,7 +60,7 @@ export default function IdentitySwitcher({ currentIdentity, onIdentityChange }: 
               aria-current={active ? 'true' : undefined}
             >
               <IdentityIcon identity={id} />
-              <span className="font-medium tracking-wide">{identityLabels[id]}</span>
+              <span className="font-medium tracking-wide">{t.identity.labels[id]}</span>
             </button>
           )
         })}

@@ -4,6 +4,7 @@ import { useState } from 'react'
 import type { PortfolioProject } from '@/lib/portfolio-types'
 import ProjectCard from './ProjectCard'
 import { getCategoryDisplayName } from '@/lib/portfolio-utils'
+import { useLocale, useT } from '@/components/shared/LocaleProvider'
 
 interface ProjectGridProps {
   projects: PortfolioProject[]
@@ -16,6 +17,8 @@ const categories: PortfolioProject['frontMatter']['category'][] = [
 ]
 
 export default function ProjectGrid({ projects }: ProjectGridProps) {
+  const locale = useLocale()
+  const t = useT()
   const [selectedCategory, setSelectedCategory] = useState<PortfolioProject['frontMatter']['category'] | 'all'>('all')
 
   const filteredProjects =
@@ -35,7 +38,7 @@ export default function ProjectGrid({ projects }: ProjectGridProps) {
               : 'bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700'
           }`}
         >
-          All
+          {t.common.all}
         </button>
         {categories.map(category => (
           <button
@@ -47,7 +50,7 @@ export default function ProjectGrid({ projects }: ProjectGridProps) {
                 : 'bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700'
             }`}
           >
-            {getCategoryDisplayName(category)}
+            {getCategoryDisplayName(category, locale)}
           </button>
         ))}
       </div>
@@ -61,7 +64,7 @@ export default function ProjectGrid({ projects }: ProjectGridProps) {
         </div>
       ) : (
         <div className="text-center py-12">
-          <p className="text-gray-600 dark:text-gray-400">No projects found in this category.</p>
+          <p className="text-gray-600 dark:text-gray-400">{t.portfolio.noProjects}</p>
         </div>
       )}
     </div>

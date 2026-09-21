@@ -5,14 +5,18 @@ import type { BlogPost } from '@/lib/blog-types'
 import { getCategoryDisplayName, getTypeDisplayName } from '@/lib/blog-utils'
 import Rating from '@/components/blog/Rating'
 import RotatingImage from '@/components/shared/RotatingImage'
+import { useLocale, useLocalePath } from '@/components/shared/LocaleProvider'
+import { INTL_LOCALE } from '@/lib/i18n/config'
 
 interface BlogCardProps {
   post: BlogPost
 }
 
 export default function BlogCard({ post }: BlogCardProps) {
+  const locale = useLocale()
+  const lp = useLocalePath()
   // URL structure: /blog/{category}/{type}/{slug}
-  const url = `/blog/${post.frontMatter.category}/${post.frontMatter.type}/${post.slug}`
+  const url = lp(`/blog/${post.frontMatter.category}/${post.frontMatter.type}/${post.slug}`)
   const images = post.frontMatter.images
   const defaultImage = '/images/placeholder/blog-default.jpg'
 
@@ -37,10 +41,10 @@ export default function BlogCard({ post }: BlogCardProps) {
         <div className="flex items-start justify-between mb-3">
           <div className="flex flex-wrap gap-2">
             <span className="px-3 py-1 text-xs font-medium bg-primary-100 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 rounded-full">
-              {getCategoryDisplayName(post.frontMatter.category)}
+              {getCategoryDisplayName(post.frontMatter.category, locale)}
             </span>
             <span className="px-3 py-1 text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full">
-              {getTypeDisplayName(post.frontMatter.type)}
+              {getTypeDisplayName(post.frontMatter.type, locale)}
             </span>
           </div>
           {post.frontMatter.type === 'review' && post.frontMatter.rating && (
@@ -76,7 +80,7 @@ export default function BlogCard({ post }: BlogCardProps) {
         
         {/* Date */}
         <div className="text-sm text-gray-500 dark:text-gray-500">
-          {new Date(post.frontMatter.date).toLocaleDateString('en-US', {
+          {new Date(post.frontMatter.date).toLocaleDateString(INTL_LOCALE[locale], {
             year: 'numeric',
             month: 'long',
           })}

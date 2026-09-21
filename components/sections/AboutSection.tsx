@@ -6,21 +6,11 @@ import { withBasePath } from '@/lib/utils'
 import Link from 'next/link'
 import { SkillsAccordion } from '@/components/sections/SkillsSection'
 import RotatingImage from '@/components/shared/RotatingImage'
-
-interface AboutImage {
-  src: string
-  alt: string
-}
-
-interface AboutStat {
-  value: string
-  label: string
-}
+import { useLocalePath, useT } from '@/components/shared/LocaleProvider'
 
 interface AboutContent {
-  images: AboutImage[]
-  paragraphs: string[]
-  stats: AboutStat[]
+  images: string[] // alt text for each comes from the dictionary, in the same order
+  statValues: string[] // labels come from the dictionary, in the same order
 }
 
 interface SocialLink {
@@ -31,45 +21,16 @@ interface SocialLink {
 
 const aboutContentByIdentity: Record<Identity, AboutContent> = {
   engineer: {
-    images: [
-      { src: '/images/about/aboutImg1.jpeg', alt: 'Engineer ring ceremony' },
-      { src: '/images/about/aboutImg2.jpeg', alt: 'Graduation photo' },
-    ],
-    paragraphs: [
-      'As a software engineer, I build reliable, high-performance systems with experience across databases, distributed systems, and backend infrastructure.'
-    ],
-    stats: [
-      { value: '07+', label: 'Years\nin software' },
-      { value: '26+', label: 'Shipped\nprojects' },
-    ],
+    images: ['/images/about/aboutImg1.jpeg', '/images/about/aboutImg2.jpeg'],
+    statValues: ['07+', '26+'],
   },
   creator: {
-    images: [
-      { src: '/images/about/aboutImg3.jpg', alt: 'Photographer' },
-      { src: '/images/about/aboutImg4.jpg', alt: 'Photographer' },
-      { src: '/images/about/aboutImg5.jpeg', alt: 'Traditional Chinese Costume' },
-    ],
-    paragraphs: [
-      'As a creator, I explore games, photography, writing, illustration, and music as different ways of telling stories and shaping experiences.'
-    ],
-    stats: [
-      { value: '03+', label: 'Years in\nindie creation' },
-      { value: '10+', label: 'Game & art\nexperiments' },
-    ],
+    images: ['/images/about/aboutImg3.jpg', '/images/about/aboutImg4.jpg', '/images/about/aboutImg5.jpeg'],
+    statValues: ['03+', '10+'],
   },
   adventurer: {
-    images: [
-      { src: '/images/about/aboutImg6.JPG', alt: 'Hiking in the mountains' },
-      { src: '/images/about/aboutImg7.jpeg', alt: 'Feeding the gulls' },
-      { src: '/images/about/aboutImg8.jpeg', alt: 'Skiing with friends' },
-    ],
-    paragraphs: [
-      'As an adventurer, I seek out new places, sports, and conversations that push me out of my comfort zone and widen my perspective.'
-    ],
-    stats: [
-      { value: '20+', label: 'Cities\nvisited' },
-      { value: '10+', label: 'Sports &\nactivities' },
-    ],
+    images: ['/images/about/aboutImg6.JPG', '/images/about/aboutImg7.jpeg', '/images/about/aboutImg8.jpeg'],
+    statValues: ['20+', '10+'],
   },
 }
 
@@ -161,23 +122,26 @@ interface AboutSectionProps {
 }
 
 export default function AboutSection({ identity, direction, onIdentityChange }: AboutSectionProps) {
+  const lp = useLocalePath()
+  const t = useT()
   const content = aboutContentByIdentity[identity]
+  const text = t.about.identities[identity]
   const socialLinks = socialLinksByIdentity[identity]
   const slideClass = direction === 'left' ? 'slide-in-left-soft' : 'slide-in-right-soft'
   const showResume = identity === 'engineer'
 
   const cta =
     identity === 'engineer'
-      ? { label: 'View Resume', href: withBasePath('/pdf/Chuyue_Zhang_Resume.pdf'), external: true }
+      ? { label: t.about.viewResume, href: withBasePath('/pdf/Chuyue_Zhang_Resume.pdf'), external: true }
       : identity === 'creator'
-        ? { label: 'View Details', href: '/portfolio', external: false }
-        : { label: 'View Details', href: '/blog', external: false }
+        ? { label: t.about.viewDetails, href: lp('/portfolio'), external: false }
+        : { label: t.about.viewDetails, href: lp('/blog'), external: false }
 
   return (
     <section id="identity-card-section" className="section">
       <div className="container">
         <div className="space-y-12">
-          <h2 className="section-title">I am...</h2>
+          <h2 className="section-title">{t.about.heading}</h2>
           <IdentitySwitcher currentIdentity={identity} onIdentityChange={onIdentityChange} />
 
           <div className={`identity-card-surface ${slideClass}`}>
@@ -187,17 +151,17 @@ export default function AboutSection({ identity, direction, onIdentityChange }: 
               <div className="lg:col-span-5 flex flex-col gap-6 text-gray-900 dark:text-gray-50">
                 <div>
                   <h2 className="text-4xl font-bold mb-2 identity-gradient-text">
-                    {identity === 'engineer' ? 'Software Engineer' : identity === 'creator' ? 'Creator' : 'Adventurer'}
+                    {t.identity.labels[identity]}
                   </h2>
-                  <p className="text-gray-700 dark:text-slate-300 text-lg">{content.paragraphs[0]}</p>
+                  <p className="text-gray-700 dark:text-slate-300 text-lg">{text.paragraph}</p>
                 </div>
 
                 <div className="relative w-full aspect-[4/5] rounded-2xl overflow-hidden group">
                   <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-80 group-hover:opacity-60 transition-opacity duration-500 z-10" />
                   <RotatingImage
-                    images={content.images.map((image) => image.src)}
-                    alt={content.images[0]?.alt ?? 'Identity image'}
-                    defaultSrc={content.images[0]?.src ?? '/images/about/aboutImg1.jpeg'}
+                    images={content.images}
+                    alt={text.imageAlts[0]}
+                    defaultSrc={content.images[0] ?? '/images/about/aboutImg1.jpeg'}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
                 </div>
@@ -220,13 +184,13 @@ export default function AboutSection({ identity, direction, onIdentityChange }: 
 
               <div className="lg:col-span-7 flex flex-col justify-center text-gray-900 dark:text-gray-50">
                 <div className="grid grid-cols-2 gap-6 mb-12">
-                  {content.stats.map((stat, index) => (
+                  {content.statValues.map((value, index) => (
                     <div key={index} className="space-y-1">
                       <div className="text-5xl font-bold text-gray-900 dark:text-white tracking-tighter">
-                        {stat.value}
+                        {value}
                       </div>
                       <div className="text-sm text-gray-600 dark:text-slate-400 uppercase tracking-widest whitespace-pre-line">
-                        {stat.label}
+                        {text.statLabels[index]}
                       </div>
                     </div>
                   ))}
@@ -237,7 +201,7 @@ export default function AboutSection({ identity, direction, onIdentityChange }: 
                 <div className="space-y-4">
                   <h3 className="text-xl font-medium text-gray-900 dark:text-white flex items-center gap-2">
                     <span className="identity-dot" aria-hidden="true" />
-                    Core Competencies
+                    {t.about.coreCompetencies}
                   </h3>
 
                   <SkillsAccordion identity={identity} />

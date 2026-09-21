@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { withBasePath } from '@/lib/utils'
 import Link from 'next/link'
+import { useLocalePath, useT } from '@/components/shared/LocaleProvider'
 
 const PORTFOLIO_ITEMS = [
   { 
@@ -64,6 +65,8 @@ const PORTFOLIO_ITEMS = [
 ]
 
 export default function PortfolioSection() {
+  const lp = useLocalePath()
+  const t = useT()
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
 
   // Triangle Effect
@@ -84,7 +87,7 @@ export default function PortfolioSection() {
   return (
     <section id="portfolio-section" className="section bg-gray-50 dark:bg-gray-800 overflow-hidden">
       <div className="container">
-        <h2 className="section-title">Portfolio</h2>
+        <h2 className="section-title">{t.portfolio.sectionHeading}</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           
@@ -95,7 +98,7 @@ export default function PortfolioSection() {
             {PORTFOLIO_ITEMS.map((item, index) => (
               <Link
                 key={item.id}
-                href={`/portfolio/${item.category}/${item.slug}`}
+                href={lp(`/portfolio/${item.category}/${item.slug}`)}
                 onMouseEnter={() => setHoveredIndex(index)}
                 onMouseLeave={() => setHoveredIndex(null)}
                 style={{ 
@@ -126,17 +129,17 @@ export default function PortfolioSection() {
           {/* Right Side: Text and Link */}
           <div>
             <h3 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">
-              Selected Works
+              {t.portfolio.sectionTitle}
             </h3>
             <p className="text-lg text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">
-              Explore a collection of my past projects, ranging from system architecture to game development.
+              {t.portfolio.sectionIntro}
             </p>
             
             <Link 
-              href="/portfolio" 
+              href={lp('/portfolio')} 
               className="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors duration-200 shadow-md hover:shadow-lg"
             >
-              View Full Portfolio
+              {t.portfolio.sectionCta}
               <svg className="w-4 h-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>

@@ -9,6 +9,8 @@ import remarkGfm from 'remark-gfm'
 import rehypeHighlight from 'rehype-highlight'
 import rehypeSlug from 'rehype-slug'
 import rehypeAutolinkHeadings from 'rehype-autolink-headings'
+import { parseContentFilename, pickLocalized } from './content-lang'
+import { DEFAULT_LOCALE, type Locale } from './i18n/config'
 
 const contentDirectory = path.join(process.cwd(), 'content')
 
@@ -43,6 +45,45 @@ export function getMDXFile(filePath: string): MDXContent | null {
     console.error(`Error reading MDX file ${filePath}:`, error)
     return null
   }
+}
+
+export interface LocalizedMDXContent extends MDXContent {
+  lang: Locale // the language the text is actually in
+  isFallback: boolean // true when that is not the language that was asked for
+}
+
+// One entry per post in a directory, in the requested language where it exists. The slug
+// never contains the language suffix: `her-review.zh.mdx` and `her-review.mdx` are both
+// `her-review`.
+export function getLocalizedMDXFiles(directory: string, lang: Locale = DEFAULT_LOCALE): LocalizedMDXContent[] {
+  const fullPath = path.join(contentDirectory, directory)
+  if (!fs.existsSync(fullPath)) return []
+
+  const candidates = []
+  for (const file of fs.readdirSync(fullPath, { recursive: true })) {
+    if (typeof file !== 'string') continue
+    const parsed = parseContentFilename(path.basename(file))
+    if (!parsed) continue
+    const content = getMDXFile(path.join(directory, file))
+    if (content) {
+      candidates.push({ slug: parsed.slug, lang: parsed.lang, value: content })
+    }
+  }
+
+  return pickLocalized(candidates, lang).map(({ slug, lang: actual, isFallback, value }) => ({
+    ...value,
+    slug,
+    lang: actual,
+    isFallback,
+  }))
+}
+
+export function getLocalizedMDXFile(
+  directory: string,
+  slug: string,
+  lang: Locale = DEFAULT_LOCALE
+): LocalizedMDXContent | null {
+  return getLocalizedMDXFiles(directory, lang).find(file => file.slug === slug) ?? null
 }
 
 // Get all MDX files from a directory

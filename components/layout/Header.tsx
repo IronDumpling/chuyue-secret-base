@@ -4,16 +4,10 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import ThemeToggle from './ThemeToggle'
+import LanguageSwitch from './LanguageSwitch'
 import { scrollToSection } from '@/lib/smooth-scroll'
-
-const navLinks = [
-  { href: '/#home-section', label: 'Home' },
-  { href: '/#identity-card-section', label: 'Identity' },
-  { href: '/#experiences-section', label: 'Experiences' },
-  { href: '/portfolio', label: 'Portfolio' },
-  { href: '/blog', label: 'Blog' },
-  { href: '/contact', label: 'Contact Me' },
-]
+import { splitLocale } from '@/lib/i18n/paths'
+import { useLocalePath, useT } from '@/components/shared/LocaleProvider'
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -21,6 +15,21 @@ export default function Header() {
   const [activeSection, setActiveSection] = useState('home-section')
   const pathname = usePathname()
   const router = useRouter()
+  const t = useT()
+  const lp = useLocalePath()
+
+  // Paths below are language-neutral ('/blog'); lp() adds /en or /zh.
+  const navLinks = [
+    { href: '/#home-section', label: t.nav.home },
+    { href: '/#identity-card-section', label: t.nav.identity },
+    { href: '/#experiences-section', label: t.nav.experiences },
+    { href: '/portfolio', label: t.nav.portfolio },
+    { href: '/blog', label: t.nav.blog },
+    { href: '/contact', label: t.nav.contact },
+  ]
+  // The current page without its language prefix, so '/en/blog/x/' compares as '/blog/x/'.
+  const currentPath = splitLocale(pathname).rest
+  const onHome = currentPath === '/'
 
   useEffect(() => {
     const handleScroll = () => {
@@ -32,7 +41,7 @@ export default function Header() {
 
   // Handle active link highlighting for anchor links
   useEffect(() => {
-    if (pathname !== '/') return
+    if (!onHome) return
 
     const handleScrollSpy = () => {
       // Get the target ID of all anchor links
@@ -60,7 +69,7 @@ export default function Header() {
     
     window.addEventListener('scroll', handleScrollSpy)
     return () => window.removeEventListener('scroll', handleScrollSpy)
-  }, [pathname])
+  }, [onHome])
 
   return (
     <header
@@ -73,7 +82,7 @@ export default function Header() {
     >
       <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 md:h-20">
-          <Link href="/" className="text-2xl font-bold text-primary-600 dark:text-primary-400">
+          <Link href={lp('/')} className="text-2xl font-bold text-primary-600 dark:text-primary-400">
             Chuyue
           </Link>
 
@@ -85,7 +94,7 @@ export default function Header() {
               if (link.href.startsWith('/#')) {
                 // Case A: This is an anchor link
                 // Only highlight when we are on the Home page, and ScrollSpy tells us we are currently in this Section
-                if (pathname === '/') {
+                if (onHome) {
                   const sectionId = link.href.split('#')[1]
                   isActive = activeSection === sectionId
                 }
@@ -93,14 +102,14 @@ export default function Header() {
                 // Case B: This is a normal page link
                 // Use startsWith to match, so /portfolio/project-1 also highlights /portfolio
                 // Also exclude '/' to prevent matching all paths
-                isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href))
+                isActive = currentPath.startsWith(`${link.href}/`)
               }
               
               const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
                 if (link.href.includes('#')) {
                   e.preventDefault()
                   const [path, hash] = link.href.split('#')
-                  const targetPath = path || '/'
+                  const targetPath = lp(path || '/')
                   if (pathname !== targetPath) {
                     router.push(targetPath)
                     // Wait for navigation then scroll
@@ -116,7 +125,7 @@ export default function Header() {
               return (
                 <Link
                   key={link.href}
-                  href={link.href}
+                  href={lp(link.href)}
                   onClick={handleClick}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                     isActive
@@ -128,18 +137,20 @@ export default function Header() {
                 </Link>
               )
             })}
-            <div className="ml-4">
+            <div className="ml-4 flex items-center space-x-1">
+              <LanguageSwitch />
               <ThemeToggle />
             </div>
           </div>
 
           {/* Mobile Menu Button */}
           <div className="flex items-center space-x-2 md:hidden">
+            <LanguageSwitch />
             <ThemeToggle />
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
-              aria-label="Toggle menu"
+              aria-label={t.nav.toggleMenu}
             >
               {isMenuOpen ? (
                 <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -161,12 +172,12 @@ export default function Header() {
               {navLinks.map((link) => {
                 let isActive = false
                 if (link.href.startsWith('/#')) {
-                  if (pathname === '/') {
+                  if (onHome) {
                     const sectionId = link.href.split('#')[1]
                     isActive = activeSection === sectionId
                   }
                 } else {
-                  isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href))
+                  isActive = currentPath.startsWith(`${link.href}/`)
                 }
                 
                 const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -174,7 +185,7 @@ export default function Header() {
                   if (link.href.includes('#')) {
                     e.preventDefault()
                     const [path, hash] = link.href.split('#')
-                    const targetPath = path || '/'
+                    const targetPath = lp(path || '/')
                     if (pathname !== targetPath) {
                       router.push(targetPath)
                       setTimeout(() => {
@@ -189,7 +200,7 @@ export default function Header() {
                 return (
                   <Link
                     key={link.href}
-                    href={link.href}
+                    href={lp(link.href)}
                     onClick={handleClick}
                     className={`px-4 py-2 rounded-lg text-base font-medium transition-colors ${
                       isActive

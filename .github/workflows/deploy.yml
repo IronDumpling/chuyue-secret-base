@@ -38,6 +38,25 @@ jobs:
       
       - name: Install dependencies
         run: npm ci
+
+      # Chinese share cards need a CJK font downloaded from Google Fonts; keep a copy so a
+      # temporary outage there does not fail the deploy. The key changes every run so a
+      # font subset for new text gets saved; older copies are restored by prefix.
+      - name: Cache share-card fonts
+        uses: actions/cache@v4
+        with:
+          path: .cache/fonts
+          key: share-card-fonts-${{ github.run_id }}
+          restore-keys: share-card-fonts-
+
+      # Chinese share cards need a CJK font downloaded from Google Fonts; keep a copy so a
+      # temporary outage there does not fail the deploy.
+      - name: Cache share-card fonts
+        uses: actions/cache@v4
+        with:
+          path: .cache/fonts
+          key: share-card-fonts-${{ hashFiles('scripts/lib/fonts.ts') }}
+          restore-keys: share-card-fonts-
       
       - name: Build
         run: npm run build

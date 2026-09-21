@@ -1,3 +1,5 @@
+import type { Locale } from './i18n/config'
+
 export type ShareKind = 'blog' | 'portfolio'
 
 export interface ShareTarget {
@@ -7,16 +9,20 @@ export interface ShareTarget {
   slug: string
 }
 
-export const SITE_OG_PATH = '/share/og/site.jpg'
-
 function segments(t: ShareTarget): string[] {
   return t.kind === 'blog' ? [t.kind, t.category, t.type ?? '', t.slug] : [t.kind, t.category, t.slug]
 }
 
-export function pagePath(t: ShareTarget): string {
-  return `/${segments(t).join('/')}/`
+// Both languages have every page: a post without a Chinese version is still served at
+// /zh/... (in English, with a notice), so this works for any target and language.
+export function pagePath(t: ShareTarget, lang: Locale): string {
+  return `/${lang}/${segments(t).join('/')}/`
 }
 
-export function shareImagePath(t: ShareTarget, variant: 'og' | 'poster'): string {
-  return `/share/${variant}/${segments(t).join('/')}.jpg`
+export function shareImagePath(t: ShareTarget, variant: 'og' | 'poster', lang: Locale): string {
+  return `/share/${variant}/${lang}/${segments(t).join('/')}.jpg`
+}
+
+export function siteOgPath(lang: Locale): string {
+  return `/share/og/${lang}/site.jpg`
 }

@@ -4,6 +4,8 @@ import { useState } from 'react'
 import type { BlogPost } from '@/lib/blog-types'
 import BlogCard from './BlogCard'
 import { getCategoryDisplayName, getTypeDisplayName } from '@/lib/blog-utils'
+import { useLocale, useT } from '@/components/shared/LocaleProvider'
+import { format } from '@/lib/i18n/format'
 
 interface BlogListProps {
   posts: BlogPost[]
@@ -22,6 +24,8 @@ const categories: BlogPost['frontMatter']['category'][] = [
 const types: BlogPost['frontMatter']['type'][] = ['review', 'casual']
 
 export default function BlogList({ posts, showFilters = true }: BlogListProps) {
+  const locale = useLocale()
+  const t = useT()
   const [selectedCategory, setSelectedCategory] = useState<BlogPost['frontMatter']['category'] | 'all'>('all')
   const [selectedType, setSelectedType] = useState<BlogPost['frontMatter']['type'] | 'all'>('all')
 
@@ -56,7 +60,7 @@ export default function BlogList({ posts, showFilters = true }: BlogListProps) {
                   : 'bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700'
               }`}
             >
-              All
+              {t.common.all}
             </button>
             {categories.map(category => (
               <button
@@ -71,7 +75,7 @@ export default function BlogList({ posts, showFilters = true }: BlogListProps) {
                     : 'bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700'
                 }`}
               >
-                {getCategoryDisplayName(category)}
+                {getCategoryDisplayName(category, locale)}
               </button>
             ))}
           </div>
@@ -87,7 +91,7 @@ export default function BlogList({ posts, showFilters = true }: BlogListProps) {
                     : 'bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700'
                 }`}
               >
-                All {getCategoryDisplayName(selectedCategory)}
+                {format(t.blog.allIn, { category: getCategoryDisplayName(selectedCategory, locale) })}
               </button>
               {types.map(type => (
                 <button
@@ -99,7 +103,7 @@ export default function BlogList({ posts, showFilters = true }: BlogListProps) {
                       : 'bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700'
                   }`}
                 >
-                  {getTypeDisplayName(type)}
+                  {getTypeDisplayName(type, locale)}
                 </button>
               ))}
             </div>
@@ -116,7 +120,7 @@ export default function BlogList({ posts, showFilters = true }: BlogListProps) {
         </div>
       ) : (
         <div className="text-center py-12">
-          <p className="text-gray-600 dark:text-gray-400">No blog posts found.</p>
+          <p className="text-gray-600 dark:text-gray-400">{t.blog.noPosts}</p>
         </div>
       )}
     </div>

@@ -1,6 +1,11 @@
+'use client'
+
 import { withBasePath } from '@/lib/utils'
+import { useT } from '@/components/shared/LocaleProvider'
 
 export default function HomeSection() {
+  const t = useT()
+
   return (
     <section
       id="home-section"
@@ -27,13 +32,13 @@ export default function HomeSection() {
           {/* Content */}
           <div className="w-full lg:w-1/2 space-y-4 text-gray-900 dark:text-white text-center lg:text-left">
             <h1 className="text-5xl md:text-7xl font-bold tracking-tight leading-tight">
-              Hi, I am{' '}
+              {t.home.greeting}{' '}
               <span className="text-primary-600 dark:text-primary-400">
                 Chuyue
               </span>
             </h1>
             <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-lg mx-auto lg:mx-0 font-light">
-              Who am I?
+              {t.home.question}
             </p>
           </div>
         </div>
@@ -44,7 +49,7 @@ export default function HomeSection() {
             href="#identity-card-section"
             className="flex flex-col items-center text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors animate-bounce"
           >
-            <span className="text-sm tracking-widest uppercase mb-2">Scroll down</span>
+            <span className="text-sm tracking-widest uppercase mb-2">{t.home.scrollDown}</span>
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
             </svg>

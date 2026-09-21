@@ -1,6 +1,8 @@
 // Client-safe type definitions for blog
 // These types can be imported in client components
 
+import type { Locale } from './i18n/config'
+
 export interface BlogPost {
   slug: string
   frontMatter: {
@@ -15,5 +17,7 @@ export interface BlogPost {
     website?: string | { url: string; label: string }  // External link support
   }
   content: string
+  lang?: Locale // language the text is in
+  isFallback?: boolean // true when it is not the language the page asked for
 }
 

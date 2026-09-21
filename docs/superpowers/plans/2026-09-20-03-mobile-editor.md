@@ -12,6 +12,7 @@
 
 ## Global Constraints
 
+- Requires plan 08 (bilingual content: `slug.en.mdx` / `slug.zh.mdx`, English default, un-suffixed files count as English). See "Bilingual changes" below: they override the single-language folder, path and field details in the tasks.
 - Requires plan 07 (vitest and tsx installed; content lives in the public repo `IronDumpling/chuyue-content`, cloned at `content/` in the site repo).
 - Blog collections only in this plan. Portfolio is excluded because `github`/`demo` fields are sometimes a string and sometimes a list of `{url,label}`, which a form cannot round-trip safely.
 - The GitHub token is entered by the owner on the login screen and stored in that browser's local storage. It must never be committed, written into config, or added to CI.
@@ -20,6 +21,15 @@
 - Frontmatter `date` stays a `YYYY-MM-DD` string in the runtime data.
 - Repo for the CMS backend defaults to `IronDumpling/chuyue-content`. Override with env `CMS_REPO`.
 - Production build command (Git Bash): `MSYS_NO_PATHCONV=1 NEXT_PUBLIC_BASE_PATH=/chuyue-secret-base npm run build`
+
+## Bilingual changes (from plan 08, apply to Tasks 2 and 3)
+
+- Add the Sveltia i18n block at the top level of the config: `i18n: { structure: 'multiple_files', locales: ['en', 'zh'], default_locale: 'en' }`, and in each collection `i18n: true` with file name pattern `{{slug}}.{{locale}}.mdx` (slug stays the English slug; the URL slug is shared by both languages).
+- Per-language fields (`i18n: true`): `title`, `description`, `body`. Shared fields (`i18n: 'duplicate'`): `date`, `tags`, `images`, `rating`, `website`.
+- Existing un-suffixed files are English and keep working; rename them to `.en.mdx` in the content repo (one commit) when the editor goes live so the CMS lists them under their English locale.
+- Add `category` and `type` as hidden fields with the folder's values as defaults, so saving an existing post does not drop them from the frontmatter.
+- Use `type: date` with `format: YYYY-MM-DD` for the date field; the docs recommend it over `date_format`/`time_format`. The markdown widget is now called `richtext`; check the current name in the docs when the package is installed.
+- Task 4 gets one more check: create a post in Chinese only, and confirm `/zh/...` shows it and `/en/...` falls back with the notice (or vice versa).
 
 ## File Structure
 
