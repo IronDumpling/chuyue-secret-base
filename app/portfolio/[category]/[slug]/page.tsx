@@ -1,8 +1,10 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getProjectBySlug } from '@/lib/portfolio'
 import MDXContent from '@/components/shared/MDXContent'
 import MDXHeaderImage from '@/components/shared/MDXHeaderImage'
+import { buildPageMetadata } from '@/lib/seo'
 
 interface ProjectPageProps {
   params: {
@@ -19,6 +21,20 @@ export async function generateStaticParams() {
     category: project.frontMatter.category,
     slug: project.slug,
   }))
+}
+
+export function generateMetadata({ params }: ProjectPageProps): Metadata {
+  const project = getProjectBySlug(params.slug, params.category)
+  if (!project) return {}
+  return buildPageMetadata(
+    { kind: 'portfolio', category: project.frontMatter.category, slug: project.slug },
+    {
+      title: project.frontMatter.title,
+      description: project.frontMatter.description,
+      body: project.content,
+      date: String(project.frontMatter.date),
+    }
+  )
 }
 
 export default async function ProjectPage({ params }: ProjectPageProps) {

@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getPostBySlug } from '@/lib/blog'
@@ -5,6 +6,7 @@ import Rating from '@/components/blog/Rating'
 import MDXContent from '@/components/shared/MDXContent'
 import MDXHeaderImage from '@/components/shared/MDXHeaderImage'
 import { getCategoryDisplayName, getTypeDisplayName } from '@/lib/blog-utils'
+import { buildPageMetadata } from '@/lib/seo'
 
 interface BlogPostPageProps {
   params: {
@@ -23,6 +25,20 @@ export async function generateStaticParams() {
     type: post.frontMatter.type,
     slug: post.slug,
   }))
+}
+
+export function generateMetadata({ params }: BlogPostPageProps): Metadata {
+  const post = getPostBySlug(params.slug, params.category, params.type)
+  if (!post) return {}
+  return buildPageMetadata(
+    { kind: 'blog', category: post.frontMatter.category, type: post.frontMatter.type, slug: post.slug },
+    {
+      title: post.frontMatter.title,
+      description: post.frontMatter.description,
+      body: post.content,
+      date: String(post.frontMatter.date),
+    }
+  )
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
