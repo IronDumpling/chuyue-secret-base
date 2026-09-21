@@ -1,27 +1,21 @@
 import 'server-only'
 
 import { getLocalizedMDXFile, getLocalizedMDXFiles, type LocalizedMDXContent } from './mdx'
-import { categoryMap, typeMap } from './blog-utils'
+import { getCategories, getGroupOf, isValidCategory, type BlogCategory } from './taxonomy'
 import type { Locale } from './i18n/config'
 import type { BlogPost } from './blog-types'
 
 // Re-export type for convenience
 export type { BlogPost }
 
-type Category = BlogPost['frontMatter']['category']
-type PostType = BlogPost['frontMatter']['type']
-
-const categories = Object.keys(categoryMap) as Category[]
-const types = Object.keys(typeMap) as PostType[]
-
-// Category and type come from the folder, not from the frontmatter.
-function toPost(file: LocalizedMDXContent, category: string, type: string): BlogPost {
+// Category comes from the folder and group from the taxonomy, not from the frontmatter.
+function toPost(file: LocalizedMDXContent, category: BlogCategory): BlogPost {
   return {
     slug: file.slug,
     frontMatter: {
       ...file.frontMatter,
       category,
-      type,
+      group: getGroupOf('blog', category),
     } as BlogPost['frontMatter'],
     content: file.content,
     lang: file.lang,
@@ -35,51 +29,31 @@ function newestFirst(posts: BlogPost[]): BlogPost[] {
   )
 }
 
-export function getPostsByCategoryAndType(
-  category: Category,
-  type: PostType,
-  lang: Locale
-): BlogPost[] {
-  const files = getLocalizedMDXFiles(`blog/${category}/${type}`, lang)
-  return newestFirst(files.map(file => toPost(file, category, type)))
+export function getPostsByCategory(category: BlogCategory, lang: Locale): BlogPost[] {
+  const files = getLocalizedMDXFiles(`blog/${category}`, lang)
+  return newestFirst(files.map(file => toPost(file, category)))
 }
 
 export function getAllPosts(lang: Locale): BlogPost[] {
-  return newestFirst(
-    categories.flatMap(category => types.flatMap(type => getPostsByCategoryAndType(category, type, lang)))
-  )
+  return newestFirst(getCategories('blog').flatMap(category => getPostsByCategory(category, lang)))
 }
 
-export function getPostsByCategory(category: Category, lang: Locale): BlogPost[] {
-  return newestFirst(types.flatMap(type => getPostsByCategoryAndType(category, type, lang)))
-}
-
-export function getPostsByType(type: PostType, lang: Locale): BlogPost[] {
-  return newestFirst(categories.flatMap(category => getPostsByCategoryAndType(category, type, lang)))
-}
-
-export function getPostBySlug(
-  slug: string,
-  category: string | undefined,
-  type: string | undefined,
-  lang: Locale
-): BlogPost | null {
-  // If category and type are provided, look in that folder only
-  if (category && type) {
-    const file = getLocalizedMDXFile(`blog/${category}/${type}`, slug, lang)
-    return file ? toPost(file, category, type) : null
+export function getPostBySlug(slug: string, category: string | undefined, lang: Locale): BlogPost | null {
+  // If a category is provided, look in that folder only
+  if (category) {
+    if (!isValidCategory('blog', category)) return null
+    const file = getLocalizedMDXFile(`blog/${category}`, slug, lang)
+    return file ? toPost(file, category) : null
   }
 
-  // Search all categories and types
-  for (const cat of categories) {
-    for (const typ of types) {
-      const file = getLocalizedMDXFile(`blog/${cat}/${typ}`, slug, lang)
-      if (file) return toPost(file, cat, typ)
-    }
+  // Search all categories
+  for (const cat of getCategories('blog')) {
+    const file = getLocalizedMDXFile(`blog/${cat}`, slug, lang)
+    if (file) return toPost(file, cat)
   }
 
   return null
 }
 
 // Re-export for convenience, but use the client-safe version
-export { getCategoryDisplayName, getTypeDisplayName } from './blog-utils'
+export { getCategoryDisplayName } from './blog-utils'

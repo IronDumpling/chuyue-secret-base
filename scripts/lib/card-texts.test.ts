@@ -4,8 +4,7 @@ import type { ContentEntry } from './content-index'
 
 const blog: ContentEntry = {
   kind: 'blog',
-  category: 'films-shows',
-  type: 'review',
+  category: 'films',
   slug: 'her-review',
   title: 'Her Review',
   rating: 8,
@@ -17,24 +16,32 @@ const blog: ContentEntry = {
 
 describe('entryTexts', () => {
   it('builds the English label for a review with a rating', () => {
-    expect(entryTexts(blog, 'en')).toEqual({ title: 'Her Review', badge: 'Films & Shows · Review · 8/10' })
+    expect(entryTexts(blog, 'en')).toEqual({ title: 'Her Review', badge: 'Reviews · Films · 8/10' })
   })
 
   it('builds the Chinese label from the Chinese dictionary', () => {
-    expect(entryTexts(blog, 'zh')).toEqual({ title: 'Her Review', badge: '影视 · 评测 · 8/10' })
+    expect(entryTexts(blog, 'zh')).toEqual({ title: 'Her Review', badge: '评测 · 电影 · 8/10' })
   })
 
-  it('leaves the rating out of casual posts and labels portfolio entries', () => {
-    expect(entryTexts({ ...blog, type: 'casual', category: 'photography' }, 'en').badge).toBe('Photography · Casual')
-    const project: ContentEntry = { ...blog, kind: 'portfolio', category: 'applications', type: undefined, rating: undefined }
+  it('shows a single-category group once and leaves the rating out of non-reviews', () => {
+    const moment: ContentEntry = { ...blog, category: 'moments', rating: undefined }
+    expect(entryTexts(moment, 'en').badge).toBe('Moments')
+    expect(entryTexts(moment, 'zh').badge).toBe('随笔')
+    // A rating on a post outside the Reviews group is ignored.
+    expect(entryTexts({ ...blog, category: 'moments' }, 'en').badge).toBe('Moments')
+  })
+
+  it('labels portfolio entries', () => {
+    const project: ContentEntry = { ...blog, kind: 'portfolio', category: 'applications', rating: undefined }
     expect(entryTexts(project, 'en').badge).toBe('Portfolio · Applications')
     expect(entryTexts(project, 'zh').badge).toBe('作品集 · 应用')
+    expect(entryTexts({ ...project, category: 'photography' }, 'en').badge).toBe('Portfolio · Photography')
   })
 })
 
 describe('containsCjk', () => {
   it('detects Chinese characters', () => {
-    expect(containsCjk('影视 · 评测')).toBe(true)
+    expect(containsCjk('评测 · 电影')).toBe(true)
     expect(containsCjk('Her Review · 8/10')).toBe(false)
   })
 })

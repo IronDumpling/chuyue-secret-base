@@ -1,24 +1,21 @@
 import 'server-only'
 
 import { getLocalizedMDXFile, getLocalizedMDXFiles, type LocalizedMDXContent } from './mdx'
-import { categoryMap } from './portfolio-utils'
+import { getCategories, getGroupOf, isValidCategory, type PortfolioCategory } from './taxonomy'
 import type { Locale } from './i18n/config'
 import type { PortfolioProject } from './portfolio-types'
 
 // Re-export type for convenience
 export type { PortfolioProject }
 
-type Category = PortfolioProject['frontMatter']['category']
-
-const categories = Object.keys(categoryMap) as Category[]
-
-// The category comes from the folder, not from the frontmatter.
-function toProject(file: LocalizedMDXContent, category: string): PortfolioProject {
+// Category comes from the folder and group from the taxonomy, not from the frontmatter.
+function toProject(file: LocalizedMDXContent, category: PortfolioCategory): PortfolioProject {
   return {
     slug: file.slug,
     frontMatter: {
       ...file.frontMatter,
       category,
+      group: getGroupOf('portfolio', category),
     } as PortfolioProject['frontMatter'],
     content: file.content,
     lang: file.lang,
@@ -32,13 +29,13 @@ function newestFirst(projects: PortfolioProject[]): PortfolioProject[] {
   )
 }
 
-export function getProjectsByCategory(category: Category, lang: Locale): PortfolioProject[] {
+export function getProjectsByCategory(category: PortfolioCategory, lang: Locale): PortfolioProject[] {
   const files = getLocalizedMDXFiles(`portfolio/${category}`, lang)
   return newestFirst(files.map(file => toProject(file, category)))
 }
 
 export function getAllProjects(lang: Locale): PortfolioProject[] {
-  return newestFirst(categories.flatMap(category => getProjectsByCategory(category, lang)))
+  return newestFirst(getCategories('portfolio').flatMap(category => getProjectsByCategory(category, lang)))
 }
 
 export function getProjectBySlug(
@@ -47,11 +44,12 @@ export function getProjectBySlug(
   lang: Locale
 ): PortfolioProject | null {
   if (category) {
+    if (!isValidCategory('portfolio', category)) return null
     const file = getLocalizedMDXFile(`portfolio/${category}`, slug, lang)
     return file ? toProject(file, category) : null
   }
 
-  for (const cat of categories) {
+  for (const cat of getCategories('portfolio')) {
     const file = getLocalizedMDXFile(`portfolio/${cat}`, slug, lang)
     if (file) return toProject(file, cat)
   }

@@ -4,7 +4,8 @@ import Link from 'next/link'
 import type { PortfolioProject } from '@/lib/portfolio-types'
 import RotatingImage from '@/components/shared/RotatingImage'
 import { useLocale, useLocalePath } from '@/components/shared/LocaleProvider'
-import { INTL_LOCALE } from '@/lib/i18n/config'
+import { getContextDisplayName } from '@/lib/portfolio-utils'
+import { formatMonth } from '@/lib/date'
 
 interface ProjectCardProps {
   project: PortfolioProject
@@ -37,7 +38,12 @@ export default function ProjectCard({ project }: ProjectCardProps) {
           {project.frontMatter.description || project.content.substring(0, 150) + '...'}
         </p>
         <div className="flex flex-wrap gap-2 mb-4">
-          {project.frontMatter.tags?.slice(0, 3).map((tag, index) => (
+          {project.frontMatter.context && (
+            <span className="px-2 py-1 text-xs bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded">
+              {getContextDisplayName(project.frontMatter.context, locale)}
+            </span>
+          )}
+          {project.frontMatter.tags?.slice(0, project.frontMatter.context ? 2 : 3).map((tag, index) => (
             <span
               key={index}
               className="px-2 py-1 text-xs bg-primary-100 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 rounded"
@@ -47,10 +53,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
           ))}
         </div>
         <div className="text-sm text-gray-500 dark:text-gray-500">
-          {new Date(project.frontMatter.date).toLocaleDateString(INTL_LOCALE[locale], {
-            year: 'numeric',
-            month: 'long',
-          })}
+          {formatMonth(project.frontMatter.date, locale)}
         </div>
       </div>
     </Link>

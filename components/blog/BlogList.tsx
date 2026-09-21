@@ -1,129 +1,118 @@
 'use client'
 
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import type { BlogPost } from '@/lib/blog-types'
-import BlogCard from './BlogCard'
-import { getCategoryDisplayName, getTypeDisplayName } from '@/lib/blog-utils'
+import BlogListItem from './BlogListItem'
+import CategoryFilter from '@/components/shared/filter/CategoryFilter'
+import { getCategoryDisplayName, getGroupDisplayName } from '@/lib/blog-utils'
+import { formatMonth, monthKey } from '@/lib/date'
+import {
+  ALL,
+  buildFilterModel,
+  matchesSelection,
+  normalizeSelection,
+  selectionKey,
+  type Selection,
+} from '@/lib/filter-model'
 import { useLocale, useT } from '@/components/shared/LocaleProvider'
 import { format } from '@/lib/i18n/format'
+import type { BlogCategory, BlogGroup } from '@/lib/taxonomy'
 
 interface BlogListProps {
   posts: BlogPost[]
   showFilters?: boolean
 }
 
-const categories: BlogPost['frontMatter']['category'][] = [
-  'photography',
-  'illustration',
-  'films-shows',
-  'music',
-  'video-games',
-  'books',
-]
-
-const types: BlogPost['frontMatter']['type'][] = ['review', 'casual']
+// How long each row waits before it fades in, so the list settles top to bottom. Capped so a
+// long list does not keep the last rows waiting.
+const STAGGER_MS = 40
+const STAGGER_ROWS = 8
 
 export default function BlogList({ posts, showFilters = true }: BlogListProps) {
   const locale = useLocale()
   const t = useT()
-  const [selectedCategory, setSelectedCategory] = useState<BlogPost['frontMatter']['category'] | 'all'>('all')
-  const [selectedType, setSelectedType] = useState<BlogPost['frontMatter']['type'] | 'all'>('all')
+  const [chosen, setChosen] = useState<Selection>(ALL)
 
-  const filteredPosts = posts.filter(post => {
-    // Filter by category
-    if (selectedCategory !== 'all' && post.frontMatter.category !== selectedCategory) {
-      return false
-    }
-    
-    // Filter by type
-    if (selectedType !== 'all' && post.frontMatter.type !== selectedType) {
-      return false
-    }
-    
-    return true
-  })
+  const model = useMemo(
+    () =>
+      buildFilterModel(
+        'blog',
+        posts.map(post => ({ category: post.frontMatter.category })),
+        {
+          group: id => getGroupDisplayName(id as BlogGroup, locale),
+          category: id => getCategoryDisplayName(id as BlogCategory, locale),
+        }
+      ),
+    [posts, locale]
+  )
+  const selection = normalizeSelection(chosen, model)
 
-  return (
-    <div>
-      {showFilters && (
-        <div className="mb-8 space-y-4">
-          {/* Category Filter */}
-          <div className="flex flex-wrap gap-4">
-            <button
-              onClick={() => {
-                setSelectedCategory('all')
-                setSelectedType('all')
-              }}
-              className={`px-6 py-2 rounded-lg font-medium transition-colors ${
-                selectedCategory === 'all'
-                  ? 'bg-primary-600 text-white'
-                  : 'bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700'
-              }`}
-            >
-              {t.common.all}
-            </button>
-            {categories.map(category => (
-              <button
-                key={category}
-                onClick={() => {
-                  setSelectedCategory(category)
-                  setSelectedType('all')
-                }}
-                className={`px-6 py-2 rounded-lg font-medium transition-colors ${
-                  selectedCategory === category
-                    ? 'bg-primary-600 text-white'
-                    : 'bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700'
-                }`}
-              >
-                {getCategoryDisplayName(category, locale)}
-              </button>
-            ))}
-          </div>
+  const visible = posts.filter(post =>
+    matchesSelection({ category: post.frontMatter.category, group: post.frontMatter.group }, selection)
+  )
 
-          {/* Type Filter - Show when a category is selected */}
-          {selectedCategory !== 'all' && (
-            <div className="flex flex-wrap gap-4">
-              <button
-                onClick={() => setSelectedType('all')}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  selectedType === 'all'
-                    ? 'bg-primary-600 text-white'
-                    : 'bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700'
-                }`}
-              >
-                {format(t.blog.allIn, { category: getCategoryDisplayName(selectedCategory, locale) })}
-              </button>
-              {types.map(type => (
-                <button
-                  key={type}
-                  onClick={() => setSelectedType(type)}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    selectedType === type
-                      ? 'bg-primary-600 text-white'
-                      : 'bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700'
-                  }`}
-                >
-                  {getTypeDisplayName(type, locale)}
-                </button>
+  // Posts arrive newest first, so a month is a run of consecutive posts.
+  const months: { key: string; label: string; posts: BlogPost[] }[] = []
+  for (const post of visible) {
+    const key = monthKey(post.frontMatter.date)
+    const last = months[months.length - 1]
+    if (last && last.key === key) last.posts.push(post)
+    else months.push({ key, label: formatMonth(post.frontMatter.date, locale), posts: [post] })
+  }
+
+  let row = 0
+  const feed =
+    visible.length > 0 ? (
+      // Keyed by the selection so a new choice replays the fade-in.
+      <div key={selectionKey(selection)}>
+        {months.map(month => (
+          <section key={month.key} aria-label={month.label} className="mt-8 first:mt-0">
+            <h2 className="mb-1 flex items-center gap-3 text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
+              <span>{month.label}</span>
+              <span aria-hidden className="h-px flex-1 bg-gray-200 dark:bg-gray-800" />
+            </h2>
+            <div>
+              {month.posts.map(post => (
+                <BlogListItem
+                  key={`${post.frontMatter.category}-${post.slug}`}
+                  post={post}
+                  className="motion-safe:animate-feed-in"
+                  style={{ animationDelay: `${Math.min(row++, STAGGER_ROWS) * STAGGER_MS}ms` }}
+                />
               ))}
             </div>
-          )}
-        </div>
-      )}
+          </section>
+        ))}
+      </div>
+    ) : (
+      <div className="py-12 text-center">
+        <p className="text-gray-600 dark:text-gray-400">{t.blog.noPosts}</p>
+      </div>
+    )
 
-      {/* Posts Grid */}
-      {filteredPosts.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredPosts.map(post => (
-            <BlogCard key={`${post.frontMatter.category}-${post.frontMatter.type}-${post.slug}`} post={post} />
-          ))}
+  if (!showFilters) {
+    return <div className="mx-auto mt-10 max-w-3xl">{feed}</div>
+  }
+
+  return (
+    <div className="mx-auto mt-10 max-w-5xl lg:grid lg:grid-cols-[17rem_minmax(0,1fr)] lg:gap-10">
+      <aside className="mb-6 lg:mb-0">
+        {/* Below the header (fixed, up to 5rem tall) while the list scrolls. */}
+        <div className="lg:sticky lg:top-24">
+          <CategoryFilter
+            variant="sidebar"
+            model={model}
+            selection={selection}
+            onChange={setChosen}
+            labels={{
+              ariaLabel: t.blog.filterLabel,
+              all: t.common.all,
+              allIn: name => format(t.common.allIn, { name }),
+            }}
+          />
         </div>
-      ) : (
-        <div className="text-center py-12">
-          <p className="text-gray-600 dark:text-gray-400">{t.blog.noPosts}</p>
-        </div>
-      )}
+      </aside>
+      <div className="min-h-[24rem] min-w-0">{feed}</div>
     </div>
   )
 }
-

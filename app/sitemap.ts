@@ -44,12 +44,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   for (const lang of LOCALES) {
     for (const post of getAllPosts(lang)) {
       if (post.isFallback) continue
-      const target: ShareTarget = {
-        kind: 'blog',
-        category: post.frontMatter.category,
-        type: post.frontMatter.type,
-        slug: post.slug,
-      }
+      const target: ShareTarget = { kind: 'blog', category: post.frontMatter.category, slug: post.slug }
       const key = pagePath(target, 'en')
       const page = pages.get(key) ?? { target, date: post.frontMatter.date, priority: 0.6, freq: 'weekly' as const, langs: [] }
       page.langs.push(lang)

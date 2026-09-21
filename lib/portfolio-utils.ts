@@ -3,17 +3,18 @@
 
 import type { Locale } from './i18n/config'
 import { getDictionary } from './i18n'
+import type { PortfolioCategory, PortfolioGroup } from './taxonomy'
 
-export const categoryMap = {
-  'student-projects': 'Student Projects',
-  'video-games': 'Video Games',
-  'applications': 'Applications',
-} as const
+export type ProjectContext = 'course' | 'research' | 'work' | 'personal'
 
-export function getCategoryDisplayName(
-  category: keyof typeof categoryMap,
-  locale: Locale
-): string {
+export function getCategoryDisplayName(category: PortfolioCategory, locale: Locale): string {
   return getDictionary(locale).portfolio.categories[category] || category
 }
 
+export function getGroupDisplayName(group: PortfolioGroup, locale: Locale): string {
+  return getDictionary(locale).portfolio.groups[group] || group
+}
+
+export function getContextDisplayName(context: ProjectContext, locale: Locale): string {
+  return getDictionary(locale).portfolio.contexts[context] || context
+}

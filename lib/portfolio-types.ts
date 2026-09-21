@@ -2,6 +2,7 @@
 // These types can be imported in client components
 
 import type { Locale } from './i18n/config'
+import type { PortfolioCategory, PortfolioGroup } from './taxonomy'
 
 export interface Link {
   url: string
@@ -12,8 +13,10 @@ export interface PortfolioProject {
   slug: string
   frontMatter: {
     title: string
-    category: 'student-projects' | 'video-games' | 'applications'
+    category: PortfolioCategory // from the folder
+    group: PortfolioGroup // from lib/taxonomy.ts
     date: string
+    context?: 'course' | 'research' | 'work' | 'personal' // where it was made; not a category
     tags?: string[]
     github?: string | Link[] // Support single link, multiple links, or labeled links
     demo?: string | Link[] // Support single link, multiple links, or labeled links
@@ -25,4 +28,3 @@ export interface PortfolioProject {
   lang?: Locale // language the text is in
   isFallback?: boolean // true when it is not the language the page asked for
 }
-

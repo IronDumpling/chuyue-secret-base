@@ -60,9 +60,7 @@ export function collectContent(contentDir: string, lang: Locale = DEFAULT_LOCALE
 
   const blogRoot = path.join(contentDir, 'blog')
   for (const category of dirs(blogRoot)) {
-    for (const type of dirs(path.join(blogRoot, category))) {
-      entries.push(...readFolder(path.join(blogRoot, category, type), { kind: 'blog', category, type }, lang))
-    }
+    entries.push(...readFolder(path.join(blogRoot, category), { kind: 'blog', category }, lang))
   }
 
   const portfolioRoot = path.join(contentDir, 'portfolio')
