@@ -1,4 +1,5 @@
 import { MetadataRoute } from 'next'
+import { absoluteUrl } from '@/lib/site'
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -6,7 +7,7 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: '*',
       allow: '/',
     },
-    sitemap: 'https://irondumpling.github.io/chuyue-secret-base/sitemap.xml',
+    sitemap: absoluteUrl('/sitemap.xml'),
   }
 }
 
