@@ -7,8 +7,6 @@ import {
   normalizeSelection,
   selectionFromParams,
   selectionKey,
-  selectionToValue,
-  valueToSelection,
 } from './filter-model'
 
 const labels = { group: (id: string) => `G:${id}`, category: (id: string) => `C:${id}` }
@@ -66,23 +64,6 @@ describe('selection encoding', () => {
     expect(selectionKey(ALL)).toBe('all')
     expect(selectionKey({ group: 'reviews', category: null })).toBe('reviews')
     expect(selectionKey({ group: 'reviews', category: 'films' })).toBe('reviews/films')
-  })
-
-  it('round-trips through the <select> value', () => {
-    for (const selection of [
-      ALL,
-      { group: 'moments', category: null },
-      { group: 'reviews', category: null },
-      { group: 'reviews', category: 'music' },
-    ]) {
-      expect(valueToSelection(selectionToValue(selection), model)).toEqual(selection)
-    }
-  })
-
-  it('falls back to everything for a value that is no longer in the menu', () => {
-    expect(valueToSelection('c:books', model)).toEqual(ALL)
-    expect(valueToSelection('g:nope', model)).toEqual(ALL)
-    expect(valueToSelection('???', model)).toEqual(ALL)
   })
 
   it('normalizes a selection that the menu no longer contains', () => {

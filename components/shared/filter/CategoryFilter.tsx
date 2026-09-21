@@ -15,7 +15,7 @@ export interface FilterLabels {
 interface CategoryFilterProps {
   // 'sidebar': two columns on the left from `lg` up (the blog).
   // 'topbar': two rows above the content from `md` up (the portfolio).
-  // Below those widths both turn into the same single <select>.
+  // Below those widths both turn into the same single dropdown.
   variant: 'sidebar' | 'topbar'
   model: FilterGroup[]
   selection: Selection

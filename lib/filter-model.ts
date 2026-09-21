@@ -1,5 +1,5 @@
 // The data behind the category filter of the blog and the portfolio. Pure, so both the
-// sidebar, the top bar and the mobile <select> render the same model, and it is testable
+// sidebar, the top bar and the mobile dropdown render the same model, and it is testable
 // without a browser. Client-safe: no fs.
 
 import { getGroups, hasSubcategories, type Section } from './taxonomy'
@@ -71,24 +71,6 @@ export function matchesSelection(item: { category: string; group: string }, sele
 export function selectionKey(selection: Selection): string {
   if (selection.group === null) return 'all'
   return selection.category === null ? selection.group : `${selection.group}/${selection.category}`
-}
-
-// The <select> carries one string per option.
-export function selectionToValue(selection: Selection): string {
-  return selection.group === null ? 'all' : selection.category === null ? `g:${selection.group}` : `c:${selection.category}`
-}
-
-export function valueToSelection(value: string, model: readonly FilterGroup[]): Selection {
-  if (value.startsWith('g:')) {
-    const group = model.find(g => g.id === value.slice(2))
-    return group ? { group: group.id, category: null } : ALL
-  }
-  if (value.startsWith('c:')) {
-    const id = value.slice(2)
-    const group = model.find(g => g.categories.some(c => c.id === id))
-    return group ? { group: group.id, category: id } : ALL
-  }
-  return ALL
 }
 
 // A selection whose group or category has disappeared from the model (the language changed
