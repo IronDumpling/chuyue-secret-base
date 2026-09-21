@@ -10,3 +10,6 @@ export const LOCALE_STORAGE_KEY = 'chuyue-locale'
 export function isLocale(value: unknown): value is Locale {
   return typeof value === 'string' && (LOCALES as readonly string[]).includes(value)
 }
+
+// Locale tags for Intl / toLocaleDateString.
+export const INTL_LOCALE: Record<Locale, string> = { en: 'en-US', zh: 'zh-CN' }

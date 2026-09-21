@@ -1,5 +1,7 @@
 import Link from 'next/link'
 import { withBasePath } from '@/lib/utils'
+import { localePath } from '@/lib/i18n/paths'
+import type { Locale } from '@/lib/i18n/config'
 
 const socialLinks = [
   { href: 'https://github.com/IronDumpling', label: 'GitHub', icon: 'github' },
@@ -11,7 +13,7 @@ const socialLinks = [
   { href: 'https://www.pixiv.net/users/56079335', label: 'Pixiv', icon: 'pixiv' },
 ]
 
-export default function Footer() {
+export default function Footer({ locale }: { locale: Locale }) {
   return (
     <footer className="bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -25,22 +27,22 @@ export default function Footer() {
             <h4 className="font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2">
               <li>
-                <Link href="/" className="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+                <Link href={localePath(locale, '/')} className="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
                   Home
                 </Link>
               </li>
               <li>
-                <Link href="/portfolio" className="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+                <Link href={localePath(locale, '/portfolio')} className="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
                   Portfolio
                 </Link>
               </li>
               <li>
-                <Link href="/blog" className="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+                <Link href={localePath(locale, '/blog')} className="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
                   Blog
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+                <Link href={localePath(locale, '/contact')} className="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
                   Contact Me
                 </Link>
               </li>

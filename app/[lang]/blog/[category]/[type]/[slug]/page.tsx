@@ -7,7 +7,8 @@ import MDXContent from '@/components/shared/MDXContent'
 import MDXHeaderImage from '@/components/shared/MDXHeaderImage'
 import { getCategoryDisplayName, getTypeDisplayName } from '@/lib/blog-utils'
 import { buildPageMetadata } from '@/lib/seo'
-import type { Locale } from '@/lib/i18n/config'
+import { INTL_LOCALE, type Locale } from '@/lib/i18n/config'
+import { localePath } from '@/lib/i18n/paths'
 
 interface BlogPostPageProps {
   params: {
@@ -58,7 +59,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         {/* Header */}
         <div className="mb-8">
           <Link
-            href="/blog"
+            href={localePath(params.lang, '/blog')}
             className="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 hover:underline mb-4"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -69,7 +70,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           <h1 className="text-4xl font-bold mb-4">{post.frontMatter.title}</h1>
           <div className="flex flex-wrap items-center gap-4 text-gray-600 dark:text-gray-400 mb-4">
             <span className="text-sm">
-              {new Date(post.frontMatter.date).toLocaleDateString('en-US', {
+              {new Date(post.frontMatter.date).toLocaleDateString(INTL_LOCALE[params.lang], {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric',

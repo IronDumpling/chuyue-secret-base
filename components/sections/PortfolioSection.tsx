@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { withBasePath } from '@/lib/utils'
 import Link from 'next/link'
+import { useLocalePath } from '@/components/shared/LocaleProvider'
 
 const PORTFOLIO_ITEMS = [
   { 
@@ -64,6 +65,7 @@ const PORTFOLIO_ITEMS = [
 ]
 
 export default function PortfolioSection() {
+  const lp = useLocalePath()
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
 
   // Triangle Effect
@@ -95,7 +97,7 @@ export default function PortfolioSection() {
             {PORTFOLIO_ITEMS.map((item, index) => (
               <Link
                 key={item.id}
-                href={`/portfolio/${item.category}/${item.slug}`}
+                href={lp(`/portfolio/${item.category}/${item.slug}`)}
                 onMouseEnter={() => setHoveredIndex(index)}
                 onMouseLeave={() => setHoveredIndex(null)}
                 style={{ 
@@ -133,7 +135,7 @@ export default function PortfolioSection() {
             </p>
             
             <Link 
-              href="/portfolio" 
+              href={lp('/portfolio')} 
               className="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors duration-200 shadow-md hover:shadow-lg"
             >
               View Full Portfolio

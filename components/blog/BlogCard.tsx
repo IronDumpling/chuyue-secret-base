@@ -5,14 +5,18 @@ import type { BlogPost } from '@/lib/blog-types'
 import { getCategoryDisplayName, getTypeDisplayName } from '@/lib/blog-utils'
 import Rating from '@/components/blog/Rating'
 import RotatingImage from '@/components/shared/RotatingImage'
+import { useLocale, useLocalePath } from '@/components/shared/LocaleProvider'
+import { INTL_LOCALE } from '@/lib/i18n/config'
 
 interface BlogCardProps {
   post: BlogPost
 }
 
 export default function BlogCard({ post }: BlogCardProps) {
+  const locale = useLocale()
+  const lp = useLocalePath()
   // URL structure: /blog/{category}/{type}/{slug}
-  const url = `/blog/${post.frontMatter.category}/${post.frontMatter.type}/${post.slug}`
+  const url = lp(`/blog/${post.frontMatter.category}/${post.frontMatter.type}/${post.slug}`)
   const images = post.frontMatter.images
   const defaultImage = '/images/placeholder/blog-default.jpg'
 
@@ -76,7 +80,7 @@ export default function BlogCard({ post }: BlogCardProps) {
         
         {/* Date */}
         <div className="text-sm text-gray-500 dark:text-gray-500">
-          {new Date(post.frontMatter.date).toLocaleDateString('en-US', {
+          {new Date(post.frontMatter.date).toLocaleDateString(INTL_LOCALE[locale], {
             year: 'numeric',
             month: 'long',
           })}

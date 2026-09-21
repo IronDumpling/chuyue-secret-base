@@ -5,7 +5,8 @@ import { getProjectBySlug } from '@/lib/portfolio'
 import MDXContent from '@/components/shared/MDXContent'
 import MDXHeaderImage from '@/components/shared/MDXHeaderImage'
 import { buildPageMetadata } from '@/lib/seo'
-import type { Locale } from '@/lib/i18n/config'
+import { INTL_LOCALE, type Locale } from '@/lib/i18n/config'
+import { localePath } from '@/lib/i18n/paths'
 
 interface ProjectPageProps {
   params: {
@@ -52,7 +53,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         {/* Header */}
         <div className="mb-8">
           <Link
-            href="/portfolio"
+            href={localePath(params.lang, '/portfolio')}
             className="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 hover:underline mb-4"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -63,7 +64,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           <h1 className="text-4xl font-bold mb-4">{project.frontMatter.title}</h1>
           <div className="flex flex-wrap items-center gap-4 text-gray-600 dark:text-gray-400">
             <span className="text-sm">
-              {new Date(project.frontMatter.date).toLocaleDateString('en-US', {
+              {new Date(project.frontMatter.date).toLocaleDateString(INTL_LOCALE[params.lang], {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric',

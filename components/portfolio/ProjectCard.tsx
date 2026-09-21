@@ -3,18 +3,22 @@
 import Link from 'next/link'
 import type { PortfolioProject } from '@/lib/portfolio-types'
 import RotatingImage from '@/components/shared/RotatingImage'
+import { useLocale, useLocalePath } from '@/components/shared/LocaleProvider'
+import { INTL_LOCALE } from '@/lib/i18n/config'
 
 interface ProjectCardProps {
   project: PortfolioProject
 }
 
 export default function ProjectCard({ project }: ProjectCardProps) {
+  const locale = useLocale()
+  const lp = useLocalePath()
   const images = project.frontMatter.images
   const defaultImage = '/images/placeholder/portofolio-default.jpg'
 
   return (
     <Link
-      href={`/portfolio/${project.frontMatter.category}/${project.slug}`}
+      href={lp(`/portfolio/${project.frontMatter.category}/${project.slug}`)}
       className="group block bg-white dark:bg-gray-900 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300"
     >
       <div className="relative h-48 overflow-hidden">
@@ -43,7 +47,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
           ))}
         </div>
         <div className="text-sm text-gray-500 dark:text-gray-500">
-          {new Date(project.frontMatter.date).toLocaleDateString('en-US', {
+          {new Date(project.frontMatter.date).toLocaleDateString(INTL_LOCALE[locale], {
             year: 'numeric',
             month: 'long',
           })}

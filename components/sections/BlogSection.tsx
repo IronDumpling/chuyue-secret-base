@@ -1,8 +1,10 @@
 'use client'
 
 import Link from 'next/link'
+import { useLocalePath } from '@/components/shared/LocaleProvider'
 
 export default function BlogSection() {
+  const lp = useLocalePath()
   return (
     <section id="blog-section" className="section bg-white dark:bg-gray-900 overflow-hidden">
       <div className="container">
@@ -81,7 +83,7 @@ export default function BlogSection() {
             </p>
             
             <Link 
-              href="/blog" 
+              href={lp('/blog')} 
               className="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors duration-200 shadow-md hover:shadow-lg"
             >
               Read the Blog

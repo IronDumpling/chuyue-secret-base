@@ -6,6 +6,7 @@ import { withBasePath } from '@/lib/utils'
 import Link from 'next/link'
 import { SkillsAccordion } from '@/components/sections/SkillsSection'
 import RotatingImage from '@/components/shared/RotatingImage'
+import { useLocalePath } from '@/components/shared/LocaleProvider'
 
 interface AboutImage {
   src: string
@@ -161,6 +162,7 @@ interface AboutSectionProps {
 }
 
 export default function AboutSection({ identity, direction, onIdentityChange }: AboutSectionProps) {
+  const lp = useLocalePath()
   const content = aboutContentByIdentity[identity]
   const socialLinks = socialLinksByIdentity[identity]
   const slideClass = direction === 'left' ? 'slide-in-left-soft' : 'slide-in-right-soft'
@@ -170,8 +172,8 @@ export default function AboutSection({ identity, direction, onIdentityChange }: 
     identity === 'engineer'
       ? { label: 'View Resume', href: withBasePath('/pdf/Chuyue_Zhang_Resume.pdf'), external: true }
       : identity === 'creator'
-        ? { label: 'View Details', href: '/portfolio', external: false }
-        : { label: 'View Details', href: '/blog', external: false }
+        ? { label: 'View Details', href: lp('/portfolio'), external: false }
+        : { label: 'View Details', href: lp('/blog'), external: false }
 
   return (
     <section id="identity-card-section" className="section">

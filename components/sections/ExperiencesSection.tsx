@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { withBasePath } from '@/lib/utils'
+import { useLocalePath } from '@/components/shared/LocaleProvider'
 
 interface ExperienceItem {
   title: string
@@ -259,6 +260,7 @@ const experiences: ExperienceItem[] = [
 ]
 
 export default function ExperiencesSection() {
+  const lp = useLocalePath()
   const [openIndex, setOpenIndex] = useState<number | null>(null)
 
   const toggleExperience = (index: number) => {
@@ -337,7 +339,7 @@ export default function ExperiencesSection() {
                                 {detail.links.map((link, linkIndex) => (
                                   <a
                                     key={linkIndex}
-                                    href={withBasePath(link.url)}
+                                    href={withBasePath(link.url.startsWith('/portfolio') ? lp(link.url) : link.url)}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="text-primary-600 dark:text-primary-400 hover:underline text-sm"
