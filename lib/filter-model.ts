@@ -100,3 +100,20 @@ export function normalizeSelection(selection: Selection, model: readonly FilterG
   if (selection.category === null) return selection
   return group.categories.some(c => c.id === selection.category) ? selection : { group: group.id, category: null }
 }
+
+// The chosen filter lives in the address ('?group=reviews&category=films') rather than in
+// component state alone, so going back from a post returns to the same filtered list. Reading
+// it needs no validation here: normalizeSelection() drops whatever the model does not have.
+export function selectionFromParams(params: URLSearchParams): Selection {
+  const group = params.get('group')
+  if (!group) return ALL
+  return { group, category: params.get('category') }
+}
+
+export function applySelectionToParams(params: URLSearchParams, selection: Selection): void {
+  params.delete('group')
+  params.delete('category')
+  if (selection.group === null) return
+  params.set('group', selection.group)
+  if (selection.category !== null) params.set('category', selection.category)
+}

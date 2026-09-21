@@ -1,9 +1,11 @@
 import { describe, it, expect } from 'vitest'
 import {
   ALL,
+  applySelectionToParams,
   buildFilterModel,
   matchesSelection,
   normalizeSelection,
+  selectionFromParams,
   selectionKey,
   selectionToValue,
   valueToSelection,
@@ -87,5 +89,34 @@ describe('selection encoding', () => {
     expect(normalizeSelection({ group: 'art', category: null }, model)).toEqual(ALL)
     expect(normalizeSelection({ group: 'reviews', category: 'books' }, model)).toEqual({ group: 'reviews', category: null })
     expect(normalizeSelection({ group: 'reviews', category: 'films' }, model)).toEqual({ group: 'reviews', category: 'films' })
+  })
+})
+
+describe('selection in the address', () => {
+  it('round-trips a group and a category', () => {
+    for (const selection of [ALL, { group: 'reviews', category: null }, { group: 'reviews', category: 'films' }]) {
+      const params = new URLSearchParams()
+      applySelectionToParams(params, selection)
+      expect(selectionFromParams(new URLSearchParams(params.toString()))).toEqual(selection)
+    }
+  })
+
+  it('leaves other query parameters alone and removes its own on ALL', () => {
+    const params = new URLSearchParams('utm=x&group=reviews&category=films')
+    applySelectionToParams(params, ALL)
+    expect(params.toString()).toBe('utm=x')
+  })
+
+  it('reads a category without a group as everything', () => {
+    expect(selectionFromParams(new URLSearchParams('category=films'))).toEqual(ALL)
+  })
+
+  it('lets normalizeSelection discard values the model does not have', () => {
+    const model = buildFilterModel('blog', posts('films', 'music'), labels)
+    expect(normalizeSelection(selectionFromParams(new URLSearchParams('group=nope')), model)).toEqual(ALL)
+    expect(normalizeSelection(selectionFromParams(new URLSearchParams('group=reviews&category=nope')), model)).toEqual({
+      group: 'reviews',
+      category: null,
+    })
   })
 })

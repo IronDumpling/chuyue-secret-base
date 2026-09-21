@@ -37,7 +37,7 @@ export default function TopBarFilter({ model, selection, onChange, labels, class
     <nav aria-label={labels.ariaLabel} className={className}>
       <div
         ref={firstRow.containerRef}
-        className="relative flex overflow-x-auto border-b border-gray-200 dark:border-gray-800"
+        className="relative flex border-b border-gray-200 dark:border-gray-800"
       >
         <button
           type="button"

@@ -1,18 +1,17 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import type { BlogPost } from '@/lib/blog-types'
 import BlogListItem from './BlogListItem'
 import CategoryFilter from '@/components/shared/filter/CategoryFilter'
+import { useUrlSelection } from '@/components/shared/filter/useUrlSelection'
 import { getCategoryDisplayName, getGroupDisplayName } from '@/lib/blog-utils'
 import { formatMonth, monthKey } from '@/lib/date'
 import {
-  ALL,
   buildFilterModel,
   matchesSelection,
   normalizeSelection,
   selectionKey,
-  type Selection,
 } from '@/lib/filter-model'
 import { useLocale, useT } from '@/components/shared/LocaleProvider'
 import { format } from '@/lib/i18n/format'
@@ -31,7 +30,7 @@ const STAGGER_ROWS = 8
 export default function BlogList({ posts, showFilters = true }: BlogListProps) {
   const locale = useLocale()
   const t = useT()
-  const [chosen, setChosen] = useState<Selection>(ALL)
+  const { selection: chosen, choose: setChosen, watcher } = useUrlSelection(showFilters)
 
   const model = useMemo(
     () =>
@@ -96,6 +95,7 @@ export default function BlogList({ posts, showFilters = true }: BlogListProps) {
 
   return (
     <div className="mx-auto mt-10 max-w-5xl lg:grid lg:grid-cols-[17rem_minmax(0,1fr)] lg:gap-10">
+      {watcher}
       <aside className="mb-6 lg:mb-0">
         {/* Below the header (fixed, up to 5rem tall) while the list scrolls. */}
         <div className="lg:sticky lg:top-24">

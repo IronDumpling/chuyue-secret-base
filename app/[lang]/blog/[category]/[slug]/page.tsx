@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getPostBySlug } from '@/lib/blog'
 import Rating from '@/components/blog/Rating'
@@ -10,6 +9,7 @@ import { buildPageMetadata } from '@/lib/seo'
 import { INTL_LOCALE, LOCALES, type Locale } from '@/lib/i18n/config'
 import { localePath } from '@/lib/i18n/paths'
 import { getDictionary } from '@/lib/i18n'
+import ListBackLink from '@/components/shared/ListBackLink'
 import FallbackNotice from '@/components/shared/FallbackNotice'
 
 interface BlogPostPageProps {
@@ -69,7 +69,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         <FallbackNotice pageLang={params.lang} contentLang={post.lang} />
         {/* Header */}
         <div className="mb-8">
-          <Link
+          <ListBackLink
             href={localePath(params.lang, '/blog')}
             className="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 hover:underline mb-4"
           >
@@ -77,7 +77,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
             {t.blog.back}
-          </Link>
+          </ListBackLink>
           <h1 lang={post.lang} className="text-4xl font-bold mb-4">{post.frontMatter.title}</h1>
           <div className="flex flex-wrap items-center gap-4 text-gray-600 dark:text-gray-400 mb-4">
             <span className="text-sm">

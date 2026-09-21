@@ -1,17 +1,16 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import type { PortfolioProject } from '@/lib/portfolio-types'
 import ProjectCard from './ProjectCard'
 import CategoryFilter from '@/components/shared/filter/CategoryFilter'
+import { useUrlSelection } from '@/components/shared/filter/useUrlSelection'
 import { getCategoryDisplayName, getGroupDisplayName } from '@/lib/portfolio-utils'
 import {
-  ALL,
   buildFilterModel,
   matchesSelection,
   normalizeSelection,
   selectionKey,
-  type Selection,
 } from '@/lib/filter-model'
 import { useLocale, useT } from '@/components/shared/LocaleProvider'
 import { format } from '@/lib/i18n/format'
@@ -29,7 +28,7 @@ const STAGGER_CARDS = 8
 export default function ProjectGrid({ projects }: ProjectGridProps) {
   const locale = useLocale()
   const t = useT()
-  const [chosen, setChosen] = useState<Selection>(ALL)
+  const { selection: chosen, choose: setChosen, watcher } = useUrlSelection()
 
   const model = useMemo(
     () =>
@@ -51,6 +50,7 @@ export default function ProjectGrid({ projects }: ProjectGridProps) {
 
   return (
     <div>
+      {watcher}
       <div className="mb-8 mt-10">
         <CategoryFilter
           variant="topbar"
