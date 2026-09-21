@@ -3,6 +3,7 @@ import {
   ALL,
   applySelectionToParams,
   buildFilterModel,
+  listMemoryKey,
   matchesSelection,
   normalizeSelection,
   selectionFromParams,
@@ -99,5 +100,23 @@ describe('selection in the address', () => {
       group: 'reviews',
       category: null,
     })
+  })
+})
+
+describe('listMemoryKey', () => {
+  it('is the same for the address bar path and the link path on a deployed base path', () => {
+    // The address bar has the base path, a <Link href> does not.
+    expect(listMemoryKey('/chuyue-secret-base/en/blog/', '/chuyue-secret-base')).toBe(
+      listMemoryKey('/en/blog', '/chuyue-secret-base')
+    )
+  })
+
+  it('ignores a trailing slash and works without a base path', () => {
+    expect(listMemoryKey('/en/blog/', '')).toBe(listMemoryKey('/en/blog', ''))
+  })
+
+  it('keeps the lists apart', () => {
+    expect(listMemoryKey('/en/blog/', '')).not.toBe(listMemoryKey('/zh/blog/', ''))
+    expect(listMemoryKey('/en/blog/', '')).not.toBe(listMemoryKey('/en/portfolio/', ''))
   })
 })

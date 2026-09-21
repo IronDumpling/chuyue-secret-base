@@ -35,23 +35,23 @@ export default function BlogListItem({ post, className = '', style }: BlogListIt
     >
       <article className="group relative -mx-3 flex gap-4 rounded-lg px-3 py-5 transition-colors duration-200 hover:bg-gray-50 dark:hover:bg-gray-800/50 sm:gap-6">
         <div className="min-w-0 flex-1">
-          <p className="mb-1 text-xs font-medium text-primary-600 dark:text-primary-400">
+          <p className="mb-1 text-sm font-medium text-primary-600 dark:text-primary-400">
             {getCategoryPath(frontMatter.category, locale).join(' · ')}
           </p>
           <h3
             lang={post.lang}
-            className="text-lg font-semibold leading-snug transition-colors duration-200 group-hover:text-primary-600 dark:group-hover:text-primary-400 md:text-xl line-clamp-2"
+            className="text-xl font-semibold leading-snug transition-colors duration-200 group-hover:text-primary-600 dark:group-hover:text-primary-400 md:text-2xl line-clamp-2"
           >
             <Link href={url} className="after:absolute after:inset-0">
               {frontMatter.title}
             </Link>
           </h3>
           {summary && (
-            <p lang={post.lang} className="mt-1.5 text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
+            <p lang={post.lang} className="mt-2 text-base text-gray-600 dark:text-gray-400 line-clamp-2">
               {summary}
             </p>
           )}
-          <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-gray-500 dark:text-gray-400">
+          <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-gray-500 dark:text-gray-400">
             <time dateTime={frontMatter.date}>{formatDay(frontMatter.date, locale)}</time>
             {score !== undefined && (
               <span className="inline-flex items-center gap-1">
@@ -73,7 +73,7 @@ export default function BlogListItem({ post, className = '', style }: BlogListIt
           </div>
         </div>
 
-        <div className="relative aspect-[4/3] w-24 shrink-0 self-start overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800 sm:w-36">
+        <div className="relative aspect-[4/3] w-28 shrink-0 self-start overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800 sm:w-40 lg:w-48">
           <RotatingImage
             images={cover}
             alt=""

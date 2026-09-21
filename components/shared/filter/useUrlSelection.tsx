@@ -2,7 +2,14 @@
 
 import { Suspense, useCallback, useEffect, useLayoutEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { ALL, applySelectionToParams, selectionFromParams, type Selection } from '@/lib/filter-model'
+import {
+  ALL,
+  applySelectionToParams,
+  listMemoryKey,
+  selectionFromParams,
+  type Selection,
+} from '@/lib/filter-model'
+import { getBasePath } from '@/lib/utils'
 
 // useLayoutEffect warns during the static render, where there is nothing to lay out.
 const useBeforePaint = typeof window === 'undefined' ? useEffect : useLayoutEffect
@@ -10,7 +17,7 @@ const useBeforePaint = typeof window === 'undefined' ? useEffect : useLayoutEffe
 // The "Back to ..." link on a post is a plain link to the list, so it cannot carry the filter
 // by itself. The list remembers its query here (per tab, per list address) and the link reads
 // it back. Storage can be unavailable (private windows), so both sides fail quietly.
-const memoryKey = (listPath: string) => `list-filter:${listPath.replace(/\/+$/, '')}`
+const memoryKey = (listPath: string) => listMemoryKey(listPath, getBasePath())
 
 function remember(listPath: string, query: string) {
   try {

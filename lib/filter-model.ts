@@ -99,3 +99,12 @@ export function applySelectionToParams(params: URLSearchParams, selection: Selec
   params.set('group', selection.group)
   if (selection.category !== null) params.set('category', selection.category)
 }
+
+// Where a list remembers its filter for the post's "Back to ..." link. The address bar path
+// carries the deploy base path (/chuyue-secret-base/en/blog/) while a <Link href> does not
+// (/en/blog), so both are reduced to the path inside the site before they become a key.
+export function listMemoryKey(path: string, basePath: string): string {
+  const base = basePath.replace(/\/+$/, '')
+  const inside = base && path.startsWith(`${base}/`) ? path.slice(base.length) : path
+  return `list-filter:${inside.replace(/\/+$/, '')}`
+}

@@ -66,7 +66,7 @@ export default function BlogList({ posts, showFilters = true }: BlogListProps) {
       <div key={selectionKey(selection)}>
         {months.map(month => (
           <section key={month.key} aria-label={month.label} className="mt-8 first:mt-0">
-            <h2 className="mb-1 flex items-center gap-3 text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
+            <h2 className="mb-1 flex items-center gap-3 text-sm font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
               <span>{month.label}</span>
               <span aria-hidden className="h-px flex-1 bg-gray-200 dark:bg-gray-800" />
             </h2>
@@ -94,7 +94,7 @@ export default function BlogList({ posts, showFilters = true }: BlogListProps) {
   }
 
   return (
-    <div className="mx-auto mt-10 max-w-5xl lg:grid lg:grid-cols-[17rem_minmax(0,1fr)] lg:gap-10">
+    <div className="mt-10 lg:grid lg:grid-cols-[18rem_minmax(0,1fr)] lg:gap-12">
       {watcher}
       <aside className="mb-6 lg:mb-0">
         {/* Below the header (fixed, up to 5rem tall) while the list scrolls. */}
