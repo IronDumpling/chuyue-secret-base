@@ -27,7 +27,7 @@ Written 2026-09-20. This ranks the workstreams from the external "chuyue-content
 | Phase 1: separate `chuyue-content` repo | **Do (owner decision, public repo)** — [plan 07](2026-09-20-07-content-repo-split.md) | "Easier phone editing" alone is not a reason (the editor works on any repo). The real reasons are: the phone token can then only touch content, not site code and deploy config; and uploaded photos stop growing the code repo's history. Cost: a checkout step, a dispatch workflow with one cross-repo token, and an image sync step. Deploy stays in the site repo through GitHub Actions. |
 | Phase 4: mobile editor (Sveltia CMS) | **Do, pointed at the content repo** | Highest daily-use value. Config only, no server. Needs a frontmatter date fix, and compresses new photos on the phone before upload (see plan 03). |
 | Phase 3: og image + poster + share button | **Do, split in two** | Link cards first (plan 02), poster + share buttons second (plan 04). Generated at build time as real `.jpg` files, because static export may serve extensionless generated image routes with a wrong content type. |
-| Phase 2: `/zh` `/en` routes | **Defer, but keep one rule** | See "Internationalization" below. |
+| Phase 2: `/zh` `/en` routes | **Do, before the mobile editor (owner decision 2026-09-21)** — [plan 08](2026-09-21-08-i18n.md) | Default language English, `/en/` and `/zh/` route trees, every UI string translated, per-post language files with fallback. Old URLs stay alive as redirect pages. |
 | Phase 6: RSS, structured data, analytics | **Do, small** | Sitemap and robots already exist. Plan 05. |
 | Phase 5: Shutterstock auto-read | **Spike only** | The manual button already works. The API is buyer-oriented and the terms are unverified. Plan 06 is a time-boxed probe with a written go/no-go. |
 | Portfolio uses the same editor | **Later** | Link fields are mixed-shape (see above). Add after the blog editor round-trips cleanly. |
@@ -38,22 +38,21 @@ Written 2026-09-20. This ranks the workstreams from the external "chuyue-content
 |---|---|---|---|---|
 | 1 | [07 Content repo split](2026-09-20-07-content-repo-split.md) | M | none | Must come first: the other plans read `content/` and write to the content repo. Also installs `vitest` and `tsx` for all later plans. |
 | 2 | [02 Link previews](2026-09-20-02-link-previews.md) | M | 07 | Zero preview metadata today, so this is the most visible payoff. Also creates the single site-URL module and the build-time image renderer plan 04 reuses. |
-| 3 | [03 Mobile editor](2026-09-20-03-mobile-editor.md) | M | 07 | Removes the friction of publishing from a phone; its token can only write the content repo. Can swap places with 02 if you would rather post first and polish sharing after. |
-| 4 | [04 Poster and share buttons](2026-09-20-04-share-poster.md) | M | 02 | Poster with QR code for chat apps and stories, plus copy / save / system-share buttons. |
-| 5 | [05 Discoverability](2026-09-20-05-discoverability.md) | S | 02 (one small edit) | RSS, structured data, analytics. |
-| 6 | [06 Shutterstock spike](2026-09-20-06-shutterstock-spike.md) | S | 07 (for where the files live) | Only produces a decision. The manual button task inside it needs one URL from you. |
+| 3 | [08 Bilingual site (en default, zh)](2026-09-21-08-i18n.md) | L | 02 | Changes every URL and the content file layout, so it must come before the editor, whose form and folders depend on that layout. |
+| 4 | [03 Mobile editor](2026-09-20-03-mobile-editor.md) | M | 07, 08 | Removes the friction of publishing from a phone; its token can only write the content repo. Needs bilingual fields from plan 08. |
+| 5 | [04 Poster and share buttons](2026-09-20-04-share-poster.md) | M | 02 | Poster with QR code for chat apps and stories, plus copy / save / system-share buttons. |
+| 6 | [05 Discoverability](2026-09-20-05-discoverability.md) | S | 02 (one small edit) | RSS, structured data, analytics. |
+| 7 | [06 Shutterstock spike](2026-09-20-06-shutterstock-spike.md) | S | 07 (for where the files live) | Only produces a decision. The manual button task inside it needs one URL from you. |
 
 The plan file numbers are creation order, not execution order; follow the table. (A former plan 01, image compression, was dropped on 2026-09-20, so there is no `01` file.)
 
-Dependency sketch: `07 -> 02 -> 04`, `07 -> 03`, `02 -> 05`. Plans 03 and 05 are otherwise independent of each other.
+Dependency sketch: `07 -> 02 -> 08 -> 03`, `02 -> 04`, `02 -> 05`. Plans 04 and 05 must use the language-aware paths from plan 08 once it has landed. Plans 03 and 05 are otherwise independent of each other.
 
-## Internationalization (deferred, with a rule to keep it cheap)
+## Internationalization (decided 2026-09-21)
 
-Do not start `/zh` `/en` routing yet. Reasons: `output: 'export'` has no middleware, so "pick language on first visit" becomes a client-side redirect. Every page under `app/` would have to move under `app/[lang]/`. All hard-coded UI strings need translating. Only 5 of 46 content files are Chinese.
+Plan 08 implements it. Decisions: default language English; `/en/...` and `/zh/...` are two symmetric route trees and `/` redirects client-side (GitHub Pages has no server redirects) to `/en/`, or to `/zh/` if the visitor chose Chinese before; the whole UI is translated; each post or project may have `slug.en.mdx` and `slug.zh.mdx`, an un-suffixed file counts as English, and a missing language falls back to the other with a notice.
 
-The external plan says routing must come before sharing, or shared links break. That only holds if existing URLs move. **Rule: existing URLs never change.** Plans 02-05 all emit the current unprefixed URLs as canonical. When bilingual support is wanted, the cheap route is: keep today's URLs as the default locale, add a sibling `slug.zh.mdx` for translated posts, and add a `/zh/...` subtree that only exists for those posts. That makes bilingual support additive and does not break any link already shared.
-
-Decision needed from you before writing that plan: which language is the default for the unprefixed URLs, and do you want the UI (menus, buttons) translated or only the articles?
+This replaces the earlier rule "existing URLs never change". All URLs now live under `/en/` or `/zh/`; the old unprefixed URLs stay as small redirect pages so shared links keep working. Plans 02-05 emit language-aware canonical and image paths after plan 08.
 
 ## Open questions that block execution
 
