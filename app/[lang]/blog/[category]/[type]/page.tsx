@@ -2,9 +2,11 @@ import { notFound } from 'next/navigation'
 import { getPostsByCategoryAndType } from '@/lib/blog'
 import { getCategoryDisplayName, getTypeDisplayName } from '@/lib/blog-utils'
 import BlogList from '@/components/blog/BlogList'
+import type { Locale } from '@/lib/i18n/config'
 
 interface TypePageProps {
   params: {
+    lang: Locale
     category: string
     type: string
   }
@@ -32,7 +34,8 @@ export default function TypePage({ params }: TypePageProps) {
 
   const posts = getPostsByCategoryAndType(
     params.category as 'photography' | 'illustration' | 'films-shows' | 'music' | 'video-games' | 'books',
-    params.type as 'review' | 'casual'
+    params.type as 'review' | 'casual',
+    params.lang
   )
 
   return (

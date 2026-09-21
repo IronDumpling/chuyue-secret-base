@@ -7,9 +7,11 @@ import MDXContent from '@/components/shared/MDXContent'
 import MDXHeaderImage from '@/components/shared/MDXHeaderImage'
 import { getCategoryDisplayName, getTypeDisplayName } from '@/lib/blog-utils'
 import { buildPageMetadata } from '@/lib/seo'
+import type { Locale } from '@/lib/i18n/config'
 
 interface BlogPostPageProps {
   params: {
+    lang: Locale
     category: string
     type: string
     slug: string
@@ -18,7 +20,9 @@ interface BlogPostPageProps {
 
 export async function generateStaticParams() {
   const { getAllPosts } = await import('@/lib/blog')
-  const posts = getAllPosts()
+  // Every post exists in both languages (the other one is the fallback), so the
+  // parent [lang] segment supplies the language and this only lists the posts.
+  const posts = getAllPosts('en')
   
   return posts.map(post => ({
     category: post.frontMatter.category,
@@ -28,7 +32,7 @@ export async function generateStaticParams() {
 }
 
 export function generateMetadata({ params }: BlogPostPageProps): Metadata {
-  const post = getPostBySlug(params.slug, params.category, params.type)
+  const post = getPostBySlug(params.slug, params.category, params.type, params.lang)
   if (!post) return {}
   return buildPageMetadata(
     { kind: 'blog', category: post.frontMatter.category, type: post.frontMatter.type, slug: post.slug },
@@ -42,7 +46,7 @@ export function generateMetadata({ params }: BlogPostPageProps): Metadata {
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
-  const post = getPostBySlug(params.slug, params.category, params.type)
+  const post = getPostBySlug(params.slug, params.category, params.type, params.lang)
 
   if (!post) {
     notFound()

@@ -2,7 +2,7 @@ import 'server-only'
 
 import { getLocalizedMDXFile, getLocalizedMDXFiles, type LocalizedMDXContent } from './mdx'
 import { categoryMap, typeMap } from './blog-utils'
-import { DEFAULT_LOCALE, type Locale } from './i18n/config'
+import type { Locale } from './i18n/config'
 import type { BlogPost } from './blog-types'
 
 // Re-export type for convenience
@@ -38,31 +38,31 @@ function newestFirst(posts: BlogPost[]): BlogPost[] {
 export function getPostsByCategoryAndType(
   category: Category,
   type: PostType,
-  lang: Locale = DEFAULT_LOCALE
+  lang: Locale
 ): BlogPost[] {
   const files = getLocalizedMDXFiles(`blog/${category}/${type}`, lang)
   return newestFirst(files.map(file => toPost(file, category, type)))
 }
 
-export function getAllPosts(lang: Locale = DEFAULT_LOCALE): BlogPost[] {
+export function getAllPosts(lang: Locale): BlogPost[] {
   return newestFirst(
     categories.flatMap(category => types.flatMap(type => getPostsByCategoryAndType(category, type, lang)))
   )
 }
 
-export function getPostsByCategory(category: Category, lang: Locale = DEFAULT_LOCALE): BlogPost[] {
+export function getPostsByCategory(category: Category, lang: Locale): BlogPost[] {
   return newestFirst(types.flatMap(type => getPostsByCategoryAndType(category, type, lang)))
 }
 
-export function getPostsByType(type: PostType, lang: Locale = DEFAULT_LOCALE): BlogPost[] {
+export function getPostsByType(type: PostType, lang: Locale): BlogPost[] {
   return newestFirst(categories.flatMap(category => getPostsByCategoryAndType(category, type, lang)))
 }
 
 export function getPostBySlug(
   slug: string,
-  category?: string,
-  type?: string,
-  lang: Locale = DEFAULT_LOCALE
+  category: string | undefined,
+  type: string | undefined,
+  lang: Locale
 ): BlogPost | null {
   // If category and type are provided, look in that folder only
   if (category && type) {

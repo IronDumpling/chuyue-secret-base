@@ -5,9 +5,11 @@ import { getProjectBySlug } from '@/lib/portfolio'
 import MDXContent from '@/components/shared/MDXContent'
 import MDXHeaderImage from '@/components/shared/MDXHeaderImage'
 import { buildPageMetadata } from '@/lib/seo'
+import type { Locale } from '@/lib/i18n/config'
 
 interface ProjectPageProps {
   params: {
+    lang: Locale
     category: string
     slug: string
   }
@@ -15,7 +17,7 @@ interface ProjectPageProps {
 
 export async function generateStaticParams() {
   const { getAllProjects } = await import('@/lib/portfolio')
-  const projects = getAllProjects()
+  const projects = getAllProjects('en')
   
   return projects.map(project => ({
     category: project.frontMatter.category,
@@ -24,7 +26,7 @@ export async function generateStaticParams() {
 }
 
 export function generateMetadata({ params }: ProjectPageProps): Metadata {
-  const project = getProjectBySlug(params.slug, params.category)
+  const project = getProjectBySlug(params.slug, params.category, params.lang)
   if (!project) return {}
   return buildPageMetadata(
     { kind: 'portfolio', category: project.frontMatter.category, slug: project.slug },
@@ -38,7 +40,7 @@ export function generateMetadata({ params }: ProjectPageProps): Metadata {
 }
 
 export default async function ProjectPage({ params }: ProjectPageProps) {
-  const project = getProjectBySlug(params.slug, params.category)
+  const project = getProjectBySlug(params.slug, params.category, params.lang)
 
   if (!project) {
     notFound()

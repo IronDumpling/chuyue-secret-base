@@ -22,7 +22,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }))
 
   // Add portfolio project pages
-  const projects = getAllProjects()
+  const projects = getAllProjects('en')
   const projectRoutes = projects.map((project) => ({
     url: `${baseUrl}/portfolio/${project.frontMatter.category}/${project.slug}/`,
     lastModified: new Date(project.frontMatter.date),
@@ -31,7 +31,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }))
 
   // Add blog post pages - new structure: /blog/{category}/{type}/{slug}
-  const posts = getAllPosts()
+  const posts = getAllPosts('en')
   const postRoutes = posts.map((post) => {
     const url = `${baseUrl}/blog/${post.frontMatter.category}/${post.frontMatter.type}/${post.slug}/`
     

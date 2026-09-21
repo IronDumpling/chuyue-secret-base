@@ -2,7 +2,7 @@ import 'server-only'
 
 import { getLocalizedMDXFile, getLocalizedMDXFiles, type LocalizedMDXContent } from './mdx'
 import { categoryMap } from './portfolio-utils'
-import { DEFAULT_LOCALE, type Locale } from './i18n/config'
+import type { Locale } from './i18n/config'
 import type { PortfolioProject } from './portfolio-types'
 
 // Re-export type for convenience
@@ -32,19 +32,19 @@ function newestFirst(projects: PortfolioProject[]): PortfolioProject[] {
   )
 }
 
-export function getProjectsByCategory(category: Category, lang: Locale = DEFAULT_LOCALE): PortfolioProject[] {
+export function getProjectsByCategory(category: Category, lang: Locale): PortfolioProject[] {
   const files = getLocalizedMDXFiles(`portfolio/${category}`, lang)
   return newestFirst(files.map(file => toProject(file, category)))
 }
 
-export function getAllProjects(lang: Locale = DEFAULT_LOCALE): PortfolioProject[] {
+export function getAllProjects(lang: Locale): PortfolioProject[] {
   return newestFirst(categories.flatMap(category => getProjectsByCategory(category, lang)))
 }
 
 export function getProjectBySlug(
   slug: string,
-  category?: string,
-  lang: Locale = DEFAULT_LOCALE
+  category: string | undefined,
+  lang: Locale
 ): PortfolioProject | null {
   if (category) {
     const file = getLocalizedMDXFile(`portfolio/${category}`, slug, lang)
