@@ -1,14 +1,15 @@
 'use client'
 
 import Link from 'next/link'
-import { useLocalePath } from '@/components/shared/LocaleProvider'
+import { useLocalePath, useT } from '@/components/shared/LocaleProvider'
 
 export default function BlogSection() {
   const lp = useLocalePath()
+  const t = useT()
   return (
     <section id="blog-section" className="section bg-white dark:bg-gray-900 overflow-hidden">
       <div className="container">
-        <h2 className="section-title">Blogs</h2>
+        <h2 className="section-title">{t.blog.sectionHeading}</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           
@@ -76,17 +77,17 @@ export default function BlogSection() {
           {/* Right Side: Text and Link */}
           <div className="text-center md:text-left">
             <h3 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">
-              Thoughts & Reviews
+              {t.blog.sectionTitle}
             </h3>
             <p className="text-lg text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">
-              Dive into my personal space where I share reviews and thoughts on the things I love: <span className="font-semibold text-primary-600 dark:text-primary-400">Movies, Video Games, Music, and Books.</span>
+              {t.blog.sectionIntro}<span className="font-semibold text-primary-600 dark:text-primary-400">{t.blog.sectionHighlight}</span>
             </p>
             
             <Link 
               href={lp('/blog')} 
               className="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors duration-200 shadow-md hover:shadow-lg"
             >
-              Read the Blog
+              {t.blog.sectionCta}
               <svg className="w-4 h-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
               </svg>

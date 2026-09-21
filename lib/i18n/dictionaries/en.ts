@@ -79,6 +79,7 @@ export const en = {
     languages: 'Language',
     languageList: ['English', 'Mandarin', 'French'],
     thanks: 'Thank you for your message! I will get back to you soon.',
+    pageDescription: 'Get in touch with Chuyue Zhang',
     form: {
       name: 'Name',
       email: 'Email',
@@ -87,6 +88,9 @@ export const en = {
       send: 'Send Message',
       sending: 'Sending...',
     },
+  },
+  common: {
+    all: 'All',
   },
   identity: {
     labels: {
@@ -101,6 +105,19 @@ export const en = {
     },
   },
   blog: {
+    pageTitle: 'Blog',
+    pageDescription: 'Reviews and casual posts by Chuyue Zhang',
+    sectionHeading: 'Blogs',
+    sectionTitle: 'Thoughts & Reviews',
+    sectionIntro: 'Dive into my personal space where I share reviews and thoughts on the things I love: ',
+    sectionHighlight: 'Movies, Video Games, Music, and Books.',
+    sectionCta: 'Read the Blog',
+    allIn: 'All {category}',
+    noPosts: 'No blog posts found.',
+    browseByCategory: 'Browse by category',
+    browseByCategoryAndType: 'Browse by category and type',
+    back: 'Back to Blog',
+    visitWebsite: 'Visit Website',
     categories: {
       photography: 'Photography',
       illustration: 'Illustration',
@@ -115,6 +132,18 @@ export const en = {
     },
   },
   portfolio: {
+    pageTitle: 'Portfolio',
+    pageDescription: 'Portfolio projects by Chuyue Zhang',
+    sectionHeading: 'Portfolio',
+    sectionTitle: 'Selected Works',
+    sectionIntro: 'Explore a collection of my past projects, ranging from system architecture to game development.',
+    sectionCta: 'View Full Portfolio',
+    noProjects: 'No projects found in this category.',
+    back: 'Back to Portfolio',
+    viewOnGithub: 'View on GitHub',
+    githubRepo: 'GitHub Repo {n}',
+    viewDemo: 'View Demo',
+    visitWebsite: 'Visit Website',
     categories: {
       'student-projects': 'Student Projects',
       'video-games': 'Video Games',
@@ -123,8 +152,8 @@ export const en = {
   },
   notice: {
     // Shown above a page whose text is in the other language.
-    showingEnglishOriginal: 'This page is not available in English yet. Showing the Chinese original.',
-    showingChineseOriginal: 'This page is not available in Chinese yet. Showing the English original.',
+    missingEnglish: 'This page is not available in English yet. Showing the Chinese original.',
+    missingChinese: 'This page is not available in Chinese yet. Showing the English original.',
   },
 }
 

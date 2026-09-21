@@ -77,6 +77,7 @@ export const zh: Dictionary = {
     languages: '语言',
     languageList: ['英语', '普通话', '法语'],
     thanks: '感谢你的留言！我会尽快回复你。',
+    pageDescription: '联系 Chuyue Zhang',
     form: {
       name: '姓名',
       email: '邮箱',
@@ -85,6 +86,9 @@ export const zh: Dictionary = {
       send: '发送留言',
       sending: '发送中……',
     },
+  },
+  common: {
+    all: '全部',
   },
   identity: {
     labels: {
@@ -99,6 +103,19 @@ export const zh: Dictionary = {
     },
   },
   blog: {
+    pageTitle: '博客',
+    pageDescription: 'Chuyue Zhang 的评测和随笔',
+    sectionHeading: '博客',
+    sectionTitle: '想法与评测',
+    sectionIntro: '欢迎来到我的个人空间，我在这里分享对所爱之物的评测与想法：',
+    sectionHighlight: '电影、游戏、音乐和书籍。',
+    sectionCta: '阅读博客',
+    allIn: '全部{category}',
+    noPosts: '没有找到文章。',
+    browseByCategory: '按分类浏览',
+    browseByCategoryAndType: '按分类和类型浏览',
+    back: '返回博客',
+    visitWebsite: '访问网站',
     categories: {
       photography: '摄影',
       illustration: '插画',
@@ -113,6 +130,18 @@ export const zh: Dictionary = {
     },
   },
   portfolio: {
+    pageTitle: '作品集',
+    pageDescription: 'Chuyue Zhang 的作品集',
+    sectionHeading: '作品集',
+    sectionTitle: '精选作品',
+    sectionIntro: '浏览我过去的项目，涵盖从系统架构到游戏开发的各个方面。',
+    sectionCta: '查看全部作品',
+    noProjects: '这个分类下还没有项目。',
+    back: '返回作品集',
+    viewOnGithub: '在 GitHub 上查看',
+    githubRepo: 'GitHub 仓库 {n}',
+    viewDemo: '查看演示',
+    visitWebsite: '访问网站',
     categories: {
       'student-projects': '学生项目',
       'video-games': '游戏',
@@ -120,7 +149,7 @@ export const zh: Dictionary = {
     },
   },
   notice: {
-    showingEnglishOriginal: '这个页面暂无英文版，以下为中文原文。',
-    showingChineseOriginal: '这个页面暂无中文版，以下为英文原文。',
+    missingEnglish: '这个页面暂无英文版，以下为中文原文。',
+    missingChinese: '这个页面暂无中文版，以下为英文原文。',
   },
 }

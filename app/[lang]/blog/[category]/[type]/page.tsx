@@ -3,6 +3,7 @@ import { getPostsByCategoryAndType } from '@/lib/blog'
 import { getCategoryDisplayName, getTypeDisplayName } from '@/lib/blog-utils'
 import BlogList from '@/components/blog/BlogList'
 import type { Locale } from '@/lib/i18n/config'
+import { getDictionary } from '@/lib/i18n'
 
 interface TypePageProps {
   params: {
@@ -42,9 +43,9 @@ export default function TypePage({ params }: TypePageProps) {
     <section className="section bg-white dark:bg-gray-900">
       <div className="container">
         <h1 className="section-title">
-          {getCategoryDisplayName(params.category as any)} - {getTypeDisplayName(params.type as any)}
+          {getCategoryDisplayName(params.category as any, params.lang)} - {getTypeDisplayName(params.type as any, params.lang)}
         </h1>
-        <span className="section-subtitle">Browse by category and type</span>
+        <span className="section-subtitle">{getDictionary(params.lang).blog.browseByCategoryAndType}</span>
         <BlogList posts={posts} showFilters={false} />
       </div>
     </section>

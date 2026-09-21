@@ -9,6 +9,8 @@ import { getCategoryDisplayName, getTypeDisplayName } from '@/lib/blog-utils'
 import { buildPageMetadata } from '@/lib/seo'
 import { INTL_LOCALE, type Locale } from '@/lib/i18n/config'
 import { localePath } from '@/lib/i18n/paths'
+import { getDictionary } from '@/lib/i18n'
+import FallbackNotice from '@/components/shared/FallbackNotice'
 
 interface BlogPostPageProps {
   params: {
@@ -53,9 +55,12 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     notFound()
   }
 
+  const t = getDictionary(params.lang)
+
   return (
     <article className="section bg-white dark:bg-gray-900">
       <div className="container max-w-4xl">
+        <FallbackNotice pageLang={params.lang} contentLang={post.lang} />
         {/* Header */}
         <div className="mb-8">
           <Link
@@ -65,9 +70,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
-            Back to Blog
+            {t.blog.back}
           </Link>
-          <h1 className="text-4xl font-bold mb-4">{post.frontMatter.title}</h1>
+          <h1 lang={post.lang} className="text-4xl font-bold mb-4">{post.frontMatter.title}</h1>
           <div className="flex flex-wrap items-center gap-4 text-gray-600 dark:text-gray-400 mb-4">
             <span className="text-sm">
               {new Date(post.frontMatter.date).toLocaleDateString(INTL_LOCALE[params.lang], {
@@ -77,10 +82,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               })}
             </span>
             <span className="px-3 py-1 text-sm bg-primary-100 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 rounded-full">
-              {getCategoryDisplayName(post.frontMatter.category)}
+              {getCategoryDisplayName(post.frontMatter.category, params.lang)}
             </span>
             <span className="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full">
-              {getTypeDisplayName(post.frontMatter.type)}
+              {getTypeDisplayName(post.frontMatter.type, params.lang)}
             </span>
             {post.frontMatter.type === 'review' && post.frontMatter.rating && (
               <Rating score={post.frontMatter.rating} />
@@ -119,7 +124,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               rel="noopener noreferrer"
               className="button-secondary inline-flex items-center gap-2"
             >
-              {typeof post.frontMatter.website === 'string' ? 'Visit Website' : post.frontMatter.website.label}
+              {typeof post.frontMatter.website === 'string' ? t.blog.visitWebsite : post.frontMatter.website.label}
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
               </svg>
@@ -128,7 +133,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         )}
 
         {/* MDX Content */}
-        <div className="prose prose-lg dark:prose-invert max-w-none">
+        <div lang={post.lang} className="prose prose-lg dark:prose-invert max-w-none">
           <MDXContent source={post.content} />
         </div>
       </div>

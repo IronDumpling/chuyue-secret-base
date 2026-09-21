@@ -41,10 +41,10 @@ export default function BlogCard({ post }: BlogCardProps) {
         <div className="flex items-start justify-between mb-3">
           <div className="flex flex-wrap gap-2">
             <span className="px-3 py-1 text-xs font-medium bg-primary-100 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 rounded-full">
-              {getCategoryDisplayName(post.frontMatter.category)}
+              {getCategoryDisplayName(post.frontMatter.category, locale)}
             </span>
             <span className="px-3 py-1 text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full">
-              {getTypeDisplayName(post.frontMatter.type)}
+              {getTypeDisplayName(post.frontMatter.type, locale)}
             </span>
           </div>
           {post.frontMatter.type === 'review' && post.frontMatter.rating && (
