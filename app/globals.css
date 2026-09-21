@@ -8,6 +8,19 @@
     sans-serif;
 }
 
+/* Chinese pages: list the platform CJK fonts explicitly, before the Latin-first stack,
+   so Chinese text does not fall back to a serif or an unrelated system font. */
+:root:lang(zh) {
+  --font-sans: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB',
+    'Microsoft YaHei', 'Noto Sans SC', 'Source Han Sans SC', 'Segoe UI', 'Roboto',
+    sans-serif;
+}
+
+/* CJK text reads better with more line height than Latin text. */
+:root:lang(zh) body {
+  line-height: 1.75;
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;
