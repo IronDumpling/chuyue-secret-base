@@ -29,6 +29,7 @@
     "server-only": "^0.0.1"
   },
   "devDependencies": {
+    "@resvg/resvg-js": "^2.6.2",
     "@types/node": "^20.14.0",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
@@ -36,6 +37,8 @@
     "eslint": "^8.57.1",
     "eslint-config-next": "^14.2.5",
     "postcss": "^8.4.39",
+    "satori": "^0.33.4",
+    "sharp": "^0.35.4",
     "tailwindcss": "^3.4.7",
     "tsx": "^4.23.15",
     "typescript": "^5.5.3",
