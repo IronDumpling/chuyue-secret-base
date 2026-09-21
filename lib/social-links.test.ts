@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { allSocialLinks, socialLinksByIdentity, visibleSocialLinks } from './social-links'
+import { allSocialLinks, socialLinkAction, socialLinksByIdentity } from './social-links'
 
 const ids = (links: { id: string }[]) => links.map(link => link.id)
 
@@ -28,15 +28,15 @@ describe('social links', () => {
     expect(ids(allSocialLinks())).not.toContain('twitter')
   })
 
-  it('hides links that have no address yet', () => {
-    const visible = ids(visibleSocialLinks(allSocialLinks()))
-    expect(visible).toContain('github')
-    expect(visible).toContain('xiaohongshu')
-    expect(visible).not.toContain('shutterstock')
+  it('says what a click does: open the address, open the QR code, or nothing yet', () => {
+    const byId = (id: string) => allSocialLinks().find(link => link.id === id)!
+    expect(socialLinkAction(byId('github'))).toBe('link')
+    expect(socialLinkAction(byId('wechat'))).toBe('qr')
+    expect(socialLinkAction(byId('shutterstock'))).toBe('none')
   })
 
-  it('shows a platform that has only a QR code, and opens it as an image, not a link', () => {
-    const wechat = visibleSocialLinks(allSocialLinks()).find(link => link.id === 'wechat')
+  it('opens the QR code as an image, not as a link', () => {
+    const wechat = allSocialLinks().find(link => link.id === 'wechat')
     expect(wechat).toMatchObject({ qr: '/images/logo/wechat-qr.jpg' })
     expect(wechat?.href).toBeUndefined()
   })

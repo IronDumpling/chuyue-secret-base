@@ -42,6 +42,7 @@ export const zh: Dictionary = {
     coreCompetencies: '核心能力',
     viewResume: '查看简历',
     viewDetails: '查看详情',
+    viewPhotos: '查看 {n} 张照片',
     identities: {
       engineer: {
         paragraph:

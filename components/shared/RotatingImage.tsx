@@ -9,6 +9,8 @@ interface RotatingImageProps {
   className?: string
   defaultSrc: string
   intervalMs?: number
+  onIndexChange?: (index: number) => void // the picture being shown, for a parent that opens a gallery at it
+  paused?: boolean // stops the automatic change, e.g. while a gallery is open over it
 }
 
 export default function RotatingImage({
@@ -17,6 +19,8 @@ export default function RotatingImage({
   className,
   defaultSrc,
   intervalMs = 4000,
+  onIndexChange,
+  paused = false,
 }: RotatingImageProps) {
   const validImages = images && images.length > 0 ? images : [defaultSrc]
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -27,14 +31,18 @@ export default function RotatingImage({
   }, [JSON.stringify(validImages)])
 
   useEffect(() => {
-    if (!validImages || validImages.length <= 1 || isHovered) return
+    onIndexChange?.(currentIndex)
+  }, [currentIndex])
+
+  useEffect(() => {
+    if (!validImages || validImages.length <= 1 || isHovered || paused) return
 
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % validImages.length)
     }, intervalMs)
 
     return () => clearInterval(interval)
-  }, [validImages, intervalMs, isHovered])
+  }, [validImages, intervalMs, isHovered, paused])
 
   return (
     <div

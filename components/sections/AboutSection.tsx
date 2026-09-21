@@ -6,10 +6,13 @@ import { withBasePath } from '@/lib/utils'
 import Link from 'next/link'
 import { SkillsAccordion } from '@/components/sections/SkillsSection'
 import RotatingImage from '@/components/shared/RotatingImage'
+import { useState } from 'react'
+import ImageLightbox from '@/components/shared/ImageLightbox'
+import { format } from '@/lib/i18n/format'
 import { useLocalePath, useT } from '@/components/shared/LocaleProvider'
 import SocialIcon from '@/components/shared/SocialIcon'
 import SocialLinkItem from '@/components/shared/SocialLinkItem'
-import { socialLinksByIdentity, visibleSocialLinks } from '@/lib/social-links'
+import { socialLinksByIdentity } from '@/lib/social-links'
 import aboutImages from '@/lib/generated/about-images.json'
 
 const DEFAULT_IMAGE = '/images/placeholder/portofolio-default.jpg'
@@ -35,12 +38,15 @@ interface AboutSectionProps {
 export default function AboutSection({ identity, direction, onIdentityChange }: AboutSectionProps) {
   const lp = useLocalePath()
   const t = useT()
+  const [lightboxOpen, setLightboxOpen] = useState(false)
+  const [shownIndex, setShownIndex] = useState(0)
   const content = aboutContentByIdentity[identity]
   const images: string[] = aboutImages[identity]
   const text = t.about.identities[identity]
-  const socialLinks = visibleSocialLinks(socialLinksByIdentity[identity])
+  const socialLinks = socialLinksByIdentity[identity]
   const slideClass = direction === 'left' ? 'slide-in-left-soft' : 'slide-in-right-soft'
   const showResume = identity === 'engineer'
+  const viewPhotosLabel = format(t.about.viewPhotos, { n: images.length })
 
   const cta =
     identity === 'engineer'
@@ -68,15 +74,46 @@ export default function AboutSection({ identity, direction, onIdentityChange }: 
                   <p className="text-gray-700 dark:text-slate-300 text-lg">{text.paragraph}</p>
                 </div>
 
-                <div className="relative w-full aspect-[4/5] rounded-2xl overflow-hidden group">
+                {/* The click is on this container, not on the picture: the gradient above the
+                    picture would catch it. */}
+                <div
+                  role="button"
+                  tabIndex={0}
+                  aria-label={viewPhotosLabel}
+                  className="relative w-full aspect-[4/5] rounded-2xl overflow-hidden group cursor-pointer"
+                  onClick={() => setLightboxOpen(true)}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                      event.preventDefault()
+                      setLightboxOpen(true)
+                    }
+                  }}
+                >
                   <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-80 group-hover:opacity-60 transition-opacity duration-500 z-10" />
                   <RotatingImage
                     images={images}
                     alt={text.imageAlts[0]}
                     defaultSrc={images[0] ?? DEFAULT_IMAGE}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    onIndexChange={setShownIndex}
+                    paused={lightboxOpen}
                   />
+                  {images.length > 1 && (
+                    <div className="absolute bottom-4 right-4 z-20 pointer-events-none bg-black/70 backdrop-blur-sm text-white px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-2 group-hover:bg-black/80 transition-colors">
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                      <span>{viewPhotosLabel}</span>
+                    </div>
+                  )}
                 </div>
+                <ImageLightbox
+                  images={images}
+                  initialIndex={Math.min(shownIndex, Math.max(images.length - 1, 0))}
+                  isOpen={lightboxOpen}
+                  onClose={() => setLightboxOpen(false)}
+                  alt={text.imageAlts[0]}
+                />
 
                 <div className="flex gap-3 mt-auto">
                   {socialLinks.map((social) => (

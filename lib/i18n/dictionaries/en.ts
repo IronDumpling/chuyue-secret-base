@@ -44,6 +44,7 @@ export const en = {
     coreCompetencies: 'Core Competencies',
     viewResume: 'View Resume',
     viewDetails: 'View Details',
+    viewPhotos: 'View {n} Photos',
     identities: {
       engineer: {
         paragraph:

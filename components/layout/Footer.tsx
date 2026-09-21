@@ -1,14 +1,14 @@
 import Link from 'next/link'
 import SocialIcon from '@/components/shared/SocialIcon'
 import SocialLinkItem from '@/components/shared/SocialLinkItem'
-import { allSocialLinks, visibleSocialLinks } from '@/lib/social-links'
+import { allSocialLinks } from '@/lib/social-links'
 import { localePath } from '@/lib/i18n/paths'
 import type { Locale } from '@/lib/i18n/config'
 import { getDictionary } from '@/lib/i18n'
 
 export default function Footer({ locale }: { locale: Locale }) {
   const t = getDictionary(locale)
-  const socialLinks = visibleSocialLinks(allSocialLinks())
+  const socialLinks = allSocialLinks()
 
   return (
     <footer className="bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">

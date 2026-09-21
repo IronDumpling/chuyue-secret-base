@@ -5,8 +5,8 @@ export interface SocialLink {
   id: string
   label: Text
   // A platform with no profile URL can show an image (a QR code) in a lightbox instead.
-  // Links with neither are not shown yet: fill one in and the button appears
-  // (in the About card and the footer) without any other change.
+  // A link with neither is still shown, as an icon that does nothing when clicked: fill
+  // one in and it starts working (in the About card and the footer) without any other change.
   href?: string
   qr?: string
 }
@@ -23,7 +23,7 @@ export const socialLinksByIdentity: Record<Identity, SocialLink[]> = {
     { id: 'zhihu', label: { en: 'Zhihu', zh: '知乎' }, href: 'https://www.zhihu.com/people/zhang-chu-yue-13-47' },
     { id: 'pixiv', label: 'Pixiv', href: 'https://www.pixiv.net/users/56079335' },
     { id: 'xiaohongshu', label: { en: 'Xiaohongshu', zh: '小红书' }, href: 'https://xhslink.cn/o/4CBJdzI2bxv' },
-    // TODO: add the portfolio link
+    // TODO: add the portfolio link (until then the icon is shown but does not open anything)
     { id: 'shutterstock', label: 'Shutterstock' },
   ],
   adventurer: [
@@ -32,8 +32,12 @@ export const socialLinksByIdentity: Record<Identity, SocialLink[]> = {
   ],
 }
 
-export function visibleSocialLinks(links: SocialLink[]): SocialLink[] {
-  return links.filter(link => Boolean(link.href || link.qr))
+export type SocialLinkAction = 'link' | 'qr' | 'none'
+
+export function socialLinkAction(link: SocialLink): SocialLinkAction {
+  if (link.href) return 'link'
+  if (link.qr) return 'qr'
+  return 'none'
 }
 
 export function allSocialLinks(): SocialLink[] {
