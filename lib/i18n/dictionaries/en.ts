@@ -26,6 +26,17 @@ export const en = {
   theme: {
     toggle: 'Toggle theme',
   },
+  footer: {
+    tagline: 'System Designer',
+    quickLinks: 'Quick Links',
+    socialMedia: 'Social Media',
+    rights: 'All rights reserved.',
+  },
+  home: {
+    greeting: 'Hi, I am',
+    question: 'Who am I?',
+    scrollDown: 'Scroll down',
+  },
   identity: {
     labels: {
       engineer: 'Software Engineer',

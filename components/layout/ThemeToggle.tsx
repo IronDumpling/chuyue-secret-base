@@ -1,8 +1,10 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useT } from '@/components/shared/LocaleProvider'
 
 export default function ThemeToggle() {
+  const t = useT()
   const [isDark, setIsDark] = useState(false)
   const [mounted, setMounted] = useState(false)
 
@@ -32,7 +34,7 @@ export default function ThemeToggle() {
     return (
       <button
         className="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
-        aria-label="Toggle theme"
+        aria-label={t.theme.toggle}
       >
         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
@@ -45,7 +47,7 @@ export default function ThemeToggle() {
     <button
       onClick={toggleTheme}
       className="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
-      aria-label="Toggle theme"
+      aria-label={t.theme.toggle}
     >
       {isDark ? (
         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

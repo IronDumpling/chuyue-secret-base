@@ -24,6 +24,17 @@ export const zh: Dictionary = {
   theme: {
     toggle: '切换主题',
   },
+  footer: {
+    tagline: '系统设计师',
+    quickLinks: '快速链接',
+    socialMedia: '社交媒体',
+    rights: '保留所有权利。',
+  },
+  home: {
+    greeting: '你好，我是',
+    question: '我是谁？',
+    scrollDown: '向下滚动',
+  },
   identity: {
     labels: {
       engineer: '软件工程师',
