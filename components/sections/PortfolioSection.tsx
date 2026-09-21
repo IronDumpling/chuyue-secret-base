@@ -10,35 +10,35 @@ const PORTFOLIO_ITEMS = [
     id: 1, 
     src: '/images/portfolio/resonance/resonance-3.png', 
     alt: 'Project Resonance', 
-    category: 'video-games', 
+    category: 'games', 
     slug: 'resonance' 
   },
   { 
     id: 2, 
     src: '/images/portfolio/backtrack/portfolioImg_backtrack_2.png', 
     alt: 'Project Backtrack', 
-    category: 'video-games', 
+    category: 'games', 
     slug: 'backtrack' 
   },
   { 
     id: 3, 
     src: '/images/portfolio/computer-graphics/portfolioImg_graphics_1.gif', 
     alt: 'Computer Graphics', 
-    category: 'student-projects', 
+    category: 'games', 
     slug: 'computer-graphics' 
   },
   { 
     id: 4, 
     src: '/images/portfolio/candle-lighter/candle-4.png', 
     alt: 'Candle Lighter', 
-    category: 'video-games', 
+    category: 'games', 
     slug: 'candle-lighter' 
   },
   { 
     id: 5, 
     src: '/images/portfolio/distributed-storage-service/distributed-storage.png', 
     alt: 'Distributed Storage', 
-    category: 'student-projects', 
+    category: 'systems', 
     slug: 'distributed-storage-service' 
   },
   { 
@@ -59,7 +59,7 @@ const PORTFOLIO_ITEMS = [
     id: 8, 
     src: '/images/portfolio/signal-android/portfolioImg_signal-android-1.png', 
     alt: 'Signal Android', 
-    category: 'video-games', 
+    category: 'games', 
     slug: 'signal-android' 
   },
 ]

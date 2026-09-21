@@ -3,6 +3,7 @@
 export const en = {
   meta: {
     siteName: 'Chuyue',
+    fullName: 'Chuyue Zhang',
     title: 'Chuyue - System Designer',
     description:
       'Portfolio and blog of Chuyue Zhang, a system designer graduate from University of Toronto',
@@ -92,6 +93,7 @@ export const en = {
   },
   common: {
     all: 'All',
+    allIn: 'All {name}',
   },
   identity: {
     labels: {
@@ -113,23 +115,22 @@ export const en = {
     sectionIntro: 'Dive into my personal space where I share reviews and thoughts on the things I love: ',
     sectionHighlight: 'Movies, Video Games, Music, and Books.',
     sectionCta: 'Read the Blog',
-    allIn: 'All {category}',
     noPosts: 'No blog posts found.',
     browseByCategory: 'Browse by category',
-    browseByCategoryAndType: 'Browse by category and type',
+    filterLabel: 'Filter posts',
     back: 'Back to Blog',
     visitWebsite: 'Visit Website',
+    groups: {
+      moments: 'Moments',
+      reviews: 'Reviews',
+    },
     categories: {
-      photography: 'Photography',
-      illustration: 'Illustration',
-      'films-shows': 'Films & Shows',
+      moments: 'Moments',
+      films: 'Films',
+      shows: 'Shows',
       music: 'Music',
       'video-games': 'Video Games',
       books: 'Books',
-    },
-    types: {
-      review: 'Review',
-      casual: 'Casual',
     },
   },
   portfolio: {
@@ -145,10 +146,24 @@ export const en = {
     githubRepo: 'GitHub Repo {n}',
     viewDemo: 'View Demo',
     visitWebsite: 'Visit Website',
+    filterLabel: 'Filter projects',
+    groups: {
+      computing: 'Computing',
+      art: 'Art',
+    },
     categories: {
-      'student-projects': 'Student Projects',
-      'video-games': 'Video Games',
       applications: 'Applications',
+      games: 'Games',
+      systems: 'Systems',
+      ai: 'AI',
+      photography: 'Photography',
+      illustration: 'Illustration',
+    },
+    contexts: {
+      course: 'Course',
+      research: 'Research',
+      work: 'Work',
+      personal: 'Personal',
     },
   },
   notice: {

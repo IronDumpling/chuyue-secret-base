@@ -1,15 +1,17 @@
 interface RatingProps {
   score: number
   maxScore?: number
+  size?: 'sm' | 'md'
 }
 
-export default function Rating({ score, maxScore = 10 }: RatingProps) {
+export default function Rating({ score, maxScore = 10, size = 'md' }: RatingProps) {
+  const starSize = size === 'sm' ? 'w-3.5 h-3.5' : 'w-5 h-5'
   // Map 0-10 score to 0-5 stars
   const stars = (score / maxScore) * 5
 
   const StarIcon = ({ className }: { className: string }) => (
     <svg
-      className={`w-5 h-5 ${className}`}
+      className={`${starSize} ${className}`}
       fill="currentColor"
       viewBox="0 0 20 20"
     >

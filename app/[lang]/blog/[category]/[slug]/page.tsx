@@ -1,22 +1,21 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getPostBySlug } from '@/lib/blog'
 import Rating from '@/components/blog/Rating'
 import MDXContent from '@/components/shared/MDXContent'
 import MDXHeaderImage from '@/components/shared/MDXHeaderImage'
-import { getCategoryDisplayName, getTypeDisplayName } from '@/lib/blog-utils'
+import { getCategoryPath, hasRating } from '@/lib/blog-utils'
 import { buildPageMetadata } from '@/lib/seo'
 import { INTL_LOCALE, LOCALES, type Locale } from '@/lib/i18n/config'
 import { localePath } from '@/lib/i18n/paths'
 import { getDictionary } from '@/lib/i18n'
+import ListBackLink from '@/components/shared/ListBackLink'
 import FallbackNotice from '@/components/shared/FallbackNotice'
 
 interface BlogPostPageProps {
   params: {
     lang: Locale
     category: string
-    type: string
     slug: string
   }
 }
@@ -29,21 +28,20 @@ export async function generateStaticParams() {
   
   return posts.map(post => ({
     category: post.frontMatter.category,
-    type: post.frontMatter.type,
     slug: post.slug,
   }))
 }
 
 export function generateMetadata({ params }: BlogPostPageProps): Metadata {
-  const post = getPostBySlug(params.slug, params.category, params.type, params.lang)
+  const post = getPostBySlug(params.slug, params.category, params.lang)
   if (!post) return {}
   // Languages this post is really written in (the other one is only a fallback).
   const languages = LOCALES.filter(l => {
-    const version = getPostBySlug(params.slug, params.category, params.type, l)
+    const version = getPostBySlug(params.slug, params.category, l)
     return version && !version.isFallback
   })
   return buildPageMetadata(
-    { kind: 'blog', category: post.frontMatter.category, type: post.frontMatter.type, slug: post.slug },
+    { kind: 'blog', category: post.frontMatter.category, slug: post.slug },
     params.lang,
     {
       title: post.frontMatter.title,
@@ -57,7 +55,7 @@ export function generateMetadata({ params }: BlogPostPageProps): Metadata {
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
-  const post = getPostBySlug(params.slug, params.category, params.type, params.lang)
+  const post = getPostBySlug(params.slug, params.category, params.lang)
 
   if (!post) {
     notFound()
@@ -71,7 +69,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         <FallbackNotice pageLang={params.lang} contentLang={post.lang} />
         {/* Header */}
         <div className="mb-8">
-          <Link
+          <ListBackLink
             href={localePath(params.lang, '/blog')}
             className="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 hover:underline mb-4"
           >
@@ -79,7 +77,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
             {t.blog.back}
-          </Link>
+          </ListBackLink>
           <h1 lang={post.lang} className="text-4xl font-bold mb-4">{post.frontMatter.title}</h1>
           <div className="flex flex-wrap items-center gap-4 text-gray-600 dark:text-gray-400 mb-4">
             <span className="text-sm">
@@ -89,13 +87,19 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 day: 'numeric',
               })}
             </span>
-            <span className="px-3 py-1 text-sm bg-primary-100 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 rounded-full">
-              {getCategoryDisplayName(post.frontMatter.category, params.lang)}
-            </span>
-            <span className="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full">
-              {getTypeDisplayName(post.frontMatter.type, params.lang)}
-            </span>
-            {post.frontMatter.type === 'review' && post.frontMatter.rating && (
+            {getCategoryPath(post.frontMatter.category, params.lang).map((name, index, path) => (
+              <span
+                key={name}
+                className={
+                  index === path.length - 1
+                    ? 'px-3 py-1 text-sm bg-primary-100 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 rounded-full'
+                    : 'px-3 py-1 text-sm bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full'
+                }
+              >
+                {name}
+              </span>
+            ))}
+            {hasRating(post.frontMatter.group) && post.frontMatter.rating && (
               <Rating score={post.frontMatter.rating} />
             )}
           </div>

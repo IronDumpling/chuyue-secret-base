@@ -26,6 +26,23 @@ module.exports = {
       fontFamily: {
         sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
       },
+      // Used with `motion-safe:` so they switch off for visitors who asked for less motion.
+      keyframes: {
+        // A list or grid coming back after the filter changed.
+        'feed-in': {
+          '0%': { opacity: '0', transform: 'translateY(8px)' },
+          '100%': { opacity: '1', transform: 'none' },
+        },
+        // The second menu level appearing.
+        'fade-slide': {
+          '0%': { opacity: '0', transform: 'translateX(-6px)' },
+          '100%': { opacity: '1', transform: 'none' },
+        },
+      },
+      animation: {
+        'feed-in': 'feed-in 280ms ease-out both',
+        'fade-slide': 'fade-slide 200ms ease-out both',
+      },
     },
   },
   plugins: [],

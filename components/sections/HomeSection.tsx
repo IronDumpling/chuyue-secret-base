@@ -23,7 +23,7 @@ export default function HomeSection() {
             <div className="w-40 h-40 md:w-48 md:h-48 lg:w-60 lg:h-60 xl:w-72 xl:h-72 rounded-full overflow-hidden shadow-2xl ring-1 ring-white/10 bg-white/5">
               <img
                 src={withBasePath('/images/home/profileImg2.jpeg')}
-                alt="Chuyue Zhang"
+                alt={t.meta.fullName}
                 className="w-full h-full object-cover"
               />
             </div>
@@ -34,7 +34,7 @@ export default function HomeSection() {
             <h1 className="text-5xl md:text-7xl font-bold tracking-tight leading-tight">
               {t.home.greeting}{' '}
               <span className="text-primary-600 dark:text-primary-400">
-                Chuyue
+                {t.meta.siteName}
               </span>
             </h1>
             <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-lg mx-auto lg:mx-0 font-light">

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { absoluteUrl, SITE_NAME } from './site'
+import { absoluteUrl } from './site'
 import { pagePath, shareImagePath, type ShareTarget } from './share-paths'
 import { DEFAULT_LOCALE, LOCALES, type Locale } from './i18n/config'
 import { getDictionary } from './i18n'
@@ -58,7 +58,7 @@ export function buildPageMetadata(t: ShareTarget, lang: Locale, o: PageMetaInput
       url,
       title: o.title,
       description,
-      siteName: SITE_NAME,
+      siteName: getDictionary(lang).meta.siteName,
       locale: getDictionary(lang).meta.ogLocale,
       images: [{ url: image, width: 1200, height: 630, alt: o.title }],
       ...(publishedTime ? { publishedTime } : {}),

@@ -1,7 +1,5 @@
 import { getBasePath } from './utils'
 
-export const SITE_NAME = 'Chuyue'
-
 export function siteOrigin(): string {
   return process.env.NEXT_PUBLIC_SITE_ORIGIN || 'https://irondumpling.github.io'
 }

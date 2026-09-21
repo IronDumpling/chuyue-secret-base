@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getProjectBySlug } from '@/lib/portfolio'
 import MDXContent from '@/components/shared/MDXContent'
@@ -9,6 +8,7 @@ import { INTL_LOCALE, LOCALES, type Locale } from '@/lib/i18n/config'
 import { localePath } from '@/lib/i18n/paths'
 import { getDictionary } from '@/lib/i18n'
 import { format } from '@/lib/i18n/format'
+import ListBackLink from '@/components/shared/ListBackLink'
 import FallbackNotice from '@/components/shared/FallbackNotice'
 
 interface ProjectPageProps {
@@ -65,7 +65,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         <FallbackNotice pageLang={params.lang} contentLang={project.lang} />
         {/* Header */}
         <div className="mb-8">
-          <Link
+          <ListBackLink
             href={localePath(params.lang, '/portfolio')}
             className="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 hover:underline mb-4"
           >
@@ -73,7 +73,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
             {t.portfolio.back}
-          </Link>
+          </ListBackLink>
           <h1 lang={project.lang} className="text-4xl font-bold mb-4">{project.frontMatter.title}</h1>
           <div className="flex flex-wrap items-center gap-4 text-gray-600 dark:text-gray-400">
             <span className="text-sm">

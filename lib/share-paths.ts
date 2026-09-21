@@ -5,12 +5,11 @@ export type ShareKind = 'blog' | 'portfolio'
 export interface ShareTarget {
   kind: ShareKind
   category: string
-  type?: string // blog only
   slug: string
 }
 
 function segments(t: ShareTarget): string[] {
-  return t.kind === 'blog' ? [t.kind, t.category, t.type ?? '', t.slug] : [t.kind, t.category, t.slug]
+  return [t.kind, t.category, t.slug]
 }
 
 // Both languages have every page: a post without a Chinese version is still served at

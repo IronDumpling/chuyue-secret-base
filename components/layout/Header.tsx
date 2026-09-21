@@ -83,7 +83,7 @@ export default function Header() {
       <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 md:h-20">
           <Link href={lp('/')} className="text-2xl font-bold text-primary-600 dark:text-primary-400">
-            Chuyue
+            {t.meta.siteName}
           </Link>
 
           {/* Desktop Navigation */}

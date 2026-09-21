@@ -2,9 +2,10 @@ import type { Dictionary } from './en'
 
 export const zh: Dictionary = {
   meta: {
-    siteName: 'Chuyue',
-    title: 'Chuyue - 系统设计师',
-    description: 'Chuyue Zhang 的作品集与博客，多伦多大学系统设计专业毕业生',
+    siteName: '楚岳',
+    fullName: '张楚岳',
+    title: '楚岳 - 系统设计师',
+    description: '张楚岳的作品集与博客，多伦多大学系统设计专业毕业生',
     ogLocale: 'zh_CN',
     cardBadge: '作品集与博客',
   },
@@ -78,7 +79,7 @@ export const zh: Dictionary = {
     languages: '语言',
     languageList: ['英语', '普通话', '法语'],
     thanks: '感谢你的留言！我会尽快回复你。',
-    pageDescription: '联系 Chuyue Zhang',
+    pageDescription: '联系张楚岳',
     form: {
       name: '姓名',
       email: '邮箱',
@@ -90,6 +91,7 @@ export const zh: Dictionary = {
   },
   common: {
     all: '全部',
+    allIn: '全部{name}',
   },
   identity: {
     labels: {
@@ -105,34 +107,33 @@ export const zh: Dictionary = {
   },
   blog: {
     pageTitle: '博客',
-    pageDescription: 'Chuyue Zhang 的评测和随笔',
+    pageDescription: '张楚岳的评测和随笔',
     sectionHeading: '博客',
     sectionTitle: '想法与评测',
     sectionIntro: '欢迎来到我的个人空间，我在这里分享对所爱之物的评测与想法：',
     sectionHighlight: '电影、游戏、音乐和书籍。',
     sectionCta: '阅读博客',
-    allIn: '全部{category}',
     noPosts: '没有找到文章。',
     browseByCategory: '按分类浏览',
-    browseByCategoryAndType: '按分类和类型浏览',
+    filterLabel: '筛选文章',
     back: '返回博客',
     visitWebsite: '访问网站',
+    groups: {
+      moments: '随笔',
+      reviews: '评测',
+    },
     categories: {
-      photography: '摄影',
-      illustration: '插画',
-      'films-shows': '影视',
+      moments: '随笔',
+      films: '电影',
+      shows: '剧集',
       music: '音乐',
       'video-games': '游戏',
       books: '书籍',
     },
-    types: {
-      review: '评测',
-      casual: '随笔',
-    },
   },
   portfolio: {
     pageTitle: '作品集',
-    pageDescription: 'Chuyue Zhang 的作品集',
+    pageDescription: '张楚岳的作品集',
     sectionHeading: '作品集',
     sectionTitle: '精选作品',
     sectionIntro: '浏览我过去的项目，涵盖从系统架构到游戏开发的各个方面。',
@@ -143,10 +144,24 @@ export const zh: Dictionary = {
     githubRepo: 'GitHub 仓库 {n}',
     viewDemo: '查看演示',
     visitWebsite: '访问网站',
+    filterLabel: '筛选项目',
+    groups: {
+      computing: '计算机',
+      art: '艺术',
+    },
     categories: {
-      'student-projects': '学生项目',
-      'video-games': '游戏',
       applications: '应用',
+      games: '游戏',
+      systems: '系统',
+      ai: 'AI',
+      photography: '摄影',
+      illustration: '插画',
+    },
+    contexts: {
+      course: '课程项目',
+      research: '研究',
+      work: '工作',
+      personal: '个人',
     },
   },
   notice: {
