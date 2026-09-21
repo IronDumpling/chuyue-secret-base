@@ -3,6 +3,7 @@
 export const en = {
   meta: {
     siteName: 'Chuyue',
+    fullName: 'Chuyue Zhang',
     title: 'Chuyue - System Designer',
     description:
       'Portfolio and blog of Chuyue Zhang, a system designer graduate from University of Toronto',

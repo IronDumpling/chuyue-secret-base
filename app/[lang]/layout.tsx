@@ -6,7 +6,7 @@ import { LocaleProvider } from '@/components/shared/LocaleProvider'
 import { LOCALES, isLocale } from '@/lib/i18n/config'
 import { getDictionary } from '@/lib/i18n'
 import { localePath } from '@/lib/i18n/paths'
-import { SITE_NAME, absoluteUrl, siteOrigin } from '@/lib/site'
+import { absoluteUrl, siteOrigin } from '@/lib/site'
 import { siteOgPath } from '@/lib/share-paths'
 import '../globals.css'
 
@@ -23,11 +23,11 @@ export function generateMetadata({ params }: { params: { lang: string } }): Meta
 
   return {
     metadataBase: new URL(siteOrigin()),
-    title: { default: t.meta.title, template: `%s | ${SITE_NAME}` },
+    title: { default: t.meta.title, template: `%s | ${t.meta.siteName}` },
     description: t.meta.description,
     openGraph: {
       type: 'website',
-      siteName: SITE_NAME,
+      siteName: t.meta.siteName,
       title: t.meta.title,
       description: t.meta.description,
       url: absoluteUrl(localePath(params.lang, '/')),

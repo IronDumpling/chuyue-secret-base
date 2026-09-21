@@ -2,9 +2,10 @@ import type { Dictionary } from './en'
 
 export const zh: Dictionary = {
   meta: {
-    siteName: 'Chuyue',
-    title: 'Chuyue - 系统设计师',
-    description: 'Chuyue Zhang 的作品集与博客，多伦多大学系统设计专业毕业生',
+    siteName: '楚岳',
+    fullName: '张楚岳',
+    title: '楚岳 - 系统设计师',
+    description: '张楚岳的作品集与博客，多伦多大学系统设计专业毕业生',
     ogLocale: 'zh_CN',
     cardBadge: '作品集与博客',
   },
@@ -78,7 +79,7 @@ export const zh: Dictionary = {
     languages: '语言',
     languageList: ['英语', '普通话', '法语'],
     thanks: '感谢你的留言！我会尽快回复你。',
-    pageDescription: '联系 Chuyue Zhang',
+    pageDescription: '联系张楚岳',
     form: {
       name: '姓名',
       email: '邮箱',
@@ -106,7 +107,7 @@ export const zh: Dictionary = {
   },
   blog: {
     pageTitle: '博客',
-    pageDescription: 'Chuyue Zhang 的评测和随笔',
+    pageDescription: '张楚岳的评测和随笔',
     sectionHeading: '博客',
     sectionTitle: '想法与评测',
     sectionIntro: '欢迎来到我的个人空间，我在这里分享对所爱之物的评测与想法：',
@@ -132,7 +133,7 @@ export const zh: Dictionary = {
   },
   portfolio: {
     pageTitle: '作品集',
-    pageDescription: 'Chuyue Zhang 的作品集',
+    pageDescription: '张楚岳的作品集',
     sectionHeading: '作品集',
     sectionTitle: '精选作品',
     sectionIntro: '浏览我过去的项目，涵盖从系统架构到游戏开发的各个方面。',
