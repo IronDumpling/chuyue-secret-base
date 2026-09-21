@@ -5,7 +5,7 @@ import { getProjectBySlug } from '@/lib/portfolio'
 import MDXContent from '@/components/shared/MDXContent'
 import MDXHeaderImage from '@/components/shared/MDXHeaderImage'
 import { buildPageMetadata } from '@/lib/seo'
-import { INTL_LOCALE, type Locale } from '@/lib/i18n/config'
+import { INTL_LOCALE, LOCALES, type Locale } from '@/lib/i18n/config'
 import { localePath } from '@/lib/i18n/paths'
 import { getDictionary } from '@/lib/i18n'
 import { format } from '@/lib/i18n/format'
@@ -32,13 +32,20 @@ export async function generateStaticParams() {
 export function generateMetadata({ params }: ProjectPageProps): Metadata {
   const project = getProjectBySlug(params.slug, params.category, params.lang)
   if (!project) return {}
+  const languages = LOCALES.filter(l => {
+    const version = getProjectBySlug(params.slug, params.category, l)
+    return version && !version.isFallback
+  })
   return buildPageMetadata(
     { kind: 'portfolio', category: project.frontMatter.category, slug: project.slug },
+    params.lang,
     {
       title: project.frontMatter.title,
       description: project.frontMatter.description,
       body: project.content,
       date: String(project.frontMatter.date),
+      contentLang: project.lang,
+      languages,
     }
   )
 }

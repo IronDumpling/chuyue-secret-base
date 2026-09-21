@@ -1,5 +1,7 @@
 import LegacyRedirect from '@/components/shared/LegacyRedirect'
-import { getAllPosts } from '@/lib/blog'
+import type { Metadata } from 'next'
+import { getAllPosts, getPostBySlug } from '@/lib/blog'
+import { buildPageMetadata } from '@/lib/seo'
 
 export const dynamicParams = false
 
@@ -9,6 +11,26 @@ export function generateStaticParams() {
     type: post.frontMatter.type,
     slug: post.slug,
   }))
+}
+
+export function generateMetadata({
+  params,
+}: {
+  params: { category: string; type: string; slug: string }
+}): Metadata {
+  const post = getPostBySlug(params.slug, params.category, params.type, 'en')
+  if (!post) return {}
+  return buildPageMetadata(
+    { kind: 'blog', category: params.category, type: params.type, slug: post.slug },
+    'en',
+    {
+      title: post.frontMatter.title,
+      description: post.frontMatter.description,
+      body: post.content,
+      date: String(post.frontMatter.date),
+      contentLang: post.lang,
+    }
+  )
 }
 
 export default function LegacyBlogPost({

@@ -7,7 +7,7 @@ import { LOCALES, isLocale } from '@/lib/i18n/config'
 import { getDictionary } from '@/lib/i18n'
 import { localePath } from '@/lib/i18n/paths'
 import { SITE_NAME, absoluteUrl, siteOrigin } from '@/lib/site'
-import { SITE_OG_PATH } from '@/lib/share-paths'
+import { siteOgPath } from '@/lib/share-paths'
 import '../globals.css'
 
 // Only the languages listed here exist; anything else is a 404.
@@ -32,9 +32,9 @@ export function generateMetadata({ params }: { params: { lang: string } }): Meta
       description: t.meta.description,
       url: absoluteUrl(localePath(params.lang, '/')),
       locale: t.meta.ogLocale,
-      images: [{ url: absoluteUrl(SITE_OG_PATH), width: 1200, height: 630 }],
+      images: [{ url: absoluteUrl(siteOgPath(params.lang)), width: 1200, height: 630 }],
     },
-    twitter: { card: 'summary_large_image', images: [absoluteUrl(SITE_OG_PATH)] },
+    twitter: { card: 'summary_large_image', images: [absoluteUrl(siteOgPath(params.lang))] },
   }
 }
 

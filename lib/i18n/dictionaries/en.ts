@@ -7,6 +7,7 @@ export const en = {
     description:
       'Portfolio and blog of Chuyue Zhang, a system designer graduate from University of Toronto',
     ogLocale: 'en_US',
+    cardBadge: 'Portfolio & Blog',
   },
   nav: {
     home: 'Home',

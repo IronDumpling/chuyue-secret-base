@@ -7,7 +7,7 @@ import MDXContent from '@/components/shared/MDXContent'
 import MDXHeaderImage from '@/components/shared/MDXHeaderImage'
 import { getCategoryDisplayName, getTypeDisplayName } from '@/lib/blog-utils'
 import { buildPageMetadata } from '@/lib/seo'
-import { INTL_LOCALE, type Locale } from '@/lib/i18n/config'
+import { INTL_LOCALE, LOCALES, type Locale } from '@/lib/i18n/config'
 import { localePath } from '@/lib/i18n/paths'
 import { getDictionary } from '@/lib/i18n'
 import FallbackNotice from '@/components/shared/FallbackNotice'
@@ -37,13 +37,21 @@ export async function generateStaticParams() {
 export function generateMetadata({ params }: BlogPostPageProps): Metadata {
   const post = getPostBySlug(params.slug, params.category, params.type, params.lang)
   if (!post) return {}
+  // Languages this post is really written in (the other one is only a fallback).
+  const languages = LOCALES.filter(l => {
+    const version = getPostBySlug(params.slug, params.category, params.type, l)
+    return version && !version.isFallback
+  })
   return buildPageMetadata(
     { kind: 'blog', category: post.frontMatter.category, type: post.frontMatter.type, slug: post.slug },
+    params.lang,
     {
       title: post.frontMatter.title,
       description: post.frontMatter.description,
       body: post.content,
       date: String(post.frontMatter.date),
+      contentLang: post.lang,
+      languages,
     }
   )
 }

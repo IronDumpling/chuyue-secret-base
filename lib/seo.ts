@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
 import { absoluteUrl, SITE_NAME } from './site'
 import { pagePath, shareImagePath, type ShareTarget } from './share-paths'
+import { DEFAULT_LOCALE, LOCALES, type Locale } from './i18n/config'
+import { getDictionary } from './i18n'
 
 export function summarize(description: string | undefined, body: string, max = 160): string {
   if (description && description.trim()) return description.trim()
@@ -22,26 +24,42 @@ interface PageMetaInput {
   description?: string
   body: string
   date?: string
+  // Language the text is really written in. When it differs from the page language the
+  // page is a fallback (e.g. English text served at /zh/...): its canonical then points
+  // at the page in the real language, so the two are not treated as duplicates.
+  contentLang?: Locale
+  // Languages this post exists in natively. Defaults to all of them.
+  languages?: Locale[]
 }
 
-export function buildPageMetadata(t: ShareTarget, o: PageMetaInput): Metadata {
-  const url = absoluteUrl(pagePath(t))
-  const image = absoluteUrl(shareImagePath(t, 'og'))
+export function buildPageMetadata(t: ShareTarget, lang: Locale, o: PageMetaInput): Metadata {
+  const url = absoluteUrl(pagePath(t, lang))
+  const canonical = absoluteUrl(pagePath(t, o.contentLang ?? lang))
+  const image = absoluteUrl(shareImagePath(t, 'og', lang))
   const description = summarize(o.description, o.body)
   const published = o.date ? new Date(o.date) : undefined
   const publishedTime =
     published && !Number.isNaN(published.getTime()) ? published.toISOString() : undefined
 
+  const available = o.languages ?? [...LOCALES]
+  const languages: Record<string, string> = {}
+  for (const l of LOCALES) {
+    if (available.includes(l)) languages[l] = absoluteUrl(pagePath(t, l))
+  }
+  const defaultLang = available.includes(DEFAULT_LOCALE) ? DEFAULT_LOCALE : available[0]
+  if (defaultLang) languages['x-default'] = absoluteUrl(pagePath(t, defaultLang))
+
   return {
     title: o.title,
     description,
-    alternates: { canonical: url },
+    alternates: { canonical, languages },
     openGraph: {
       type: 'article',
       url,
       title: o.title,
       description,
       siteName: SITE_NAME,
+      locale: getDictionary(lang).meta.ogLocale,
       images: [{ url: image, width: 1200, height: 630, alt: o.title }],
       ...(publishedTime ? { publishedTime } : {}),
     },

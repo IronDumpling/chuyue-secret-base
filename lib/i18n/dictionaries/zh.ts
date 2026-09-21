@@ -6,6 +6,7 @@ export const zh: Dictionary = {
     title: 'Chuyue - 系统设计师',
     description: 'Chuyue Zhang 的作品集与博客，多伦多大学系统设计专业毕业生',
     ogLocale: 'zh_CN',
+    cardBadge: '作品集与博客',
   },
   nav: {
     home: '首页',
