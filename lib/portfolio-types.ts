@@ -1,6 +1,8 @@
 // Client-safe type definitions for portfolio
 // These types can be imported in client components
 
+import type { Locale } from './i18n/config'
+
 export interface Link {
   url: string
   label: string
@@ -20,5 +22,7 @@ export interface PortfolioProject {
     description?: string
   }
   content: string
+  lang?: Locale // language the text is in
+  isFallback?: boolean // true when it is not the language the page asked for
 }
 

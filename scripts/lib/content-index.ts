@@ -2,6 +2,8 @@ import fs from 'fs'
 import path from 'path'
 import matter from 'gray-matter'
 import type { ShareTarget } from '../../lib/share-paths'
+import { parseContentFilename, pickLocalized, type LangFile } from '../../lib/content-lang'
+import { DEFAULT_LOCALE, type Locale } from '../../lib/i18n/config'
 
 export interface ContentEntry extends ShareTarget {
   title: string
@@ -9,6 +11,8 @@ export interface ContentEntry extends ShareTarget {
   rating?: number
   images: string[]
   body: string
+  lang: Locale // language the text is in
+  isFallback: boolean // true when that is not the language that was asked for
 }
 
 function dirs(parent: string): string[] {
@@ -16,15 +20,7 @@ function dirs(parent: string): string[] {
   return fs.readdirSync(parent, { withFileTypes: true }).filter(e => e.isDirectory()).map(e => e.name)
 }
 
-function markdownFiles(parent: string): string[] {
-  if (!fs.existsSync(parent)) return []
-  return fs
-    .readdirSync(parent, { withFileTypes: true })
-    .filter(e => e.isFile() && /\.mdx?$/.test(e.name))
-    .map(e => e.name)
-}
-
-function read(file: string, target: ShareTarget): ContentEntry {
+function read(file: string, target: ShareTarget): Omit<ContentEntry, 'lang' | 'isFallback'> {
   const { data, content } = matter(fs.readFileSync(file, 'utf8'))
   return {
     ...target,
@@ -36,27 +32,42 @@ function read(file: string, target: ShareTarget): ContentEntry {
   }
 }
 
-export function collectContent(contentDir: string): ContentEntry[] {
+// One entry per post in a folder, in the requested language where it exists.
+function readFolder(folder: string, base: Omit<ShareTarget, 'slug'>, lang: Locale): ContentEntry[] {
+  if (!fs.existsSync(folder)) return []
+
+  const files: LangFile<Omit<ContentEntry, 'lang' | 'isFallback'>>[] = []
+  for (const entry of fs.readdirSync(folder, { withFileTypes: true })) {
+    if (!entry.isFile()) continue
+    const parsed = parseContentFilename(entry.name)
+    if (!parsed) continue
+    files.push({
+      slug: parsed.slug,
+      lang: parsed.lang,
+      value: read(path.join(folder, entry.name), { ...base, slug: parsed.slug }),
+    })
+  }
+
+  return pickLocalized(files, lang).map(({ lang: actual, isFallback, value }) => ({
+    ...value,
+    lang: actual,
+    isFallback,
+  }))
+}
+
+export function collectContent(contentDir: string, lang: Locale = DEFAULT_LOCALE): ContentEntry[] {
   const entries: ContentEntry[] = []
 
   const blogRoot = path.join(contentDir, 'blog')
   for (const category of dirs(blogRoot)) {
     for (const type of dirs(path.join(blogRoot, category))) {
-      const folder = path.join(blogRoot, category, type)
-      for (const name of markdownFiles(folder)) {
-        const slug = path.basename(name, path.extname(name))
-        entries.push(read(path.join(folder, name), { kind: 'blog', category, type, slug }))
-      }
+      entries.push(...readFolder(path.join(blogRoot, category, type), { kind: 'blog', category, type }, lang))
     }
   }
 
   const portfolioRoot = path.join(contentDir, 'portfolio')
   for (const category of dirs(portfolioRoot)) {
-    const folder = path.join(portfolioRoot, category)
-    for (const name of markdownFiles(folder)) {
-      const slug = path.basename(name, path.extname(name))
-      entries.push(read(path.join(folder, name), { kind: 'portfolio', category, slug }))
-    }
+    entries.push(...readFolder(path.join(portfolioRoot, category), { kind: 'portfolio', category }, lang))
   }
 
   return entries

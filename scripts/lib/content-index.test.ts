@@ -47,4 +47,21 @@ describe('collectContent', () => {
     expect(collectContent(dir)).toEqual([])
     expect(collectContent(path.join(dir, 'missing'))).toEqual([])
   })
+
+  it('serves the requested language and falls back to the other one', () => {
+    write('blog/music/review/a.mdx', '---\ntitle: "A"\n---\nen body')
+    write('blog/music/review/a.zh.mdx', '---\ntitle: "甲"\n---\nzh body')
+    write('blog/music/review/b.mdx', '---\ntitle: "B"\n---\nonly english')
+    write('portfolio/applications/p.zh.mdx', '---\ntitle: "项目"\n---\nonly chinese')
+
+    const zh = collectContent(dir, 'zh')
+    expect(zh.find(e => e.slug === 'a')).toMatchObject({ title: '甲', lang: 'zh', isFallback: false })
+    expect(zh.find(e => e.slug === 'b')).toMatchObject({ title: 'B', lang: 'en', isFallback: true })
+    expect(zh.find(e => e.slug === 'p')).toMatchObject({ title: '项目', lang: 'zh', isFallback: false })
+
+    const en = collectContent(dir, 'en')
+    expect(en.find(e => e.slug === 'a')).toMatchObject({ title: 'A', lang: 'en', isFallback: false })
+    expect(en.find(e => e.slug === 'p')).toMatchObject({ title: '项目', lang: 'zh', isFallback: true })
+    expect(en.filter(e => e.slug === 'a')).toHaveLength(1)
+  })
 })
