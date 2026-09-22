@@ -7,7 +7,7 @@ import MDXHeaderImage from '@/components/shared/MDXHeaderImage'
 import { getCategoryPath, hasRating } from '@/lib/blog-utils'
 import { buildPageMetadata, summarize } from '@/lib/seo'
 import ShareBar from '@/components/shared/ShareBar'
-import LinkIcon from '@/components/shared/LinkIcons'
+import LinkTile from '@/components/shared/LinkTile'
 import { describeLink } from '@/lib/link-icon'
 import { getShareProps } from '@/lib/share'
 import { INTL_LOCALE, LOCALES, type Locale } from '@/lib/i18n/config'
@@ -109,15 +109,6 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           </div>
         </div>
 
-        <ShareBar
-          {...getShareProps(
-            { kind: 'blog', category: post.frontMatter.category, slug: post.slug },
-            params.lang,
-            post.frontMatter.title,
-            summarize(post.frontMatter.description, post.content)
-          )}
-        />
-
         {/* Header Image */}
         <MDXHeaderImage
           images={
@@ -128,24 +119,28 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           title={post.frontMatter.title}
         />
 
-        {/* Website Link */}
-        {post.frontMatter.website && (() => {
-          const website =
-            typeof post.frontMatter.website === 'string'
+        {/* Website Link + Share: same icon-tile row as portfolio's detail page. */}
+        {(() => {
+          const website = post.frontMatter.website
+            ? typeof post.frontMatter.website === 'string'
               ? { url: post.frontMatter.website }
               : post.frontMatter.website
-          const info = describeLink(website)
+            : null
           return (
-            <div className="flex flex-wrap gap-4 mb-8">
-              <a
-                href={website.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="button-secondary inline-flex items-center gap-2"
-              >
-                <LinkIcon iconId={info.iconId} />
-                {info.label}
-              </a>
+            <div className="flex flex-wrap items-start gap-4 mb-8">
+              {website &&
+                (() => {
+                  const info = describeLink(website)
+                  return <LinkTile href={website.url} iconId={info.iconId} label={info.label} accent />
+                })()}
+              <ShareBar
+                {...getShareProps(
+                  { kind: 'blog', category: post.frontMatter.category, slug: post.slug },
+                  params.lang,
+                  post.frontMatter.title,
+                  summarize(post.frontMatter.description, post.content)
+                )}
+              />
             </div>
           )
         })()}

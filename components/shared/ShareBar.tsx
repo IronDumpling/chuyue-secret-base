@@ -6,6 +6,7 @@ import { useT } from '@/components/shared/LocaleProvider'
 import { withBasePath } from '@/lib/utils'
 import { SHARE_TARGETS } from '@/lib/share-targets'
 import ImageLightbox from '@/components/shared/ImageLightbox'
+import { tileIconClass, tileLabelClass } from '@/components/shared/tileStyles'
 
 interface ShareBarProps {
   title: string
@@ -104,11 +105,6 @@ const PLATFORM_NAMES: Record<string, string> = {
   telegram: 'Telegram',
 }
 
-// Neutral (Copy Link / Save Poster, the two most-used actions) tile styling, vs. accent
-// (everything else) — see the plan's "no per-platform brand colors" decision.
-const accentTile = 'bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400'
-const neutralTile = 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'
-
 function Tile({
   onClick,
   accent,
@@ -120,13 +116,10 @@ function Tile({
   label: string
   children: React.ReactNode
 }) {
-  const iconClass = `w-14 h-14 rounded-2xl flex items-center justify-center transition-transform active:scale-95 ${
-    accent ? accentTile : neutralTile
-  }`
   return (
     <button type="button" onClick={onClick} className="flex flex-col items-center gap-1.5">
-      <span className={iconClass}>{children}</span>
-      <span className="text-xs text-center text-gray-700 dark:text-gray-300 max-w-[4.5rem] truncate">{label}</span>
+      <span className={tileIconClass(accent)}>{children}</span>
+      <span className={tileLabelClass}>{label}</span>
     </button>
   )
 }
@@ -314,18 +307,22 @@ export default function ShareBar({ title, description, url, posterPath, filename
     )
   )
 
+  // No wrapping block/margin here — this renders as one tile inside the caller's link+share
+  // row (see the portfolio/blog detail pages), matching LinkTile's shape exactly.
   return (
-    <div className="mb-8">
+    <>
       <button
         type="button"
         ref={triggerRef}
         onClick={openMenu}
         aria-haspopup="true"
         aria-expanded={mounted}
-        className="button-secondary inline-flex items-center gap-2 text-sm"
+        className="flex flex-col items-center gap-1.5"
       >
-        <ShareIcon />
-        {t.share.shareButton}
+        <span className={tileIconClass(false)}>
+          <ShareIcon className="w-6 h-6" />
+        </span>
+        <span className={tileLabelClass}>{t.share.shareButton}</span>
       </button>
       {panel}
       <ImageLightbox
@@ -336,7 +333,7 @@ export default function ShareBar({ title, description, url, posterPath, filename
         downloadHref={withBasePath(posterPath)}
         downloadFilename={filename}
       />
-    </div>
+    </>
   )
 }
 
