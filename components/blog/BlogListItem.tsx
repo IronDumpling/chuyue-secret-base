@@ -17,7 +17,7 @@ interface BlogListItemProps {
 
 // One post in the blog list: category, title, a two-line summary and a line of facts on the
 // left, a small cover on the right. The whole row is the link (the title's ::after covers it),
-// so the tags and the rating inside it stay plain text instead of nested links. The divider
+// so the rating inside it stays plain text instead of a nested link. The divider
 // sits on the outer element so it stays straight while the row inside has rounded corners.
 export default function BlogListItem({ post, className = '', style }: BlogListItemProps) {
   const locale = useLocale()
@@ -59,11 +59,6 @@ export default function BlogListItem({ post, className = '', style }: BlogListIt
                 <span className="tabular-nums">{score}/10</span>
               </span>
             )}
-            {frontMatter.tags?.slice(0, 3).map(tag => (
-              <span key={tag} className="text-primary-600/80 dark:text-primary-400/80">
-                #{tag}
-              </span>
-            ))}
             {post.isFallback && (
               // The text is in the other language than the page.
               <span className="rounded border border-gray-300 px-1 py-px text-[10px] leading-none dark:border-gray-600">

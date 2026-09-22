@@ -11,7 +11,6 @@ export interface BlogPost {
     category: BlogCategory // from the folder
     group: BlogGroup // from lib/taxonomy.ts
     date: string
-    tags?: string[]
     rating?: number  // Only used for reviews
     images?: string[]
     description?: string
