@@ -175,5 +175,6 @@ export const zh: Dictionary = {
     savePoster: '保存海报',
     shareButton: '分享',
     scanToRead: '扫码阅读',
+    close: '关闭',
   },
 }

@@ -178,6 +178,7 @@ export const en = {
     savePoster: 'Save Poster',
     shareButton: 'Share',
     scanToRead: 'Scan to read',
+    close: 'Close',
   },
 }
 
