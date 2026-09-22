@@ -75,6 +75,12 @@ chuyue-secret-base/
 
 Content lives in the separate repository [`chuyue-content`](https://github.com/IronDumpling/chuyue-content). Commit and push there (from your clone in `content/`, or on GitHub). Every push to its `main` branch triggers a rebuild and deploy of this site through GitHub Actions (`repository_dispatch`, see `.github/workflows/deploy.yml`). Put images in `content/images/blog/...` or `content/images/portfolio/...` and reference them as `/images/blog/...` or `/images/portfolio/...`.
 
+### Writing from a phone (Sveltia CMS)
+
+Open `<site>/admin/` and sign in with a GitHub fine-grained personal access token scoped to the `chuyue-content` repository only, with Contents: read and write (create one at GitHub Settings → Developer settings → Personal access tokens → Fine-grained tokens). The token is entered on the login screen and stays in that browser's local storage; it is never committed or added to CI, and it has no access to this site repository.
+
+Posts and photos are committed straight to `chuyue-content`'s `main`, which rebuilds the site the same way a manual push does; photos are converted to WebP at up to 2048px on the device before upload. The form has one entry per Blog and Portfolio category, generated from `lib/taxonomy.ts` by `npm run generate:cms` (part of `predev`/`prebuild`) — adding a category there is enough for the editor to pick it up, no editor changes needed. The generated files under `public/admin/` are git-ignored and rebuilt on every `dev`/`build`.
+
 ### Portfolio Projects
 
 Create a new MDX file in `content/portfolio/{category}/{slug}.mdx` (in the content repo):

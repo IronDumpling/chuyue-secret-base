@@ -3,11 +3,10 @@
 
 import type { Locale } from './i18n/config'
 import type { PortfolioCategory, PortfolioGroup } from './taxonomy'
+import type { Link } from './frontmatter'
 
-export interface Link {
-  url: string
-  label: string
-}
+// Re-exported for existing callers that import Link from here.
+export type { Link }
 
 export interface PortfolioProject {
   slug: string
@@ -18,9 +17,9 @@ export interface PortfolioProject {
     date: string
     context?: 'course' | 'research' | 'work' | 'personal' // where it was made; not a category
     tags?: string[]
-    github?: string | Link[] // Support single link, multiple links, or labeled links
-    demo?: string | Link[] // Support single link, multiple links, or labeled links
-    website?: string | Link[] // Support single link, multiple links, or labeled links
+    github?: Link[] // normalized by lib/portfolio.ts from string | object | list
+    demo?: Link[] // normalized by lib/portfolio.ts from string | object | list
+    website?: Link[] // normalized by lib/portfolio.ts from string | object | list
     images?: string[]
     description?: string
   }

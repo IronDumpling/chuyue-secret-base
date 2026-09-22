@@ -2,6 +2,7 @@ import 'server-only'
 
 import { getLocalizedMDXFile, getLocalizedMDXFiles, type LocalizedMDXContent } from './mdx'
 import { getCategories, getGroupOf, isValidCategory, type PortfolioCategory } from './taxonomy'
+import { normalizeLinks } from './frontmatter'
 import type { Locale } from './i18n/config'
 import type { PortfolioProject } from './portfolio-types'
 
@@ -9,6 +10,8 @@ import type { PortfolioProject } from './portfolio-types'
 export type { PortfolioProject }
 
 // Category comes from the folder and group from the taxonomy, not from the frontmatter.
+// github/demo/website are normalized to a list here so every consumer sees one shape,
+// regardless of whether the content file wrote a string, a single object, or a list.
 function toProject(file: LocalizedMDXContent, category: PortfolioCategory): PortfolioProject {
   return {
     slug: file.slug,
@@ -16,6 +19,9 @@ function toProject(file: LocalizedMDXContent, category: PortfolioCategory): Port
       ...file.frontMatter,
       category,
       group: getGroupOf('portfolio', category),
+      github: normalizeLinks(file.frontMatter.github),
+      demo: normalizeLinks(file.frontMatter.demo),
+      website: normalizeLinks(file.frontMatter.website),
     } as PortfolioProject['frontMatter'],
     content: file.content,
     lang: file.lang,

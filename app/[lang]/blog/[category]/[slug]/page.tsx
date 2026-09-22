@@ -103,18 +103,6 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               <Rating score={post.frontMatter.rating} />
             )}
           </div>
-          {post.frontMatter.tags && (
-            <div className="flex flex-wrap gap-2">
-              {post.frontMatter.tags.map((tag, index) => (
-                <span
-                  key={index}
-                  className="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full"
-                >
-                  #{tag}
-                </span>
-              ))}
-            </div>
-          )}
         </div>
 
         {/* Header Image */}

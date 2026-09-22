@@ -11,8 +11,9 @@
     "sync:content": "tsx scripts/sync-content.ts",
     "generate:share": "tsx scripts/generate-share-images.ts",
     "generate:about": "tsx scripts/generate-about-images.ts",
-    "prebuild": "npm run sync:content && npm run generate:about && npm run generate:share",
-    "predev": "npm run sync:content && npm run generate:about"
+    "generate:cms": "tsx scripts/generate-cms-config.ts",
+    "prebuild": "npm run sync:content && npm run generate:about && npm run generate:share && npm run generate:cms",
+    "predev": "npm run sync:content && npm run generate:about && npm run generate:cms"
   },
   "dependencies": {
     "@mdx-js/loader": "^3.0.1",
@@ -32,6 +33,7 @@
   },
   "devDependencies": {
     "@resvg/resvg-js": "^2.6.2",
+    "@sveltia/cms": "^0.217.0",
     "@types/node": "^20.14.0",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
@@ -44,7 +46,8 @@
     "tailwindcss": "^3.4.7",
     "tsx": "^4.23.15",
     "typescript": "^5.5.3",
-    "vitest": "^3.2.7"
+    "vitest": "^3.2.7",
+    "yaml": "^2.9.1"
   },
   "overrides": {
     "glob": "^10.3.10",

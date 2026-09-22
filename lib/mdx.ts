@@ -11,6 +11,7 @@ import rehypeSlug from 'rehype-slug'
 import rehypeAutolinkHeadings from 'rehype-autolink-headings'
 import { parseContentFilename, pickLocalized } from './content-lang'
 import { DEFAULT_LOCALE, type Locale } from './i18n/config'
+import { normalizeFrontMatter } from './frontmatter'
 
 const contentDirectory = path.join(process.cwd(), 'content')
 
@@ -37,7 +38,7 @@ export function getMDXFile(filePath: string): MDXContent | null {
     const slug = path.basename(filePath, path.extname(filePath))
 
     return {
-      frontMatter: data,
+      frontMatter: normalizeFrontMatter(data),
       content,
       slug,
     }
