@@ -46,4 +46,5 @@ next-env.d.ts
 # generated at build time
 /public/share/
 /lib/generated/
+/public/admin/
 /.cache/
