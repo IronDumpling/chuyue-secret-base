@@ -5,7 +5,9 @@ import Rating from '@/components/blog/Rating'
 import MDXContent from '@/components/shared/MDXContent'
 import MDXHeaderImage from '@/components/shared/MDXHeaderImage'
 import { getCategoryPath, hasRating } from '@/lib/blog-utils'
-import { buildPageMetadata } from '@/lib/seo'
+import { buildPageMetadata, summarize } from '@/lib/seo'
+import ShareBar from '@/components/shared/ShareBar'
+import { getShareProps } from '@/lib/share'
 import { INTL_LOCALE, LOCALES, type Locale } from '@/lib/i18n/config'
 import { localePath } from '@/lib/i18n/paths'
 import { getDictionary } from '@/lib/i18n'
@@ -104,6 +106,15 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             )}
           </div>
         </div>
+
+        <ShareBar
+          {...getShareProps(
+            { kind: 'blog', category: post.frontMatter.category, slug: post.slug },
+            params.lang,
+            post.frontMatter.title,
+            summarize(post.frontMatter.description, post.content)
+          )}
+        />
 
         {/* Header Image */}
         <MDXHeaderImage

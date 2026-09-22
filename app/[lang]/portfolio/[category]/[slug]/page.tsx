@@ -4,7 +4,9 @@ import { getProjectBySlug } from '@/lib/portfolio'
 import type { Link as PortfolioLink } from '@/lib/frontmatter'
 import MDXContent from '@/components/shared/MDXContent'
 import MDXHeaderImage from '@/components/shared/MDXHeaderImage'
-import { buildPageMetadata } from '@/lib/seo'
+import ShareBar from '@/components/shared/ShareBar'
+import { getShareProps } from '@/lib/share'
+import { buildPageMetadata, summarize } from '@/lib/seo'
 import { INTL_LOCALE, LOCALES, type Locale } from '@/lib/i18n/config'
 import { localePath } from '@/lib/i18n/paths'
 import { getDictionary } from '@/lib/i18n'
@@ -148,6 +150,15 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
             )}
           </div>
         </div>
+
+        <ShareBar
+          {...getShareProps(
+            { kind: 'portfolio', category: project.frontMatter.category, slug: project.slug },
+            params.lang,
+            project.frontMatter.title,
+            summarize(project.frontMatter.description, project.content)
+          )}
+        />
 
         {/* Header Image */}
         <MDXHeaderImage
