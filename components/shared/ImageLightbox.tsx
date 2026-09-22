@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import { createPortal } from 'react-dom'
 import SafeImage from '@/components/shared/SafeImage'
 
 interface ImageLightboxProps {
@@ -20,10 +21,11 @@ export default function ImageLightbox({
 }: ImageLightboxProps) {
   const [currentIndex, setCurrentIndex] = useState(initialIndex)
 
-  // Update current index when initialIndex changes
+  // Start at initialIndex every time the lightbox opens, not only when it changes:
+  // otherwise reopening at the same picture would resume wherever it was last left.
   useEffect(() => {
-    setCurrentIndex(initialIndex)
-  }, [initialIndex])
+    if (isOpen) setCurrentIndex(initialIndex)
+  }, [initialIndex, isOpen])
 
   // Navigation functions
   const goToNext = useCallback(() => {
@@ -64,9 +66,12 @@ export default function ImageLightbox({
     }
   }, [isOpen])
 
-  if (!isOpen) return null
+  if (!isOpen || typeof document === 'undefined') return null
 
-  return (
+  // Rendered into <body>, not where the component sits: an ancestor with backdrop-filter,
+  // transform or overflow (the About card has them) would otherwise turn "fixed, full
+  // screen" into "inside that ancestor".
+  return createPortal(
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm"
       onClick={onClose}
@@ -166,7 +171,8 @@ export default function ImageLightbox({
           ))}
         </div>
       )}
-    </div>
+    </div>,
+    document.body
   )
 }
 

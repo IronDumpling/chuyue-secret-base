@@ -10,8 +10,9 @@
     "test": "vitest run",
     "sync:content": "tsx scripts/sync-content.ts",
     "generate:share": "tsx scripts/generate-share-images.ts",
-    "prebuild": "npm run sync:content && npm run generate:share",
-    "predev": "npm run sync:content"
+    "generate:about": "tsx scripts/generate-about-images.ts",
+    "prebuild": "npm run sync:content && npm run generate:about && npm run generate:share",
+    "predev": "npm run sync:content && npm run generate:about"
   },
   "dependencies": {
     "@mdx-js/loader": "^3.0.1",

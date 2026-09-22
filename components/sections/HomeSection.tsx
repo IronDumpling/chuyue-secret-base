@@ -22,7 +22,7 @@ export default function HomeSection() {
           <div className="flex justify-center lg:justify-start w-full lg:w-1/2 lg:pl-4">
             <div className="w-40 h-40 md:w-48 md:h-48 lg:w-60 lg:h-60 xl:w-72 xl:h-72 rounded-full overflow-hidden shadow-2xl ring-1 ring-white/10 bg-white/5">
               <img
-                src={withBasePath('/images/home/profileImg2.jpeg')}
+                src={withBasePath('/images/home/profile.jpeg')}
                 alt={t.meta.fullName}
                 className="w-full h-full object-cover"
               />
