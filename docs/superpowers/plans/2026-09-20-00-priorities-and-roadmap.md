@@ -25,28 +25,29 @@ Written 2026-09-20. This ranks the workstreams from the external "chuyue-content
 | External plan item | Verdict | Reason |
 |---|---|---|
 | Phase 1: separate `chuyue-content` repo | **Do (owner decision, public repo)** — [plan 07](2026-09-20-07-content-repo-split.md) | "Easier phone editing" alone is not a reason (the editor works on any repo). The real reasons are: the phone token can then only touch content, not site code and deploy config; and uploaded photos stop growing the code repo's history. Cost: a checkout step, a dispatch workflow with one cross-repo token, and an image sync step. Deploy stays in the site repo through GitHub Actions. |
-| Phase 4: mobile editor (Sveltia CMS) | **Do, pointed at the content repo** | Highest daily-use value. Config only, no server. Needs a frontmatter date fix, and compresses new photos on the phone before upload (see plan 03). |
+| Phase 4: mobile editor (Sveltia CMS) | **Do, pointed at the content repo, Blog + Portfolio** | Highest daily-use value. Config only, no server, generated from `lib/taxonomy.ts`. Needs a frontmatter date fix and a link-field normalization (portfolio's mixed string/object/list shapes), and compresses new photos on the phone before upload (see plan 03). |
 | Phase 3: og image + poster + share button | **Do, split in two** | Link cards first (plan 02), poster + share buttons second (plan 04). Generated at build time as real `.jpg` files, because static export may serve extensionless generated image routes with a wrong content type. |
 | Phase 2: `/zh` `/en` routes | **Do, before the mobile editor (owner decision 2026-09-21)** — [plan 08](2026-09-21-08-i18n.md) | Default language English, `/en/` and `/zh/` route trees, every UI string translated, per-post language files with fallback. Old URLs stay alive as redirect pages. |
 | Phase 6: RSS, structured data, analytics | **Do, small** | Sitemap and robots already exist. Plan 05. |
 | Phase 5: Shutterstock auto-read | **Spike only** | The manual button already works. The API is buyer-oriented and the terms are unverified. Plan 06 is a time-boxed probe with a written go/no-go. |
-| Portfolio uses the same editor | **Later** | Link fields are mixed-shape (see above). Add after the blog editor round-trips cleanly. |
+| Portfolio uses the same editor | **Do, together with Blog** (owner decision 2026-09-21) | The taxonomy restructure (PR #12/#1) removed the `type` level and unified categories under `lib/taxonomy.ts`; plan 03's task 1 normalizes portfolio's mixed link-field shapes before the editor is generated, so there is no reason left to defer portfolio. |
 
 ## Priority order
 
-| # | Plan | Effort | Depends on | Why this position |
+| # | Plan | Effort | Depends on | Status |
 |---|---|---|---|---|
-| 1 | [07 Content repo split](2026-09-20-07-content-repo-split.md) | M | none | Must come first: the other plans read `content/` and write to the content repo. Also installs `vitest` and `tsx` for all later plans. |
-| 2 | [02 Link previews](2026-09-20-02-link-previews.md) | M | 07 | Zero preview metadata today, so this is the most visible payoff. Also creates the single site-URL module and the build-time image renderer plan 04 reuses. |
-| 3 | [08 Bilingual site (en default, zh)](2026-09-21-08-i18n.md) | L | 02 | Changes every URL and the content file layout, so it must come before the editor, whose form and folders depend on that layout. |
-| 4 | [03 Mobile editor](2026-09-20-03-mobile-editor.md) | M | 07, 08 | Removes the friction of publishing from a phone; its token can only write the content repo. Needs bilingual fields from plan 08. |
-| 5 | [04 Poster and share buttons](2026-09-20-04-share-poster.md) | M | 02 | Poster with QR code for chat apps and stories, plus copy / save / system-share buttons. |
-| 6 | [05 Discoverability](2026-09-20-05-discoverability.md) | S | 02 (one small edit) | RSS, structured data, analytics. |
-| 7 | [06 Shutterstock spike](2026-09-20-06-shutterstock-spike.md) | S | 07 (for where the files live) | Only produces a decision. The manual button task inside it needs one URL from you. |
+| 1 | [07 Content repo split](2026-09-20-07-content-repo-split.md) | M | none | **Done.** |
+| 2 | [02 Link previews](2026-09-20-02-link-previews.md) | M | 07 | **Done.** |
+| 3 | [08 Bilingual site (en default, zh)](2026-09-21-08-i18n.md) | L | 02 | **Done.** |
+| — | Taxonomy restructure (category = folder = URL, groups menu-only) — [ADR 0001](../../adr/0001-taxonomy-leaf-is-folder-and-url.md) | M | 08 | **Done** (site PR #12, content PR #1, merged to `main`). Not in the original external plan; inserted between 08 and 03 because the old category/type layout made the editor's form impossible to generate safely. |
+| 4 | [03 Mobile editor](2026-09-20-03-mobile-editor.md) | M | 07, 08, taxonomy restructure | **Next.** Scope is now Blog's 6 categories + Portfolio's 6 categories (12 collections), generated from `lib/taxonomy.ts`. |
+| 5 | [04 Poster and share buttons](2026-09-20-04-share-poster.md) | M | 02 | Not started. |
+| 6 | [05 Discoverability](2026-09-20-05-discoverability.md) | S | 02 (one small edit) | Not started. |
+| 7 | [06 Shutterstock spike](2026-09-20-06-shutterstock-spike.md) | S | 07 (for where the files live) | Not started. |
 
 The plan file numbers are creation order, not execution order; follow the table. (A former plan 01, image compression, was dropped on 2026-09-20, so there is no `01` file.)
 
-Dependency sketch: `07 -> 02 -> 08 -> 03`, `02 -> 04`, `02 -> 05`. Plans 04 and 05 must use the language-aware paths from plan 08 once it has landed. Plans 03 and 05 are otherwise independent of each other.
+Dependency sketch: `07 -> 02 -> 08 -> taxonomy restructure -> 03`, `02 -> 04`, `02 -> 05`. Plans 04 and 05 must use the language-aware paths from plan 08 once it has landed. Plans 03 and 05 are otherwise independent of each other.
 
 ## Internationalization (decided 2026-09-21)
 
