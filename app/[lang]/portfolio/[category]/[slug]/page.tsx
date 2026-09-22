@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { getProjectBySlug } from '@/lib/portfolio'
+import type { Link as PortfolioLink } from '@/lib/frontmatter'
 import MDXContent from '@/components/shared/MDXContent'
 import MDXHeaderImage from '@/components/shared/MDXHeaderImage'
 import { buildPageMetadata } from '@/lib/seo'
@@ -10,6 +11,56 @@ import { getDictionary } from '@/lib/i18n'
 import { format } from '@/lib/i18n/format'
 import ListBackLink from '@/components/shared/ListBackLink'
 import FallbackNotice from '@/components/shared/FallbackNotice'
+
+const GITHUB_ICON_PATH =
+  'M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z'
+
+// GitHub/demo/website links, normalized (lib/frontmatter.ts's normalizeLinks) to a plain
+// list of {url, label?} before this component ever sees them.
+function LinkButtons({
+  links,
+  labelFor,
+  variant,
+  icon,
+}: {
+  links: PortfolioLink[]
+  labelFor: (link: PortfolioLink, index: number, total: number) => string
+  variant: 'primary' | 'secondary'
+  icon: React.ReactNode
+}) {
+  return (
+    <>
+      {links.map((link, index) => (
+        <a
+          key={link.url}
+          href={link.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`${variant === 'primary' ? 'button-primary' : 'button-secondary'} inline-flex items-center gap-2`}
+        >
+          {link.label ?? labelFor(link, index, links.length)}
+          {icon}
+        </a>
+      ))}
+    </>
+  )
+}
+
+function ExternalLinkIcon() {
+  return (
+    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+    </svg>
+  )
+}
+
+function GithubIcon() {
+  return (
+    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+      <path d={GITHUB_ICON_PATH} />
+    </svg>
+  )
+}
 
 interface ProjectPageProps {
   params: {
@@ -109,107 +160,30 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         />
 
         {/* Links */}
-        {(project.frontMatter.github || project.frontMatter.demo || project.frontMatter.website) && (
+        {((project.frontMatter.github?.length ?? 0) > 0 ||
+          (project.frontMatter.demo?.length ?? 0) > 0 ||
+          (project.frontMatter.website?.length ?? 0) > 0) && (
           <div className="flex flex-wrap gap-4 mb-8">
-            {typeof project.frontMatter.github === 'string' && project.frontMatter.github && (
-              <a
-                href={project.frontMatter.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="button-primary inline-flex items-center gap-2"
-              >
-                {t.portfolio.viewOnGithub}
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                </svg>
-              </a>
-            )}
-            {Array.isArray(project.frontMatter.github) && project.frontMatter.github.map((item, index) => {
-              // Handle both string array and object array formats
-              const url = typeof item === 'string' ? item : item.url
-              const label = typeof item === 'string' 
-                ? (project.frontMatter.github!.length > 1 ? format(t.portfolio.githubRepo, { n: index + 1 }) : t.portfolio.viewOnGithub)
-                : item.label
-              
-              return (
-                <a
-                  key={index}
-                  href={url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="button-primary inline-flex items-center gap-2"
-                >
-                  {label}
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                  </svg>
-                </a>
-              )
-            })}
-            {typeof project.frontMatter.demo === 'string' && project.frontMatter.demo && (
-              <a
-                href={project.frontMatter.demo}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="button-secondary inline-flex items-center gap-2"
-              >
-                {t.portfolio.viewDemo}
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                </svg>
-              </a>
-            )}
-            {Array.isArray(project.frontMatter.demo) && project.frontMatter.demo.map((item, index) => {
-              const url = typeof item === 'string' ? item : item.url
-              const label = typeof item === 'string' ? t.portfolio.viewDemo : item.label
-              
-              return (
-                <a
-                  key={index}
-                  href={url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="button-secondary inline-flex items-center gap-2"
-                >
-                  {label}
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                  </svg>
-                </a>
-              )
-            })}
-            {typeof project.frontMatter.website === 'string' && project.frontMatter.website && (
-              <a
-                href={project.frontMatter.website}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="button-secondary inline-flex items-center gap-2"
-              >
-                {t.portfolio.visitWebsite}
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                </svg>
-              </a>
-            )}
-            {Array.isArray(project.frontMatter.website) && project.frontMatter.website.map((item, index) => {
-              const url = typeof item === 'string' ? item : item.url
-              const label = typeof item === 'string' ? t.portfolio.visitWebsite : item.label
-              
-              return (
-                <a
-                  key={index}
-                  href={url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="button-secondary inline-flex items-center gap-2"
-                >
-                  {label}
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                  </svg>
-                </a>
-              )
-            })}
+            <LinkButtons
+              links={project.frontMatter.github ?? []}
+              variant="primary"
+              icon={<GithubIcon />}
+              labelFor={(_link, index, total) =>
+                total > 1 ? format(t.portfolio.githubRepo, { n: index + 1 }) : t.portfolio.viewOnGithub
+              }
+            />
+            <LinkButtons
+              links={project.frontMatter.demo ?? []}
+              variant="secondary"
+              icon={<ExternalLinkIcon />}
+              labelFor={() => t.portfolio.viewDemo}
+            />
+            <LinkButtons
+              links={project.frontMatter.website ?? []}
+              variant="secondary"
+              icon={<ExternalLinkIcon />}
+              labelFor={() => t.portfolio.visitWebsite}
+            />
           </div>
         )}
 
