@@ -61,7 +61,6 @@ function blogFields(group: BlogGroup): CmsField[] {
     localField({ name: 'title', label: 'Title', widget: 'string' }),
     localField({ name: 'description', label: 'One-line summary', widget: 'text', required: false }),
     dateField(),
-    tagsField(),
     imagesField(),
   ]
   if (hasRating(group)) {
@@ -151,6 +150,11 @@ export function buildCmsConfig({ repo, branch }: CmsOptions): Record<string, unk
 
   return {
     backend: { name: 'github', repo, branch, auth_methods: ['token'] },
+    // Fallback for the global Asset Library (browsed outside any specific collection/field,
+    // e.g. via the top "Media" nav item), which needs a media folder even though every
+    // collection also sets its own via media_folder/public_folder above.
+    media_folder: '/images',
+    public_folder: '/images',
     i18n: {
       structure: 'multiple_files',
       locales: ['en', 'zh'],

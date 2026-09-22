@@ -18,6 +18,11 @@ describe('buildCmsConfig', () => {
     expect(config.backend).toEqual({ name: 'github', repo: 'me/site', branch: 'main', auth_methods: ['token'] })
   })
 
+  it('declares a top-level media folder fallback for the global asset library', () => {
+    expect(config.media_folder).toBe('/images')
+    expect(config.public_folder).toBe('/images')
+  })
+
   it('declares bilingual multiple_files i18n matching the existing .en/.zh naming', () => {
     expect(config.i18n).toEqual({
       structure: 'multiple_files',
@@ -79,13 +84,22 @@ describe('buildCmsConfig', () => {
     expect(fieldNames('portfolio-games')).toContain('website')
   })
 
+  it('has no tags field on blog collections (Blog has no tags in its data model)', () => {
+    expect(fieldNames('blog-films')).not.toContain('tags')
+    expect(fieldNames('blog-moments')).not.toContain('tags')
+  })
+
+  it('keeps tags as a shared list field on portfolio collections', () => {
+    const tags = fields('portfolio-games').find((f: any) => f.name === 'tags')
+    expect(tags).toMatchObject({ i18n: 'duplicate' })
+  })
+
   it('marks shared fields as i18n duplicate and per-language fields as i18n true', () => {
     const byName = (name: string) => fields('blog-films').find((f: any) => f.name === name)
     expect(byName('title')).toMatchObject({ i18n: true })
     expect(byName('description')).toMatchObject({ i18n: true })
     expect(byName('body')).toMatchObject({ i18n: true })
     expect(byName('date')).toMatchObject({ i18n: 'duplicate' })
-    expect(byName('tags')).toMatchObject({ i18n: 'duplicate' })
     expect(byName('images')).toMatchObject({ i18n: 'duplicate' })
     expect(byName('rating')).toMatchObject({ i18n: 'duplicate' })
 
