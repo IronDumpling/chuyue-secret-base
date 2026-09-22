@@ -169,4 +169,11 @@ export const zh: Dictionary = {
     missingEnglish: '这个页面暂无英文版，以下为中文原文。',
     missingChinese: '这个页面暂无中文版，以下为英文原文。',
   },
+  share: {
+    copyLink: '复制链接',
+    copied: '已复制！',
+    savePoster: '保存海报',
+    shareButton: '分享',
+    scanToRead: '扫码阅读',
+  },
 }

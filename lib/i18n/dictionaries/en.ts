@@ -172,6 +172,13 @@ export const en = {
     missingEnglish: 'This page is not available in English yet. Showing the Chinese original.',
     missingChinese: 'This page is not available in Chinese yet. Showing the English original.',
   },
+  share: {
+    copyLink: 'Copy Link',
+    copied: 'Copied!',
+    savePoster: 'Save Poster',
+    shareButton: 'Share',
+    scanToRead: 'Scan to read',
+  },
 }
 
 export type Dictionary = typeof en
