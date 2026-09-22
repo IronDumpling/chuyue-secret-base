@@ -18,6 +18,25 @@ const INDEX_HTML = `<!doctype html>
     <meta name="robots" content="noindex" />
     <title>Content Manager</title>
     <link href="config.yml" type="text/yaml" rel="cms-config-url" />
+    <script>
+      // Sveltia calls Uint8Array#toBase64 / Uint8Array.fromBase64 (ES2026) when saving;
+      // older Chromium (e.g. Huawei Browser) lacks them, so saving throws. No-op where native.
+      (function () {
+        function def(obj, name, fn) {
+          if (!obj[name]) Object.defineProperty(obj, name, { value: fn, writable: true, configurable: true, enumerable: false });
+        }
+        def(Uint8Array.prototype, 'toBase64', function () {
+          var s = '', c = 0x8000;
+          for (var i = 0; i < this.length; i += c) s += String.fromCharCode.apply(null, this.subarray(i, i + c));
+          return btoa(s);
+        });
+        def(Uint8Array, 'fromBase64', function (b64) {
+          var s = atob(b64), a = new Uint8Array(s.length);
+          for (var i = 0; i < s.length; i++) a[i] = s.charCodeAt(i);
+          return a;
+        });
+      })();
+    </script>
   </head>
   <body>
     <script src="${BUNDLE_NAME}"></script>

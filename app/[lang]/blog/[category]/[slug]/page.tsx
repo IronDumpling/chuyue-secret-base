@@ -5,7 +5,11 @@ import Rating from '@/components/blog/Rating'
 import MDXContent from '@/components/shared/MDXContent'
 import MDXHeaderImage from '@/components/shared/MDXHeaderImage'
 import { getCategoryPath, hasRating } from '@/lib/blog-utils'
-import { buildPageMetadata } from '@/lib/seo'
+import { buildPageMetadata, summarize } from '@/lib/seo'
+import ShareBar from '@/components/shared/ShareBar'
+import LinkIcon from '@/components/shared/LinkIcons'
+import { describeLink } from '@/lib/link-icon'
+import { getShareProps } from '@/lib/share'
 import { INTL_LOCALE, LOCALES, type Locale } from '@/lib/i18n/config'
 import { localePath } from '@/lib/i18n/paths'
 import { getDictionary } from '@/lib/i18n'
@@ -105,6 +109,15 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           </div>
         </div>
 
+        <ShareBar
+          {...getShareProps(
+            { kind: 'blog', category: post.frontMatter.category, slug: post.slug },
+            params.lang,
+            post.frontMatter.title,
+            summarize(post.frontMatter.description, post.content)
+          )}
+        />
+
         {/* Header Image */}
         <MDXHeaderImage
           images={
@@ -116,21 +129,26 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         />
 
         {/* Website Link */}
-        {post.frontMatter.website && (
-          <div className="flex flex-wrap gap-4 mb-8">
-            <a
-              href={typeof post.frontMatter.website === 'string' ? post.frontMatter.website : post.frontMatter.website.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="button-secondary inline-flex items-center gap-2"
-            >
-              {typeof post.frontMatter.website === 'string' ? t.blog.visitWebsite : post.frontMatter.website.label}
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-              </svg>
-            </a>
-          </div>
-        )}
+        {post.frontMatter.website && (() => {
+          const website =
+            typeof post.frontMatter.website === 'string'
+              ? { url: post.frontMatter.website }
+              : post.frontMatter.website
+          const info = describeLink(website)
+          return (
+            <div className="flex flex-wrap gap-4 mb-8">
+              <a
+                href={website.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="button-secondary inline-flex items-center gap-2"
+              >
+                <LinkIcon iconId={info.iconId} />
+                {info.label}
+              </a>
+            </div>
+          )
+        })()}
 
         {/* MDX Content */}
         <div lang={post.lang} className="prose prose-lg dark:prose-invert max-w-none">

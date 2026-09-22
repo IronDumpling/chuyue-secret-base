@@ -1,10 +1,13 @@
 import fs from 'fs'
 import path from 'path'
-import { collectContent } from './lib/content-index'
+import { collectContent, type ContentEntry } from './lib/content-index'
 import { buildCardTree, coverDataUri, renderJpeg } from './lib/card'
+import { buildPosterTree, qrDataUri } from './lib/poster'
 import { containsCjk, entryTexts } from './lib/card-texts'
 import { loadCjkFont, loadLatinFallback } from './lib/fonts'
-import { shareImagePath, siteOgPath } from '../lib/share-paths'
+import { pagePath, shareImagePath, siteOgPath } from '../lib/share-paths'
+import { absoluteUrl, siteOrigin } from '../lib/site'
+import { summarize } from '../lib/seo'
 import { LOCALES, type Locale } from '../lib/i18n/config'
 import { getDictionary } from '../lib/i18n'
 
@@ -27,6 +30,10 @@ function siteTexts(lang: Locale) {
   return { title: t.meta.siteName, badge: t.meta.cardBadge, footer: `${t.meta.siteName} · ${t.footer.tagline}` }
 }
 
+function posterDescription(entry: ContentEntry): string {
+  return summarize(entry.description, entry.body, 90)
+}
+
 async function main() {
   const contentDir = path.join(ROOT, 'content')
   // Every language gets a card for every page, because every page exists in every
@@ -36,7 +43,8 @@ async function main() {
   const allText = perLang
     .flatMap(({ lang, entries }) => [
       ...Object.values(siteTexts(lang)),
-      ...entries.flatMap(entry => Object.values(entryTexts(entry, lang))),
+      getDictionary(lang).share.scanToRead,
+      ...entries.flatMap(entry => [...Object.values(entryTexts(entry, lang)), posterDescription(entry)]),
     ])
     .join('')
 
@@ -50,6 +58,9 @@ async function main() {
   const fonts = [cjk ?? loadLatinFallback()]
 
   fs.rmSync(path.join(PUBLIC_DIR, 'share', 'og'), { recursive: true, force: true })
+  fs.rmSync(path.join(PUBLIC_DIR, 'share', 'poster'), { recursive: true, force: true })
+
+  const host = new URL(siteOrigin()).host
 
   let written = 0
   for (const { lang, entries } of perLang) {
@@ -66,10 +77,24 @@ async function main() {
         fonts
       )
       written += 1
+
+      const posterCover = await coverDataUri(coverFile(entry.images), 1080, 1080)
+      const qr = await qrDataUri(absoluteUrl(pagePath(entry, lang)))
+      const poster = buildPosterTree({
+        title,
+        badge,
+        description: posterDescription(entry),
+        coverDataUri: posterCover,
+        qrDataUri: qr,
+        brand: siteTexts(lang).footer,
+        scanLine: `${getDictionary(lang).share.scanToRead} · ${host}`,
+      })
+      writeTo(shareImagePath(entry, 'poster', lang), await renderJpeg(poster, 1080, 1920, fonts))
+      written += 1
     }
   }
 
-  console.log(`[share-images] wrote ${written} og cards to public/share/og`)
+  console.log(`[share-images] wrote ${written} share images (og cards + posters) to public/share`)
 }
 
 async function writeCard(
