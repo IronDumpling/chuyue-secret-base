@@ -21,14 +21,11 @@ const DESKTOP_TRANSITION_MS = 150
 
 function ShareIcon({ className = 'w-5 h-5' }: { className?: string }) {
   return (
-    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M8.68 13.34a3 3 0 100-2.68m0 2.68l6.64 3.32m-6.64-6l6.64-3.32m0 0a3 3 0 105.37-2.68 3 3 0 00-5.37 2.68zm0 8a3 3 0 105.37 2.68 3 3 0 00-5.37-2.68z"
-      />
-    </svg>
+    <img
+      src={withBasePath('/images/logo/share-alt-svgrepo-com.svg')}
+      alt=""
+      className={`${className} dark:invert`}
+    />
   )
 }
 
@@ -71,9 +68,11 @@ function CheckIcon({ className = 'w-6 h-6' }: { className?: string }) {
 // colors" decision.
 const PLATFORM_ICONS: Record<string, (props: { className?: string }) => React.JSX.Element> = {
   weibo: ({ className = 'w-6 h-6' }) => (
-    <svg className={className} fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M9.31 8.17c-3.71.38-6.55 2.7-6.34 5.5.21 2.8 3.44 4.79 7.15 4.41 3.71-.37 6.55-2.7 6.34-5.5-.21-2.8-3.43-4.78-7.15-4.41zm1.2 7.28c-1.68.28-3.2-.4-3.4-1.5-.2-1.11.99-2.24 2.67-2.52 1.68-.28 3.2.4 3.4 1.5.2 1.11-.99 2.24-2.67 2.52zm-.49-1.57c-.26.34-.75.49-1.09.32-.33-.16-.4-.55-.14-.88.26-.33.72-.48 1.06-.32.34.15.42.54.17.88zm1.24-.49c-.1.16-.32.24-.48.15-.16-.08-.19-.28-.09-.44.1-.15.31-.23.47-.14.16.08.2.27.1.43zM16.5 8.36c.14-.85-.52-1.6-1.47-1.7a.44.44 0 000 .87c.44.05.72.4.66.76a.44.44 0 00.81.07zm.5-3.24c-.63-.72-1.62-1.03-2.65-.89a.55.55 0 10.16 1.09c.68-.1 1.32.11 1.68.53.36.42.44 1.02.24 1.68a.55.55 0 101.05.32c.3-.98.16-1.92-.48-2.73zM12 2C6.48 2 2 5.13 2 9c0 2.55 2.2 4.78 5.46 6-.16-.4-.26-.83-.29-1.28C4.6 12.6 3 11 3 9c0-3.31 4.03-6 9-6s9 2.69 9 6c0 .84-.28 1.63-.78 2.34a.5.5 0 00.82.57C21.62 10.9 22 9.98 22 9c0-3.87-4.48-7-10-7z" />
-    </svg>
+    <img
+      src={withBasePath('/images/logo/weibo-social-logo-svgrepo-com.svg')}
+      alt=""
+      className={`${className} dark:invert`}
+    />
   ),
   twitter: ({ className = 'w-6 h-6' }) => (
     <svg className={className} fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
