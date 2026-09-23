@@ -5,7 +5,7 @@ import { describeLink, pickPrimaryLink, secondaryLinks } from '@/lib/link-icon'
 import MDXContent from '@/components/shared/MDXContent'
 import MDXHeaderImage from '@/components/shared/MDXHeaderImage'
 import ShareBar from '@/components/shared/ShareBar'
-import LinkIcon from '@/components/shared/LinkIcons'
+import LinkTile from '@/components/shared/LinkTile'
 import { getShareProps } from '@/lib/share'
 import { buildPageMetadata, summarize } from '@/lib/seo'
 import { INTL_LOCALE, LOCALES, type Locale } from '@/lib/i18n/config'
@@ -101,15 +101,6 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           </div>
         </div>
 
-        <ShareBar
-          {...getShareProps(
-            { kind: 'portfolio', category: project.frontMatter.category, slug: project.slug },
-            params.lang,
-            project.frontMatter.title,
-            summarize(project.frontMatter.description, project.content)
-          )}
-        />
-
         {/* Header Image */}
         <MDXHeaderImage
           images={
@@ -120,8 +111,9 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           title={project.frontMatter.title}
         />
 
-        {/* Links: one prominent primary link (demo > website > github), the rest as
-            compact secondary chips — see lib/link-icon.ts for the priority/icon rules. */}
+        {/* Links + Share: one row of same-size icon tiles. The primary link (demo > website >
+            github, see lib/link-icon.ts) is accented; secondary links and Share are neutral —
+            no more mixing a big primary button with small secondary ones. */}
         {(() => {
           const groups = {
             github: project.frontMatter.github ?? [],
@@ -130,38 +122,25 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           }
           const primary = pickPrimaryLink(groups)
           const secondary = secondaryLinks(groups, primary)
-          if (!primary) return null
-          const primaryInfo = describeLink(primary)
           return (
-            <div className="flex flex-wrap items-center gap-3 mb-8">
-              <a
-                href={primary.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="button-primary inline-flex items-center gap-2"
-              >
-                <LinkIcon iconId={primaryInfo.iconId} />
-                {primaryInfo.label}
-              </a>
-              {secondary.length > 0 && (
-                <div className="flex flex-wrap gap-2">
-                  {secondary.map(link => {
-                    const info = describeLink(link)
-                    return (
-                      <a
-                        key={link.url}
-                        href={link.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="button-secondary text-sm inline-flex items-center gap-1.5"
-                      >
-                        <LinkIcon iconId={info.iconId} className="w-4 h-4" />
-                        {info.label}
-                      </a>
-                    )
-                  })}
-                </div>
-              )}
+            <div className="flex flex-wrap items-start gap-4 mb-8">
+              {primary &&
+                (() => {
+                  const info = describeLink(primary)
+                  return <LinkTile href={primary.url} iconId={info.iconId} label={info.label} accent />
+                })()}
+              {secondary.map(link => {
+                const info = describeLink(link)
+                return <LinkTile key={link.url} href={link.url} iconId={info.iconId} label={info.label} />
+              })}
+              <ShareBar
+                {...getShareProps(
+                  { kind: 'portfolio', category: project.frontMatter.category, slug: project.slug },
+                  params.lang,
+                  project.frontMatter.title,
+                  summarize(project.frontMatter.description, project.content)
+                )}
+              />
             </div>
           )
         })()}

@@ -20,7 +20,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
   return (
     <Link
       href={lp(`/portfolio/${project.frontMatter.category}/${project.slug}`)}
-      className="group block bg-white dark:bg-gray-900 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300"
+      className="group flex h-full flex-col bg-white dark:bg-gray-900 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300"
     >
       <div className="relative h-48 overflow-hidden">
         <RotatingImage
@@ -30,8 +30,8 @@ export default function ProjectCard({ project }: ProjectCardProps) {
           className="object-cover group-hover:scale-110 transition-transform duration-300"
         />
       </div>
-      <div className="p-6">
-        <h3 className="text-xl font-semibold mb-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+      <div className="flex flex-1 flex-col p-6">
+        <h3 className="text-xl font-semibold mb-2 line-clamp-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
           {project.frontMatter.title}
         </h3>
         <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-2">
@@ -52,7 +52,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
             </span>
           ))}
         </div>
-        <div className="text-sm text-gray-500 dark:text-gray-500">
+        <div className="mt-auto text-sm text-gray-500 dark:text-gray-500">
           {formatMonth(project.frontMatter.date, locale)}
         </div>
       </div>
