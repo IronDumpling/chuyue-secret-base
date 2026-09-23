@@ -23,6 +23,10 @@ describe('buildCmsConfig', () => {
     expect(config.public_folder).toBe('/images')
   })
 
+  it('keeps generated slugs ASCII-only', () => {
+    expect(config.slug).toEqual({ encoding: 'ascii', clean_accents: true })
+  })
+
   it('declares bilingual multiple_files i18n matching the existing .en/.zh naming', () => {
     expect(config.i18n).toEqual({
       structure: 'multiple_files',

@@ -55,3 +55,16 @@ export function pickLocalized<T>(files: LangFile<T>[], wanted: Locale): Localize
   }
   return result
 }
+
+// During static export Next.js hands dynamic params over percent-encoded, so a post named
+// `résidence-evil` arrives as `r%C3%A9sidence-evil`. Decode (and NFC-normalize, since iOS
+// and macOS can produce decomposed accents) before comparing against file names.
+export function normalizeSlug(slug: string): string {
+  let decoded = slug
+  try {
+    decoded = decodeURIComponent(slug)
+  } catch {
+    // A stray `%` that isn't an escape: compare the slug as written.
+  }
+  return decoded.normalize('NFC')
+}

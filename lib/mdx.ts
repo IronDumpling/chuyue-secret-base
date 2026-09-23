@@ -9,7 +9,7 @@ import remarkGfm from 'remark-gfm'
 import rehypeHighlight from 'rehype-highlight'
 import rehypeSlug from 'rehype-slug'
 import rehypeAutolinkHeadings from 'rehype-autolink-headings'
-import { parseContentFilename, pickLocalized } from './content-lang'
+import { normalizeSlug, parseContentFilename, pickLocalized } from './content-lang'
 import { DEFAULT_LOCALE, type Locale } from './i18n/config'
 import { normalizeFrontMatter } from './frontmatter'
 
@@ -84,7 +84,8 @@ export function getLocalizedMDXFile(
   slug: string,
   lang: Locale = DEFAULT_LOCALE
 ): LocalizedMDXContent | null {
-  return getLocalizedMDXFiles(directory, lang).find(file => file.slug === slug) ?? null
+  const wanted = normalizeSlug(slug)
+  return getLocalizedMDXFiles(directory, lang).find(file => file.slug.normalize('NFC') === wanted) ?? null
 }
 
 // Get all MDX files from a directory

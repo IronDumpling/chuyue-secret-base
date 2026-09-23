@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { parseContentFilename, pickLocalized } from './content-lang'
+import { normalizeSlug, parseContentFilename, pickLocalized } from './content-lang'
 
 describe('parseContentFilename', () => {
   it('reads the slug and language from the file name', () => {
@@ -57,5 +57,20 @@ describe('pickLocalized', () => {
       ['b', 'en'],
       ['a', 'en'],
     ])
+  })
+})
+
+describe('normalizeSlug', () => {
+  it('decodes percent-encoded slugs from static export', () => {
+    expect(normalizeSlug('r%C3%A9sidence-evil')).toBe('résidence-evil')
+  })
+
+  it('normalizes decomposed accents to NFC', () => {
+    expect(normalizeSlug('résidence-evil')).toBe('résidence-evil')
+  })
+
+  it('leaves plain and malformed slugs alone', () => {
+    expect(normalizeSlug('her-review')).toBe('her-review')
+    expect(normalizeSlug('100%-real')).toBe('100%-real')
   })
 })

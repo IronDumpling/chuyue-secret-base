@@ -155,6 +155,9 @@ export function buildCmsConfig({ repo, branch }: CmsOptions): Record<string, unk
     // collection also sets its own via media_folder/public_folder above.
     media_folder: '/images',
     public_folder: '/images',
+    // Entry file names become URL slugs; accented titles like "Résidence Evil" would
+    // otherwise produce non-ASCII slugs, so strip accents and keep slugs ASCII-only.
+    slug: { encoding: 'ascii', clean_accents: true },
     i18n: {
       structure: 'multiple_files',
       locales: ['en', 'zh'],
