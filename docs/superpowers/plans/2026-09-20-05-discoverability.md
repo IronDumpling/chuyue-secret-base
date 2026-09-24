@@ -2,6 +2,12 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
+> **Status (2026-09-23): built.** This plan predates plan 08 and the taxonomy restructure; what was built follows them instead of the code below:
+> - One feed per language at `app/[lang]/feed.xml/route.ts`, i.e. `/en/feed.xml` and `/zh/feed.xml`, not a single `/feed.xml`.
+> - JSON-LD takes the page language, and rated reviews become `BlogPosting` + `Review`, with `itemReviewed` taken from the title.
+> - Analytics lives in `app/[lang]/layout.tsx` only; the legacy layout just redirects.
+> - Owner steps are in the README under "Feeds and optional services".
+
 **Goal:** Add an RSS feed for the blog, schema.org structured data on posts and projects, and an optional privacy-friendly visitor counter, so the site can be found and its traffic measured.
 
 **Architecture:** The feed is a static route handler (`app/feed.xml/route.ts`, `force-static`) that turns `getAllPosts()` into RSS 2.0 through a pure, tested builder. Structured data is a pure object builder plus a tiny server component that prints it as JSON-LD. Analytics is a Cloudflare Web Analytics script that is rendered only when a token environment variable is set, so nothing changes until you opt in. The sitemap and robots files already exist and are not touched apart from the earlier URL refactor.

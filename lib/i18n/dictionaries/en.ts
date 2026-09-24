@@ -180,6 +180,10 @@ export const en = {
     scanToRead: 'Scan to read',
     close: 'Close',
   },
+  like: {
+    label: 'Like',
+    liked: 'Liked',
+  },
 }
 
 export type Dictionary = typeof en

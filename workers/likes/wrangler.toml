@@ -1,0 +1,13 @@
+name = "chuyue-likes"
+main = "src/index.ts"
+compatibility_date = "2026-09-01"
+
+[vars]
+ALLOWED_ORIGINS = "https://irondumpling.github.io,http://localhost:3000"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "chuyue-likes"
+# Filled in from the output of `npx wrangler d1 create chuyue-likes`.
+database_id = "REPLACE_WITH_DATABASE_ID"
+migrations_dir = "migrations"

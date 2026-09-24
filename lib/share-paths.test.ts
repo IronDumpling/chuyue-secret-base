@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { pagePath, shareImagePath, siteOgPath } from './share-paths'
+import { likeId, pagePath, shareImagePath, siteOgPath } from './share-paths'
 
 describe('share paths', () => {
   it('builds blog page and image paths under the language', () => {
@@ -14,6 +14,11 @@ describe('share paths', () => {
     const t = { kind: 'portfolio', category: 'applications', slug: 'pact' } as const
     expect(pagePath(t, 'en')).toBe('/en/portfolio/applications/pact/')
     expect(shareImagePath(t, 'og', 'zh')).toBe('/share/og/zh/portfolio/applications/pact.jpg')
+  })
+
+  it('gives both languages of a page the same like id', () => {
+    expect(likeId({ kind: 'blog', category: 'films', slug: 'her-review' })).toBe('blog/films/her-review')
+    expect(likeId({ kind: 'portfolio', category: 'applications', slug: 'pact' })).toBe('portfolio/applications/pact')
   })
 
   it('has one site card per language', () => {

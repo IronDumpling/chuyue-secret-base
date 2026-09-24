@@ -18,6 +18,11 @@ export function pagePath(t: ShareTarget, lang: Locale): string {
   return `/${lang}/${segments(t).join('/')}/`
 }
 
+// The page without its language, so both language versions of a post share one like count.
+export function likeId(t: ShareTarget): string {
+  return segments(t).join('/')
+}
+
 export function shareImagePath(t: ShareTarget, variant: 'og' | 'poster', lang: Locale): string {
   return `/share/${variant}/${lang}/${segments(t).join('/')}.jpg`
 }

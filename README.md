@@ -161,6 +161,28 @@ This generates a static site in the `out/` directory, ready for deployment.
 
 The site is automatically deployed to GitHub Pages via GitHub Actions when you push to the `main` branch.
 
+## Feeds and optional services
+
+Each language has an RSS feed of the blog at `/en/feed.xml` and `/zh/feed.xml`, linked from every page's `<head>`. Posts and projects also carry schema.org JSON-LD; rated reviews are marked up as a `Review` of the film, show, album, game or book named in the title.
+
+Content always lives in git and the site is fully static. Reader-side extras run as separate, optional services, and the site must stay complete without them: each one is switched on by a GitHub Actions repository variable (Settings → Secrets and variables → Actions → Variables) and does nothing when that variable is unset.
+
+**Visitor analytics (Cloudflare Web Analytics).** In a free Cloudflare account, open Web Analytics, add a site with the JavaScript snippet option, copy the `token` from the snippet and save it as the variable `CF_ANALYTICS_TOKEN`. Then re-run the deploy workflow.
+
+**Like counts (`workers/likes`).** A small Cloudflare Worker with a D1 database; one like per post per visitor per day, shared by the English and Chinese pages. To set it up once:
+
+```bash
+cd workers/likes
+npm install
+npx wrangler login
+npx wrangler d1 create chuyue-likes       # copy database_id into wrangler.toml
+npm run migrate                           # create the tables
+npx wrangler secret put VOTER_SALT        # any long random string
+npm run deploy                            # prints the https://chuyue-likes.<you>.workers.dev URL
+```
+
+Save that URL as the variable `LIKES_API_URL` and re-run the deploy workflow. `ALLOWED_ORIGINS` in `wrangler.toml` lists the sites allowed to call it. If you move the site to another domain, update it there and redeploy the Worker. To try it locally, run `npm run migrate:local && npm run dev` in `workers/likes` and build the site with `NEXT_PUBLIC_LIKES_API=http://127.0.0.1:8787`.
+
 ## License
 
 All rights reserved.

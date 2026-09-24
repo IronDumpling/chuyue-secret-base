@@ -10,11 +10,15 @@ import ShareBar from '@/components/shared/ShareBar'
 import LinkTile from '@/components/shared/LinkTile'
 import { describeLink } from '@/lib/link-icon'
 import { getShareProps } from '@/lib/share'
+import { likeId } from '@/lib/share-paths'
+import LikeButton from '@/components/shared/LikeButton'
 import { INTL_LOCALE, LOCALES, type Locale } from '@/lib/i18n/config'
 import { localePath } from '@/lib/i18n/paths'
 import { getDictionary } from '@/lib/i18n'
 import ListBackLink from '@/components/shared/ListBackLink'
 import FallbackNotice from '@/components/shared/FallbackNotice'
+import JsonLd from '@/components/shared/JsonLd'
+import { buildJsonLd } from '@/lib/jsonld'
 
 interface BlogPostPageProps {
   params: {
@@ -69,6 +73,21 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
   return (
     <article className="section bg-white dark:bg-gray-900">
+      <JsonLd
+        data={buildJsonLd(
+          { kind: 'blog', category: post.frontMatter.category, slug: post.slug },
+          params.lang,
+          {
+            title: post.frontMatter.title,
+            description: post.frontMatter.description,
+            body: post.content,
+            date: String(post.frontMatter.date),
+            lang: post.lang ?? params.lang,
+            rating: post.frontMatter.rating,
+            authorName: t.meta.fullName,
+          }
+        )}
+      />
       <div className="container max-w-4xl">
         <FallbackNotice pageLang={params.lang} contentLang={post.lang} />
         {/* Header */}
@@ -133,6 +152,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   const info = describeLink(website)
                   return <LinkTile href={website.url} iconId={info.iconId} label={info.label} accent />
                 })()}
+              <LikeButton id={likeId({ kind: 'blog', category: post.frontMatter.category, slug: post.slug })} />
               <ShareBar
                 {...getShareProps(
                   { kind: 'blog', category: post.frontMatter.category, slug: post.slug },

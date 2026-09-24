@@ -48,3 +48,7 @@ next-env.d.ts
 /lib/generated/
 /public/admin/
 /.cache/
+
+# cloudflare worker (workers/likes)
+/workers/*/node_modules
+.wrangler/

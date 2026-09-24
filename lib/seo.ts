@@ -19,6 +19,16 @@ export function summarize(description: string | undefined, body: string, max = 1
   return text.length <= max ? text : `${text.slice(0, max - 1).trimEnd()}…`
 }
 
+export function feedPath(lang: Locale): string {
+  return `/${lang}/feed.xml`
+}
+
+// The page's language feed, for `alternates.types`. A page's own `alternates` replaces the
+// layout's rather than merging with it, so detail pages must repeat this.
+export function rssAlternate(lang: Locale): Record<string, string> {
+  return { 'application/rss+xml': absoluteUrl(feedPath(lang)) }
+}
+
 interface PageMetaInput {
   title: string
   description?: string
@@ -52,7 +62,7 @@ export function buildPageMetadata(t: ShareTarget, lang: Locale, o: PageMetaInput
   return {
     title: o.title,
     description,
-    alternates: { canonical, languages },
+    alternates: { canonical, languages, types: rssAlternate(lang) },
     openGraph: {
       type: 'article',
       url,

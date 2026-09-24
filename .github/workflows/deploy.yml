@@ -63,6 +63,9 @@ jobs:
         env:
           NODE_ENV: production
           NEXT_PUBLIC_BASE_PATH: /chuyue-secret-base
+          # Repository variables; unset means the feature stays off.
+          NEXT_PUBLIC_CF_ANALYTICS_TOKEN: ${{ vars.CF_ANALYTICS_TOKEN }}
+          NEXT_PUBLIC_LIKES_API: ${{ vars.LIKES_API_URL }}
       
       - name: Setup Pages
         uses: actions/configure-pages@v4

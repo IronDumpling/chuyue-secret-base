@@ -3,11 +3,13 @@ import { notFound } from 'next/navigation'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import { LocaleProvider } from '@/components/shared/LocaleProvider'
+import Analytics from '@/components/shared/Analytics'
 import { LOCALES, isLocale } from '@/lib/i18n/config'
 import { getDictionary } from '@/lib/i18n'
 import { localePath } from '@/lib/i18n/paths'
 import { absoluteUrl, siteOrigin } from '@/lib/site'
 import { siteOgPath } from '@/lib/share-paths'
+import { rssAlternate } from '@/lib/seo'
 import '../globals.css'
 
 // Only the languages listed here exist; anything else is a 404.
@@ -25,6 +27,7 @@ export function generateMetadata({ params }: { params: { lang: string } }): Meta
     metadataBase: new URL(siteOrigin()),
     title: { default: t.meta.title, template: `%s | ${t.meta.siteName}` },
     description: t.meta.description,
+    alternates: { types: rssAlternate(params.lang) },
     openGraph: {
       type: 'website',
       siteName: t.meta.siteName,
@@ -57,6 +60,7 @@ export default function RootLayout({
           </main>
           <Footer locale={params.lang} />
         </LocaleProvider>
+        <Analytics />
       </body>
     </html>
   )

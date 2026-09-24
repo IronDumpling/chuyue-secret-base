@@ -177,4 +177,8 @@ export const zh: Dictionary = {
     scanToRead: '扫码阅读',
     close: '关闭',
   },
+  like: {
+    label: '点赞',
+    liked: '已赞',
+  },
 }

@@ -7,12 +7,16 @@ import MDXHeaderImage from '@/components/shared/MDXHeaderImage'
 import ShareBar from '@/components/shared/ShareBar'
 import LinkTile from '@/components/shared/LinkTile'
 import { getShareProps } from '@/lib/share'
+import { likeId } from '@/lib/share-paths'
+import LikeButton from '@/components/shared/LikeButton'
 import { buildPageMetadata, summarize } from '@/lib/seo'
 import { INTL_LOCALE, LOCALES, type Locale } from '@/lib/i18n/config'
 import { localePath } from '@/lib/i18n/paths'
 import { getDictionary } from '@/lib/i18n'
 import ListBackLink from '@/components/shared/ListBackLink'
 import FallbackNotice from '@/components/shared/FallbackNotice'
+import JsonLd from '@/components/shared/JsonLd'
+import { buildJsonLd } from '@/lib/jsonld'
 
 interface ProjectPageProps {
   params: {
@@ -64,6 +68,20 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
   return (
     <article className="section bg-white dark:bg-gray-900">
+      <JsonLd
+        data={buildJsonLd(
+          { kind: 'portfolio', category: project.frontMatter.category, slug: project.slug },
+          params.lang,
+          {
+            title: project.frontMatter.title,
+            description: project.frontMatter.description,
+            body: project.content,
+            date: String(project.frontMatter.date),
+            lang: project.lang ?? params.lang,
+            authorName: t.meta.fullName,
+          }
+        )}
+      />
       <div className="container max-w-4xl">
         <FallbackNotice pageLang={params.lang} contentLang={project.lang} />
         {/* Header */}
@@ -133,6 +151,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                 const info = describeLink(link)
                 return <LinkTile key={link.url} href={link.url} iconId={info.iconId} label={info.label} />
               })}
+              <LikeButton id={likeId({ kind: 'portfolio', category: project.frontMatter.category, slug: project.slug })} />
               <ShareBar
                 {...getShareProps(
                   { kind: 'portfolio', category: project.frontMatter.category, slug: project.slug },

@@ -40,10 +40,11 @@ Written 2026-09-20. This ranks the workstreams from the external "chuyue-content
 | 2 | [02 Link previews](2026-09-20-02-link-previews.md) | M | 07 | **Done.** |
 | 3 | [08 Bilingual site (en default, zh)](2026-09-21-08-i18n.md) | L | 02 | **Done.** |
 | — | Taxonomy restructure (category = folder = URL, groups menu-only) — [ADR 0001](../../adr/0001-taxonomy-leaf-is-folder-and-url.md) | M | 08 | **Done** (site PR #12, content PR #1, merged to `main`). Not in the original external plan; inserted between 08 and 03 because the old category/type layout made the editor's form impossible to generate safely. |
-| 4 | [03 Mobile editor](2026-09-20-03-mobile-editor.md) | M | 07, 08, taxonomy restructure | **Next.** Scope is now Blog's 6 categories + Portfolio's 6 categories (12 collections), generated from `lib/taxonomy.ts`. |
-| 5 | [04 Poster and share buttons](2026-09-20-04-share-poster.md) | M | 02 | Not started. |
-| 6 | [05 Discoverability](2026-09-20-05-discoverability.md) | S | 02 (one small edit) | Not started. |
-| 7 | [06 Shutterstock spike](2026-09-20-06-shutterstock-spike.md) | S | 07 (for where the files live) | Not started. |
+| 4 | [03 Mobile editor](2026-09-20-03-mobile-editor.md) | M | 07, 08, taxonomy restructure | **Done** (PR #14). The first post with an accented title (2026-09-22) broke its page; fixed by decoding slugs and making the CMS write ASCII-only slugs. |
+| 5 | [04 Poster and share buttons](2026-09-20-04-share-poster.md) | M | 02 | **Done** (PR #15, #16). |
+| 6 | [05 Discoverability](2026-09-20-05-discoverability.md) | S | 02 (one small edit) | **Built 2026-09-23, not yet committed.** Analytics waits for the owner's `CF_ANALYTICS_TOKEN`. |
+| 7 | [06 Shutterstock spike](2026-09-20-06-shutterstock-spike.md) | S | 07 (for where the files live) | **Code ready 2026-09-23** (link icon, probe script). Waits for the owner's portfolio URL (button) and API credentials (probe). |
+| 8 | [09 Like counts](2026-09-23-09-likes.md) | S | 04 (sits in the share row) | **Built 2026-09-23, not yet committed.** Waits for the owner to deploy the Worker and set `LIKES_API_URL`. |
 
 The plan file numbers are creation order, not execution order; follow the table. (A former plan 01, image compression, was dropped on 2026-09-20, so there is no `01` file.)
 

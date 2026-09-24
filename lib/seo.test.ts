@@ -54,6 +54,13 @@ describe('buildPageMetadata', () => {
     expect((meta.openGraph as any).images[0].url).toBe(`${base}/share/og/zh/blog/films/her-review.jpg`)
   })
 
+  it('links the feed in the page language', () => {
+    vi.stubEnv('NEXT_PUBLIC_BASE_PATH', '/chuyue-secret-base')
+    expect(buildPageMetadata(her, 'zh', { title: 'Her', body: 'x' }).alternates?.types).toEqual({
+      'application/rss+xml': `${base}/zh/feed.xml`,
+    })
+  })
+
   it('lists both languages as alternates, with English as the default', () => {
     vi.stubEnv('NEXT_PUBLIC_BASE_PATH', '/chuyue-secret-base')
     const meta = buildPageMetadata(her, 'en', { title: 'Her', body: 'x' })
