@@ -64,6 +64,21 @@ export function PixivIcon({ className = 'w-5 h-5' }: { className?: string }) {
   return <img src={withBasePath('/images/logo/pixiv.svg')} alt="" className={`${className} dark:invert`} />
 }
 
+// Generic photo mark rather than the Shutterstock logo; swap in /images/logo/shutterstock.svg
+// (like Pixiv above) if an official asset is added to the content repo.
+export function ShutterstockIcon({ className = 'w-5 h-5' }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+      />
+    </svg>
+  )
+}
+
 const ICONS: Record<LinkIconId, (props: { className?: string }) => React.JSX.Element> = {
   github: GithubIcon,
   youtube: YoutubeIcon,
@@ -71,6 +86,7 @@ const ICONS: Record<LinkIconId, (props: { className?: string }) => React.JSX.Ele
   itch: ItchIcon,
   appstore: AppStoreIcon,
   pixiv: PixivIcon,
+  shutterstock: ShutterstockIcon,
   website: ExternalLinkIcon,
 }
 

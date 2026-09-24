@@ -2,6 +2,8 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
+> **Status (2026-09-23):** Photography now lives in `content/portfolio/photography/*.en.mdx` (taxonomy restructure), so Task 1 adds `website:` there. Its format is a list of `{ url, label }`, as in `portfolio/illustration/illustration-1.en.mdx`. `lib/link-icon.ts` now recognizes Shutterstock links. The probe (`scripts/spikes/shutterstock-probe.ts`) also accepts `SHUTTERSTOCK_KEY` + `SHUTTERSTOCK_SECRET` (basic auth); try `/v2/images/search?contributor=<id>` first. Blocked on the owner's portfolio URL and API credentials.
+
 **Goal:** Put a "More on Shutterstock" button on the photography posts today (no code), and find out, with a time-boxed probe, whether the Shutterstock API can list the owner's own portfolio well enough to justify an automatic gallery. The output of this plan is a written go/no-go, not a feature.
 
 **Architecture:** Task 1 uses the `website: {url, label}` frontmatter field that the blog post page already renders as a button. Task 2 is a throwaway probe script that sends authenticated GET requests to endpoints given on the command line and prints status and a trimmed body. Task 3 records what was found. No build-time integration is written in this plan, because the external plan itself lists three unknowns (buyer-oriented API, whether contributor content is readable, thumbnail reuse terms) that must be answered first.

@@ -53,6 +53,15 @@ describe('describeLink', () => {
     })
   })
 
+  it('recognizes shutterstock.com, including regional subdomains', () => {
+    expect(describeLink({ url: 'https://www.shutterstock.com/g/someone' })).toEqual({
+      label: 'Shutterstock',
+      iconId: 'shutterstock',
+    })
+    expect(describeLink({ url: 'https://www.shutterstock.com/zh/g/someone' }).iconId).toBe('shutterstock')
+    expect(describeLink({ url: 'https://shutterstock.com.evil.example/' }).iconId).toBe('website')
+  })
+
   it('falls back to the hostname (without www.) for unrecognized domains', () => {
     expect(describeLink({ url: 'https://www.example.com/x' })).toEqual({
       label: 'example.com',

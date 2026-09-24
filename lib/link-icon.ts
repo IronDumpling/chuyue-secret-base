@@ -1,6 +1,6 @@
 import type { Link } from './frontmatter'
 
-export type LinkIconId = 'github' | 'youtube' | 'bilibili' | 'itch' | 'appstore' | 'pixiv' | 'website'
+export type LinkIconId = 'github' | 'youtube' | 'bilibili' | 'itch' | 'appstore' | 'pixiv' | 'shutterstock' | 'website'
 
 interface DomainMatch {
   test: (hostname: string) => boolean
@@ -15,6 +15,7 @@ const DOMAIN_MATCHERS: DomainMatch[] = [
   { test: h => h === 'bilibili.com' || h === 'www.bilibili.com' || h === 'b23.tv', iconId: 'bilibili', label: 'Bilibili' },
   { test: h => h === 'apps.apple.com', iconId: 'appstore', label: 'App Store' },
   { test: h => h === 'pixiv.net' || h === 'www.pixiv.net', iconId: 'pixiv', label: 'Pixiv' },
+  { test: h => h === 'shutterstock.com' || h.endsWith('.shutterstock.com'), iconId: 'shutterstock', label: 'Shutterstock' },
 ]
 
 function stripWww(hostname: string): string {
