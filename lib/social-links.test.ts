@@ -32,7 +32,8 @@ describe('social links', () => {
     const byId = (id: string) => allSocialLinks().find(link => link.id === id)!
     expect(socialLinkAction(byId('github'))).toBe('link')
     expect(socialLinkAction(byId('wechat'))).toBe('qr')
-    expect(socialLinkAction(byId('shutterstock'))).toBe('none')
+    expect(socialLinkAction(byId('shutterstock'))).toBe('link')
+    expect(socialLinkAction({ id: 'unfilled', label: 'Unfilled' })).toBe('none')
   })
 
   it('opens the QR code as an image, not as a link', () => {

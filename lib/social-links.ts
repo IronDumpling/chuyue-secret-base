@@ -23,8 +23,7 @@ export const socialLinksByIdentity: Record<Identity, SocialLink[]> = {
     { id: 'zhihu', label: { en: 'Zhihu', zh: '知乎' }, href: 'https://www.zhihu.com/people/zhang-chu-yue-13-47' },
     { id: 'pixiv', label: 'Pixiv', href: 'https://www.pixiv.net/users/56079335' },
     { id: 'xiaohongshu', label: { en: 'Xiaohongshu', zh: '小红书' }, href: 'https://xhslink.cn/o/4CBJdzI2bxv' },
-    // TODO: add the portfolio link (until then the icon is shown but does not open anything)
-    { id: 'shutterstock', label: 'Shutterstock' },
+    { id: 'shutterstock', label: 'Shutterstock', href: 'https://www.shutterstock.com/g/CharIron?rid=481312973' },
   ],
   adventurer: [
     { id: 'instagram', label: 'Instagram', href: 'https://www.instagram.com/chuyue.charlie' },
