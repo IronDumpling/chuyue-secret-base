@@ -92,6 +92,14 @@ describe('checkContentLanguages', () => {
     expect(problems).toMatch(/b\.zh\.mdx: the description has no Chinese/)
   })
 
+  it('treats an empty description as no description', () => {
+    // The CMS saves a blank optional summary as `description: ''`.
+    post('blog/films/her.en.mdx', { ...en, description: '' }, enBody)
+    post('blog/films/her.zh.mdx', { ...zh, description: '' }, zhBody)
+    post('blog/films/other.zh.mdx', { ...zh, description: null }, zhBody)
+    expect(checkContentLanguages(contentDir)).toEqual([])
+  })
+
   it('fails when the shared fields of the two versions differ', () => {
     post('blog/films/her.en.mdx', en, enBody)
     post('blog/films/her.zh.mdx', { ...zh, rating: 9, date: '2026-01-05', images: ['/b.jpg'] }, zhBody)
