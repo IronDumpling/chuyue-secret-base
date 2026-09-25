@@ -62,7 +62,9 @@ function checkVersion({ file, lang, data, body }: Version): string[] {
     if (!/[㐀-䶿一-鿿]/.test(String(data.title ?? ''))) {
       problems.push(`${file}: the title has no Chinese`)
     }
-    if (data.description !== undefined && !/[㐀-䶿一-鿿]/.test(String(data.description))) {
+    // The description is optional, and the CMS saves a blank one as `description: ''`.
+    const description = String(data.description ?? '').trim()
+    if (description && !/[㐀-䶿一-鿿]/.test(description)) {
       problems.push(`${file}: the description has no Chinese`)
     }
   }
