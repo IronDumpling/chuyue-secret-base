@@ -126,6 +126,8 @@ export function buildCmsConfig({ repo, branch }: CmsOptions): Record<string, unk
       extension: 'mdx',
       format: 'frontmatter',
       create: true,
+      // Chinese titles cannot become ASCII slugs, so the editor asks for the slug instead.
+      slug: '{{fields._slug}}',
       i18n: true,
       media_folder: `/images/blog/${category}`,
       public_folder: `/images/blog/${category}`,
@@ -141,6 +143,8 @@ export function buildCmsConfig({ repo, branch }: CmsOptions): Record<string, unk
       extension: 'mdx',
       format: 'frontmatter',
       create: true,
+      // Chinese titles cannot become ASCII slugs, so the editor asks for the slug instead.
+      slug: '{{fields._slug}}',
       i18n: true,
       media_folder: `/images/portfolio/${category}`,
       public_folder: `/images/portfolio/${category}`,
@@ -161,8 +165,10 @@ export function buildCmsConfig({ repo, branch }: CmsOptions): Record<string, unk
     i18n: {
       structure: 'multiple_files',
       locales: ['en', 'zh'],
-      default_locale: 'en',
-      initial_locales: ['en'],
+      // The default locale is always saved and validated (only other locales can be turned
+      // off), so it is the language most posts are written in; English is opt-in per entry.
+      default_locale: 'zh',
+      initial_locales: ['zh'],
     },
     media_libraries: {
       all: {

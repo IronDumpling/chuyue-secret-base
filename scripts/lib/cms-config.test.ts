@@ -31,9 +31,13 @@ describe('buildCmsConfig', () => {
     expect(config.i18n).toEqual({
       structure: 'multiple_files',
       locales: ['en', 'zh'],
-      default_locale: 'en',
-      initial_locales: ['en'],
+      default_locale: 'zh',
+      initial_locales: ['zh'],
     })
+  })
+
+  it('asks for the slug on every collection, since Chinese titles cannot become ASCII slugs', () => {
+    for (const c of config.collections) expect(c.slug).toBe('{{fields._slug}}')
   })
 
   it('creates one collection per blog and portfolio category, all names unique', () => {
