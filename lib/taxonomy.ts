@@ -21,7 +21,7 @@ export const TAXONOMY = {
   portfolio: {
     groups: [
       { id: 'computing', categories: ['applications', 'games', 'systems', 'ai'] },
-      { id: 'art', categories: ['photography', 'illustration'] },
+      { id: 'art', categories: ['photography', 'illustration', 'novel'] },
     ],
   },
 } as const

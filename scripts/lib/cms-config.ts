@@ -107,7 +107,7 @@ function portfolioFields(group: PortfolioGroup): CmsField[] {
       options: ['course', 'research', 'work', 'personal'],
     }),
   ]
-  // Art-group work (photography, illustration) has no code repository or live demo.
+  // Art-group work (photography, illustration, novel) has no code repository or live demo.
   if (group !== 'art') {
     fields.push(linkListField('github', 'GitHub links'))
     fields.push(linkListField('demo', 'Demo links'))
