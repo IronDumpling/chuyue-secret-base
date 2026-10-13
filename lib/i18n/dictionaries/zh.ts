@@ -157,6 +157,7 @@ export const zh: Dictionary = {
       ai: 'AI',
       photography: '摄影',
       illustration: '插画',
+      novel: '小说',
     },
     contexts: {
       course: '课程项目',

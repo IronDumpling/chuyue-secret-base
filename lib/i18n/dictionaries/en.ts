@@ -159,6 +159,7 @@ export const en = {
       ai: 'AI',
       photography: 'Photography',
       illustration: 'Illustration',
+      novel: 'Novel',
     },
     contexts: {
       course: 'Course',
