@@ -43,7 +43,7 @@ describe('buildCmsConfig', () => {
   it('creates one collection per blog and portfolio category, all names unique', () => {
     const expected = getCategories('blog').length + getCategories('portfolio').length
     expect(config.collections).toHaveLength(expected)
-    expect(config.collections).toHaveLength(12)
+    expect(config.collections).toHaveLength(13)
     const names = config.collections.map((c: any) => c.name)
     expect(new Set(names).size).toBe(expected)
   })
