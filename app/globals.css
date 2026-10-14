@@ -345,12 +345,65 @@
     @apply mb-4 leading-relaxed;
   }
   
+  /* Preflight sets list-style: none, so the markers have to be put back. */
   .prose ul, .prose ol {
-    @apply mb-4 ml-6;
+    @apply mb-4 pl-6;
   }
-  
+
+  .prose ul {
+    @apply list-disc;
+  }
+
+  .prose ol {
+    @apply list-decimal;
+  }
+
+  .prose ul ul, .prose ol ul {
+    list-style-type: circle;
+  }
+
+  .prose li > ul, .prose li > ol {
+    @apply mt-2 mb-0;
+  }
+
   .prose li {
-    @apply mb-2;
+    @apply mb-2 pl-1;
+  }
+
+  .prose li::marker {
+    @apply text-gray-400 dark:text-gray-500;
+  }
+
+  .prose blockquote {
+    @apply border-l-4 border-gray-300 dark:border-gray-600 pl-4 my-6 italic text-gray-600 dark:text-gray-400;
+  }
+
+  .prose blockquote p:last-child {
+    @apply mb-0;
+  }
+
+  .prose hr {
+    @apply my-8 border-gray-200 dark:border-gray-700;
+  }
+
+  .prose h4 {
+    @apply text-lg font-semibold mt-4 mb-2;
+  }
+
+  .prose table {
+    @apply w-full mb-4 text-sm border-collapse block overflow-x-auto;
+  }
+
+  .prose th, .prose td {
+    @apply border border-gray-200 dark:border-gray-700 px-3 py-2 text-left;
+  }
+
+  .prose th {
+    @apply font-semibold bg-gray-50 dark:bg-gray-800;
+  }
+
+  .prose pre code {
+    @apply bg-transparent p-0;
   }
   
   .prose a {
