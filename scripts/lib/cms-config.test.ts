@@ -97,9 +97,9 @@ describe('buildCmsConfig', () => {
     expect(fieldNames('blog-moments')).not.toContain('tags')
   })
 
-  it('keeps tags as a shared list field on portfolio collections', () => {
+  it('keeps tags as a per-language list field on portfolio collections', () => {
     const tags = fields('portfolio-games').find((f: any) => f.name === 'tags')
-    expect(tags).toMatchObject({ i18n: 'duplicate' })
+    expect(tags).toMatchObject({ widget: 'list', i18n: true })
   })
 
   it('marks shared fields as i18n duplicate and per-language fields as i18n true', () => {

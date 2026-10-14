@@ -108,6 +108,12 @@ describe('checkContentLanguages', () => {
     expect(problems[0]).toMatch(/blog\/films\/her: .*date.*rating.*images/)
   })
 
+  it('lets each version translate its own tags', () => {
+    post('portfolio/novel/fades.en.mdx', { ...en, tags: ['Fiction', 'Sci-Fi'] }, enBody)
+    post('portfolio/novel/fades.zh.mdx', { ...zh, tags: ['小说', '科幻'] }, zhBody)
+    expect(checkContentLanguages(contentDir)).toEqual([])
+  })
+
   it('does not require shared fields when only one version exists', () => {
     post('blog/films/only.zh.mdx', zh, zhBody)
     expect(checkContentLanguages(contentDir)).toEqual([])

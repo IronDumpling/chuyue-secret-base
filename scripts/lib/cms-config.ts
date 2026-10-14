@@ -26,7 +26,7 @@ function dateField(): CmsField {
 }
 
 function tagsField(): CmsField {
-  return sharedField({ name: 'tags', label: 'Tags', widget: 'list', required: false })
+  return localField({ name: 'tags', label: 'Tags', widget: 'list', required: false })
 }
 
 function imagesField(): CmsField {

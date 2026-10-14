@@ -11,7 +11,8 @@ export const EN_MAX_CJK = 0.05
 export const ZH_MIN_CJK = 0.2
 
 // Fields that describe the post, not the words in it, so both versions must agree.
-const SHARED_FIELDS = ['date', 'rating', 'tags', 'images', 'github', 'demo']
+// Tags are words, so each version translates its own.
+const SHARED_FIELDS = ['date', 'rating', 'images', 'github', 'demo']
 
 const CJK = /[㐀-䶿一-鿿]/g
 const LATIN = /[A-Za-z]/g
