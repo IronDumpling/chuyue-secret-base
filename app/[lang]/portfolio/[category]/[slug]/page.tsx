@@ -2,7 +2,8 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { getProjectBySlug } from '@/lib/portfolio'
 import { describeLink, pickPrimaryLink, secondaryLinks } from '@/lib/link-icon'
-import MDXContent from '@/components/shared/MDXContent'
+import { renderMDX } from '@/components/shared/MDXContent'
+import TableOfContents from '@/components/shared/toc/TableOfContents'
 import MDXHeaderImage from '@/components/shared/MDXHeaderImage'
 import ShareBar from '@/components/shared/ShareBar'
 import LinkTile from '@/components/shared/LinkTile'
@@ -61,94 +62,105 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   }
 
   const t = getDictionary(params.lang)
+  const { content, headings } = await renderMDX(project.content)
 
   return (
     <article className="section bg-white dark:bg-gray-900">
-      <div className="container max-w-4xl">
-        <FallbackNotice pageLang={params.lang} contentLang={project.lang} />
-        {/* Header */}
-        <div className="mb-8">
-          <ListBackLink
-            href={localePath(params.lang, '/portfolio')}
-            className="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 hover:underline mb-4"
-          >
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            {t.portfolio.back}
-          </ListBackLink>
-          <h1 lang={project.lang} className="text-4xl font-bold mb-4">{project.frontMatter.title}</h1>
-          <div className="flex flex-wrap items-center gap-4 text-gray-600 dark:text-gray-400">
-            <span className="text-sm">
-              {new Date(project.frontMatter.date).toLocaleDateString(INTL_LOCALE[params.lang], {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-              })}
-            </span>
-            {project.frontMatter.tags && (
-              <div className="flex flex-wrap gap-2">
-                {project.frontMatter.tags.map((tag, index) => (
-                  <span
-                    key={index}
-                    className="px-3 py-1 text-sm bg-primary-100 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 rounded-full"
-                  >
-                    {tag}
-                  </span>
-                ))}
+      {/* Wide screens: three columns with the table of contents in the left gutter, so the
+          body column keeps its width and stays centred. */}
+      <div className="container max-w-4xl xl:grid xl:max-w-none xl:grid-cols-[1fr_minmax(0,52rem)_1fr] xl:gap-8">
+        <aside className="hidden xl:block">
+          <TableOfContents headings={headings} labels={t.toc} variant="sidebar" />
+        </aside>
+        <div className="min-w-0">
+          <FallbackNotice pageLang={params.lang} contentLang={project.lang} />
+          {/* Header */}
+          <div className="mb-8">
+            <ListBackLink
+              href={localePath(params.lang, '/portfolio')}
+              className="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 hover:underline mb-4"
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              {t.portfolio.back}
+            </ListBackLink>
+            <h1 lang={project.lang} className="text-4xl font-bold mb-4">{project.frontMatter.title}</h1>
+            <div className="flex flex-wrap items-center gap-4 text-gray-600 dark:text-gray-400">
+              <span className="text-sm">
+                {new Date(project.frontMatter.date).toLocaleDateString(INTL_LOCALE[params.lang], {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                })}
+              </span>
+              {project.frontMatter.tags && (
+                <div className="flex flex-wrap gap-2">
+                  {project.frontMatter.tags.map((tag, index) => (
+                    <span
+                      key={index}
+                      className="px-3 py-1 text-sm bg-primary-100 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 rounded-full"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Header Image */}
+          <MDXHeaderImage
+            images={
+              project.frontMatter.images && project.frontMatter.images.length > 0
+                ? project.frontMatter.images
+                : ['/images/placeholder/portofolio-default.jpg']
+            }
+            title={project.frontMatter.title}
+          />
+
+          {/* Links + Share: one row of same-size icon tiles. The primary link (demo > website >
+              github, see lib/link-icon.ts) is accented; secondary links and Share are neutral —
+              no more mixing a big primary button with small secondary ones. */}
+          {(() => {
+            const groups = {
+              github: project.frontMatter.github ?? [],
+              demo: project.frontMatter.demo ?? [],
+              website: project.frontMatter.website ?? [],
+            }
+            const primary = pickPrimaryLink(groups)
+            const secondary = secondaryLinks(groups, primary)
+            return (
+              <div className="flex flex-wrap items-start gap-4 mb-8">
+                {primary &&
+                  (() => {
+                    const info = describeLink(primary)
+                    return <LinkTile href={primary.url} iconId={info.iconId} label={info.label} accent />
+                  })()}
+                {secondary.map(link => {
+                  const info = describeLink(link)
+                  return <LinkTile key={link.url} href={link.url} iconId={info.iconId} label={info.label} />
+                })}
+                <ShareBar
+                  {...getShareProps(
+                    { kind: 'portfolio', category: project.frontMatter.category, slug: project.slug },
+                    params.lang,
+                    project.frontMatter.title,
+                    summarize(project.frontMatter.description, project.content)
+                  )}
+                />
               </div>
-            )}
+            )
+          })()}
+
+          {/* MDX Content */}
+          <div lang={project.lang} className="prose prose-lg dark:prose-invert max-w-none">
+            {content}
           </div>
         </div>
-
-        {/* Header Image */}
-        <MDXHeaderImage
-          images={
-            project.frontMatter.images && project.frontMatter.images.length > 0
-              ? project.frontMatter.images
-              : ['/images/placeholder/portofolio-default.jpg']
-          }
-          title={project.frontMatter.title}
-        />
-
-        {/* Links + Share: one row of same-size icon tiles. The primary link (demo > website >
-            github, see lib/link-icon.ts) is accented; secondary links and Share are neutral —
-            no more mixing a big primary button with small secondary ones. */}
-        {(() => {
-          const groups = {
-            github: project.frontMatter.github ?? [],
-            demo: project.frontMatter.demo ?? [],
-            website: project.frontMatter.website ?? [],
-          }
-          const primary = pickPrimaryLink(groups)
-          const secondary = secondaryLinks(groups, primary)
-          return (
-            <div className="flex flex-wrap items-start gap-4 mb-8">
-              {primary &&
-                (() => {
-                  const info = describeLink(primary)
-                  return <LinkTile href={primary.url} iconId={info.iconId} label={info.label} accent />
-                })()}
-              {secondary.map(link => {
-                const info = describeLink(link)
-                return <LinkTile key={link.url} href={link.url} iconId={info.iconId} label={info.label} />
-              })}
-              <ShareBar
-                {...getShareProps(
-                  { kind: 'portfolio', category: project.frontMatter.category, slug: project.slug },
-                  params.lang,
-                  project.frontMatter.title,
-                  summarize(project.frontMatter.description, project.content)
-                )}
-              />
-            </div>
-          )
-        })()}
-
-        {/* MDX Content */}
-        <div lang={project.lang} className="prose prose-lg dark:prose-invert max-w-none">
-          <MDXContent source={project.content} />
-        </div>
+      </div>
+      <div className="xl:hidden">
+        <TableOfContents headings={headings} labels={t.toc} variant="floating" />
       </div>
     </article>
   )

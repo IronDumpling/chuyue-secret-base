@@ -1,11 +1,9 @@
-import { MDXRemote } from 'next-mdx-remote/rsc'
+import { compileMDX } from 'next-mdx-remote/rsc'
 import remarkGfm from 'remark-gfm'
+import rehypeSlug from 'rehype-slug'
 import Rating from '@/components/blog/Rating'
 import MDXContentImage from '@/components/shared/MDXContentImage'
-
-interface MDXContentProps {
-  source: string
-}
+import { rehypeCollectHeadings, type TocHeading } from '@/lib/rehype-collect-headings'
 
 // Default components that can be used in MDX
 const components = {
@@ -13,13 +11,19 @@ const components = {
   img: MDXContentImage as React.ComponentType<any>,
 }
 
-export default function MDXContent({ source }: MDXContentProps) {
-  return (
-    <MDXRemote
-      source={source}
-      components={components}
-      options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }}
-    />
-  )
+// Renders the body and, from the same pipeline, lists its headings for the table of
+// contents: rehype-slug gives each heading its id and the collector reads those ids back.
+export async function renderMDX(source: string): Promise<{ content: React.ReactElement; headings: TocHeading[] }> {
+  const headings: TocHeading[] = []
+  const { content } = await compileMDX({
+    source,
+    components,
+    options: {
+      mdxOptions: {
+        remarkPlugins: [remarkGfm],
+        rehypePlugins: [rehypeSlug, [rehypeCollectHeadings, headings]],
+      },
+    },
+  })
+  return { content, headings }
 }
-

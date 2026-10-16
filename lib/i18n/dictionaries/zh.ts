@@ -178,4 +178,12 @@ export const zh: Dictionary = {
     scanToRead: '扫码阅读',
     close: '关闭',
   },
+  toc: {
+    title: '目录',
+    expand: '展开目录',
+    collapse: '收起目录',
+    open: '打开目录',
+    close: '关闭',
+    toggleSection: '展开或收起子章节',
+  },
 }

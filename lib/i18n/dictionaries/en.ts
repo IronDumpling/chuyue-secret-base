@@ -181,6 +181,14 @@ export const en = {
     scanToRead: 'Scan to read',
     close: 'Close',
   },
+  toc: {
+    title: 'On this page',
+    expand: 'Expand table of contents',
+    collapse: 'Collapse table of contents',
+    open: 'Open table of contents',
+    close: 'Close',
+    toggleSection: 'Show or hide subsections',
+  },
 }
 
 export type Dictionary = typeof en

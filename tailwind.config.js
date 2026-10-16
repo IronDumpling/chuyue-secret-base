@@ -38,10 +38,21 @@ module.exports = {
           '0%': { opacity: '0', transform: 'translateX(-6px)' },
           '100%': { opacity: '1', transform: 'none' },
         },
+        'fade-in': {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+        // The table-of-contents drawer rising from the bottom on phones.
+        'drawer-in': {
+          '0%': { transform: 'translateY(100%)' },
+          '100%': { transform: 'none' },
+        },
       },
       animation: {
         'feed-in': 'feed-in 280ms ease-out both',
         'fade-slide': 'fade-slide 200ms ease-out both',
+        'fade-in': 'fade-in 200ms ease-out both',
+        'drawer-in': 'drawer-in 260ms ease-out both',
       },
     },
   },
