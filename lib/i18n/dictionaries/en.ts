@@ -188,9 +188,11 @@ export const en = {
     open: 'Open table of contents',
     close: 'Close',
     toggleSection: 'Show or hide subsections',
+    backToTop: 'Back to top',
   },
   readAloud: {
     listen: 'Listen',
+    listenFromHere: 'Listen from here',
     play: 'Play',
     pause: 'Pause',
     replay: 'Play again',

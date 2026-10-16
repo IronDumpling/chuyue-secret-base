@@ -185,9 +185,11 @@ export const zh: Dictionary = {
     open: '打开目录',
     close: '关闭',
     toggleSection: '展开或收起子章节',
+    backToTop: '回到顶部',
   },
   readAloud: {
     listen: '收听',
+    listenFromHere: '从本节收听',
     play: '播放',
     pause: '暂停',
     replay: '重新播放',

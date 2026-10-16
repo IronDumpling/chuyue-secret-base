@@ -24,16 +24,38 @@ const BAR_WIDTH = { 1: 'w-6', 2: 'w-4', 3: 'w-2.5' } as const
 const PEEK_MAX_WIDTH = 256
 const PEEK_MIN_WIDTH = 144
 
-// Starts reading aloud from the contents, so a reader halfway down the page need not scroll
-// back up to the play tile. Hidden while reading (the player is on screen) or unsupported.
-export function TocPlayButton({ className = iconButton }: { className?: string }) {
+// Under the list: starts reading aloud from the section being read, so a reader halfway down
+// the page need not scroll back up to the play tile. Above the first heading it reads from the
+// top. Only where the section names are on screen (not on the collapsed rail); hidden while
+// reading (the player is on screen, and choosing a section moves the reading there) or
+// unsupported.
+export function TocListenRow({
+  activeId,
+  onStart,
+  className = 'mt-2',
+}: {
+  activeId: string | null
+  // Runs `start` itself, when the panel must get out of the way first (the phone drawer).
+  onStart?: (start: () => void) => void
+  className?: string
+}) {
   const reader = useReadAloud()
   const t = useT().readAloud
   if (!reader || reader.active || reader.supported === false) return null
+  const start = () => reader.start(activeId ?? undefined)
   return (
-    <button type="button" onClick={reader.start} aria-label={t.listen} title={t.listen} className={className}>
-      <PlayIcon className="ml-px h-3.5 w-3.5" />
-    </button>
+    <div className={`border-t border-gray-200 pt-2 dark:border-gray-800 ${className}`}>
+      <button
+        type="button"
+        onClick={() => (onStart ? onStart(start) : start())}
+        className="group flex w-full items-center gap-2.5 rounded-lg px-2 py-1.5 text-sm text-gray-600 transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100"
+      >
+        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary-600 transition-colors duration-200 group-hover:bg-primary-100 dark:bg-primary-900/40 dark:text-primary-400 dark:group-hover:bg-primary-900/70">
+          <PlayIcon className="ml-px h-3 w-3" />
+        </span>
+        {activeId ? t.listenFromHere : t.listen}
+      </button>
+    </div>
   )
 }
 
@@ -67,7 +89,6 @@ export default function TocSidebar({ tree, activeId, onNavigate, labels }: TocSi
           if (!event.currentTarget.contains(event.relatedTarget as Node | null)) closePeek()
         }}
       >
-        <TocPlayButton />
         <button
           type="button"
           onClick={() => {
@@ -78,7 +99,7 @@ export default function TocSidebar({ tree, activeId, onNavigate, labels }: TocSi
           title={labels.expand}
           className={iconButton}
         >
-          <ListIcon />
+          <PanelOpenIcon />
         </button>
         <div aria-hidden className="mt-3 flex flex-col items-start gap-2 pl-1">
           {flattenToc(tree).map(node => (
@@ -95,6 +116,7 @@ export default function TocSidebar({ tree, activeId, onNavigate, labels }: TocSi
             <div className={`${card} motion-safe:animate-fade-slide`} style={{ width: peekWidth }}>
               <div ref={scrollRef} className="max-h-[calc(100vh-10rem)] overflow-y-auto overscroll-contain p-2">
                 <TocTree tree={tree} activeId={activeId} onNavigate={onNavigate} labels={labels} scrollRef={scrollRef} />
+                <TocListenRow activeId={activeId} />
               </div>
             </div>
           </div>
@@ -112,25 +134,43 @@ export default function TocSidebar({ tree, activeId, onNavigate, labels }: TocSi
         <span className="text-base font-semibold text-gray-900 dark:text-gray-100">
           {labels.title}
         </span>
-        <div className="flex items-center gap-1">
-          <TocPlayButton />
-          <button
-            type="button"
-            onClick={() => setCollapsed(true)}
-            aria-label={labels.collapse}
-            title={labels.collapse}
-            className={iconButton}
-          >
-            <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth={1.5} aria-hidden>
-              <path d="M10 3.5 5.5 8l4.5 4.5" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={() => setCollapsed(true)}
+          aria-label={labels.collapse}
+          title={labels.collapse}
+          className={iconButton}
+        >
+          <PanelCloseIcon />
+        </button>
       </div>
       <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain pr-1">
         <TocTree tree={tree} activeId={activeId} onNavigate={onNavigate} labels={labels} scrollRef={scrollRef} />
       </div>
+      <TocListenRow activeId={activeId} />
     </nav>
+  )
+}
+
+// Collapse and expand show the panel itself, so they read as "fold this panel away", not as
+// "go back". From Lucide (panel-left-close / panel-left-open).
+export function PanelCloseIcon({ className = 'h-4 w-4' }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <rect width="18" height="18" x="3" y="3" rx="2" />
+      <path d="M9 3v18" />
+      <path d="m16 15-3-3 3-3" />
+    </svg>
+  )
+}
+
+export function PanelOpenIcon({ className = 'h-4 w-4' }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <rect width="18" height="18" x="3" y="3" rx="2" />
+      <path d="M9 3v18" />
+      <path d="m14 9 3 3-3 3" />
+    </svg>
   )
 }
 

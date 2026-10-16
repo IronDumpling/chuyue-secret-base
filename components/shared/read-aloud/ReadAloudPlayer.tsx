@@ -17,23 +17,37 @@ import {
 } from './icons'
 
 const control =
-  'flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-gray-600 transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900 disabled:opacity-40 disabled:hover:bg-transparent dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white'
+  'flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900 disabled:opacity-40 disabled:hover:bg-transparent dark:hover:bg-gray-800 dark:hover:text-white'
+const tones = {
+  normal: 'text-gray-600 dark:text-gray-300',
+  // Contents and stop, set back from the transport on phones where they sit right next to it.
+  muted: 'text-gray-400 dark:text-gray-500 md:text-gray-600 md:dark:text-gray-300',
+}
 
 function Control({
   label,
   onClick,
   disabled,
+  tone = 'normal',
   className = '',
   children,
 }: {
   label: string
   onClick: () => void
   disabled?: boolean
+  tone?: keyof typeof tones
   className?: string
   children: ReactNode
 }) {
   return (
-    <button type="button" onClick={onClick} disabled={disabled} aria-label={label} title={label} className={`${control} ${className}`}>
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      aria-label={label}
+      title={label}
+      className={`${control} ${tones[tone]} ${className}`}
+    >
       {children}
     </button>
   )
@@ -125,10 +139,13 @@ export default function ReadAloudPlayer() {
         </div>
 
         <div className="order-2 flex items-center gap-1 px-3 pb-2 pt-1 md:order-1 md:grid md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] md:gap-4 md:px-5 md:pb-1 md:pt-3">
-          {/* What is being read */}
+          {/* What is being read: on phones just the title, which always makes sense on its own
+              (a chapter name out of context often does not); wider screens add where in it. */}
           <div className="min-w-0 flex-1 pr-1">
-            <div className="truncate text-sm font-medium text-gray-900 dark:text-gray-100">{reader.title}</div>
-            <div className="truncate text-xs tabular-nums text-gray-500 dark:text-gray-400">
+            <div className="truncate text-[15px] font-semibold text-gray-900 dark:text-gray-100 md:text-sm md:font-medium">
+              {reader.title}
+            </div>
+            <div className="hidden truncate text-xs tabular-nums text-gray-500 dark:text-gray-400 md:block">
               {chapter ? `${chapter} · ` : ''}
               {index + 1} / {total}
             </div>
@@ -165,8 +182,8 @@ export default function ReadAloudPlayer() {
             </Control>
           </div>
 
-          {/* Secondary */}
-          <div className="flex items-center justify-end gap-0.5 md:gap-1">
+          {/* Secondary: on phones a divider keeps stop from reading as part of the transport. */}
+          <div className="ml-1 flex items-center justify-end gap-0.5 border-l border-gray-200 pl-1 dark:border-gray-800 md:ml-0 md:gap-1 md:border-0 md:pl-0">
             <Control label={t.restart} onClick={reader.restart} className="hidden md:flex">
               <RotateCcwIcon className="h-4 w-4" />
             </Control>
@@ -175,16 +192,16 @@ export default function ReadAloudPlayer() {
               onClick={reader.cycleRate}
               aria-label={`${t.speed}: ${rate}×`}
               title={t.speed}
-              className={`${control} hidden w-12 text-xs font-semibold tabular-nums md:flex`}
+              className={`${control} ${tones.normal} hidden w-12 text-xs font-semibold tabular-nums md:flex`}
             >
               {rate}×
             </button>
             {hasToc && (
-              <Control label={t.toc} onClick={() => reader.setTocOpen(open => !open)} className="xl:hidden">
+              <Control label={t.toc} onClick={() => reader.setTocOpen(open => !open)} tone="muted" className="xl:hidden">
                 <ListIcon className="h-5 w-5" />
               </Control>
             )}
-            <Control label={t.close} onClick={reader.close}>
+            <Control label={t.close} onClick={reader.close} tone="muted">
               <XIcon className="h-4 w-4" />
             </Control>
           </div>

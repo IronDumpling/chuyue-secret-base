@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import type { Locale } from '@/lib/i18n/config'
 import { buildQueue, nextBlockStart, pickVoice, prevBlockStart, type QueuedSentence } from '@/lib/read-aloud'
+import { glideTo } from '@/lib/smooth-scroll'
 import { prefersReducedMotion } from '@/components/shared/toc/useActiveHeading'
 import { extractBlocks, type ReadBlock } from './extract'
 import ReadAloudPlayer from './ReadAloudPlayer'
@@ -46,6 +47,7 @@ export default function ReadAloudProvider({ lang, title, hasToc, children }: Rea
   const holdUntil = useRef(0)
   const lastBlock = useRef(-1)
   const highlighted = useRef<HTMLElement | null>(null)
+  const stopGlide = useRef<() => void>(() => {})
 
   const updateStatus = (next: ReadStatus) => {
     statusRef.current = next
@@ -121,7 +123,13 @@ export default function ReadAloudProvider({ lang, title, hasToc, children }: Rea
     synth.speak(sentence)
   }, [lang])
 
-  const start = useCallback(() => {
+  // The first sentence of the block with this id, or -1.
+  const sentenceAt = (id: string) => {
+    const block = blocks.current.findIndex(b => b.el.id === id)
+    return block === -1 ? -1 : queue.current.findIndex(s => s.block === block)
+  }
+
+  const start = useCallback((fromId?: string) => {
     if (supported === false) return
     blocks.current = extractBlocks()
     queue.current = buildQueue(blocks.current.map(b => b.text), lang)
@@ -129,7 +137,9 @@ export default function ReadAloudProvider({ lang, title, hasToc, children }: Rea
     if (queue.current.length === 0) return
     lastBlock.current = -1
     setActive(true)
-    const from = statusRef.current === 'ended' || indexRef.current >= queue.current.length ? 0 : indexRef.current
+    const at = fromId ? sentenceAt(fromId) : -1
+    const from =
+      at !== -1 ? at : statusRef.current === 'ended' || indexRef.current >= queue.current.length ? 0 : indexRef.current
     speakFrom(from)
   }, [supported, lang, speakFrom])
 
@@ -164,9 +174,9 @@ export default function ReadAloudProvider({ lang, title, hasToc, children }: Rea
   const seekToId = useCallback(
     (id: string) => {
       if (!active) return
-      const block = blocks.current.findIndex(b => b.el.id === id)
-      if (block === -1) return
-      const i = queue.current.findIndex(s => s.block === block)
+      // The contents scroll the page there themselves.
+      stopGlide.current()
+      const i = sentenceAt(id)
       if (i !== -1) seek(i, { scroll: 'none' })
     },
     [active, seek]
@@ -197,13 +207,16 @@ export default function ReadAloudProvider({ lang, title, hasToc, children }: Rea
 
   const close = useCallback(() => {
     stopSpeech()
+    stopGlide.current()
     setActive(false)
     updateStatus('idle')
     moveTo(0, 'none')
   }, [])
 
+  // Also stops a glide under way, so it does not fight the reader or a table-of-contents jump.
   const holdScroll = useCallback((ms: number) => {
     holdUntil.current = Math.max(holdUntil.current, performance.now() + ms)
+    stopGlide.current()
   }, [])
 
   // A reader scrolling by hand takes over the page for a few seconds.
@@ -248,13 +261,22 @@ export default function ReadAloudProvider({ lang, title, hasToc, children }: Rea
     lastBlock.current = sentence.block
     const shouldScroll = mode === 'force' || (mode === 'follow' && changed && performance.now() >= holdUntil.current)
     if (shouldScroll) {
-      // 'instant', not 'auto': `auto` would follow the global `scroll-behavior: smooth`.
-      block.el.scrollIntoView({ behavior: prefersReducedMotion() ? 'instant' : 'smooth', block: 'start' })
+      stopGlide.current()
+      if (prefersReducedMotion()) {
+        // 'instant', not 'auto': `auto` would follow the global `scroll-behavior: smooth`.
+        block.el.scrollIntoView({ behavior: 'instant', block: 'start' })
+      } else {
+        const margin = parseFloat(getComputedStyle(block.el).scrollMarginTop) || 0
+        stopGlide.current = glideTo(block.el.getBoundingClientRect().top + window.scrollY - margin)
+      }
     }
   }, [active, status, index])
 
   useEffect(() => {
-    return () => highlighted.current?.removeAttribute('data-reading')
+    return () => {
+      stopGlide.current()
+      highlighted.current?.removeAttribute('data-reading')
+    }
   }, [])
 
   const chapter = useMemo(() => {

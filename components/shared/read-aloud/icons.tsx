@@ -73,6 +73,26 @@ export function RotateCcwIcon({ className = 'h-5 w-5' }: IconProps) {
   )
 }
 
+export function ArrowUpIcon({ className = 'h-5 w-5' }: IconProps) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" aria-hidden="true" {...stroke}>
+      <path d="m5 12 7-7 7 7" />
+      <path d="M12 19V5" />
+    </svg>
+  )
+}
+
+// Filled dots rather than Lucide's stroked rings: crisper at small sizes.
+export function EllipsisVerticalIcon({ className = 'h-5 w-5' }: IconProps) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
+      <circle cx="12" cy="5" r="1.75" />
+      <circle cx="12" cy="12" r="1.75" />
+      <circle cx="12" cy="19" r="1.75" />
+    </svg>
+  )
+}
+
 export function XIcon({ className = 'h-5 w-5' }: IconProps) {
   return (
     <svg className={className} viewBox="0 0 24 24" aria-hidden="true" {...stroke}>

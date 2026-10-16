@@ -22,7 +22,8 @@ export interface ReadAloudValue {
   hasToc: boolean
   tocOpen: boolean
   setTocOpen: Dispatch<SetStateAction<boolean>>
-  start: () => void
+  // With a heading id, starts from that heading (the table of contents' "listen from here").
+  start: (fromId?: string) => void
   play: () => void
   pause: () => void
   toggle: () => void
