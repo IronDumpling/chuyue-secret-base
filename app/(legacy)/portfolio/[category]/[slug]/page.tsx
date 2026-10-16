@@ -3,8 +3,6 @@ import type { Metadata } from 'next'
 import { getAllProjects, getProjectBySlug } from '@/lib/portfolio'
 import { buildPageMetadata } from '@/lib/seo'
 
-export const dynamicParams = false
-
 export function generateStaticParams() {
   return getAllProjects('en').map(project => ({
     category: project.frontMatter.category,

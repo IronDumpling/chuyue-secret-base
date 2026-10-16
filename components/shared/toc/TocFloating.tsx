@@ -3,10 +3,16 @@
 import { useEffect, useRef, useState } from 'react'
 import type { TocNode } from '@/lib/toc'
 import type { Dictionary } from '@/lib/i18n/dictionaries/en'
+import { useT } from '@/components/shared/LocaleProvider'
+import { useReadAloud } from '@/components/shared/read-aloud/context'
+import { CONTENT_ID } from '@/components/shared/read-aloud/extract'
+import { PlayIcon, XIcon } from '@/components/shared/read-aloud/icons'
 import TocTree from './TocTree'
-import { ListIcon } from './TocSidebar'
+import { ListIcon, TocPlayButton } from './TocSidebar'
 
 interface TocFloatingProps {
+  // Empty when the page is too short for a table of contents; the button then only offers
+  // reading aloud.
   tree: TocNode[]
   activeId: string | null
   onNavigate: (id: string) => void
@@ -21,13 +27,18 @@ const SHIFT_MS = 350
 // The article reflows while it moves aside for the sidebar; keep the paragraph being read at
 // the same height on screen through every frame of that, instead of letting the text slide away.
 function holdReadingPosition() {
-  // Small blocks (a paragraph, a list item), not whole lists: a long list's top may be far
-  // above the screen, and pinning it would not keep the visible line in place.
+  // Only tablets reflow (`.toc-shift`). On phones pinning would only fight the scroll of a
+  // jump chosen in the drawer, which closes as that jump starts.
+  if (!window.matchMedia('(min-width: 768px) and (max-width: 1279.98px)').matches) return
+  // The paragraph being read aloud, if any; otherwise the first small block on screen (a
+  // paragraph, a list item), not whole lists: a long list's top may be far above the screen,
+  // and pinning it would not keep the visible line in place.
+  const reading = document.querySelector<HTMLElement>('.prose [data-reading]')
   const blocks = document.querySelectorAll<HTMLElement>(
     '.prose :is(p, li, h1, h2, h3, h4, pre, img, blockquote, table, hr)'
   )
   const header = 96
-  const anchor = Array.from(blocks).find(el => el.getBoundingClientRect().top >= header)
+  const anchor = reading ?? Array.from(blocks).find(el => el.getBoundingClientRect().top >= header)
   if (!anchor) return
   const top = anchor.getBoundingClientRect().top
   const until = performance.now() + SHIFT_MS
@@ -40,21 +51,41 @@ function holdReadingPosition() {
 }
 
 const surface = 'border border-gray-200 bg-white/95 backdrop-blur dark:border-gray-800 dark:bg-gray-900/95'
+const dialItem = `group relative flex h-10 w-10 items-center justify-center rounded-full text-gray-700 shadow-md transition-colors duration-200 hover:text-primary-600 dark:text-gray-200 dark:hover:text-primary-400 motion-safe:animate-dial-in ${surface}`
+// Icon-only items explain themselves on hover: to the left on phones (button at the right
+// edge), to the right on tablets (button at the left edge).
+const tooltip =
+  'pointer-events-none absolute top-1/2 -translate-y-1/2 whitespace-nowrap rounded-md bg-gray-900 px-2 py-1 text-xs text-white opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100 dark:bg-gray-100 dark:text-gray-900 right-full mr-2 md:left-full md:right-auto md:ml-2 md:mr-0'
 
-// Below the wide breakpoint: a round button ringed with reading progress. On tablets it sits
-// bottom-left and opens a sidebar from the left edge that pushes the article right (see
+// Below the wide breakpoint: a round button ringed with reading progress. With both reading
+// aloud and a table of contents available it opens a small vertical menu of the two (icons
+// only); with one of them it does that one directly. On tablets it sits bottom-left and the
+// contents open as a sidebar from the left edge that pushes the article right (see
 // `.toc-shift` in globals.css) and stays open while the reader jumps around; on phones it sits
-// bottom-right and opens a bottom drawer that closes as soon as an entry is chosen.
+// bottom-right and the contents open as a bottom drawer that closes once an entry is chosen.
+// While reading aloud the button is hidden: the player at the bottom has the contents button.
 export default function TocFloating({ tree, activeId, onNavigate, labels }: TocFloatingProps) {
-  const [open, setOpen] = useState(false)
+  const reader = useReadAloud()
+  const readLabels = useT().readAloud
+  const [localOpen, setLocalOpen] = useState(false)
+  // Shared with the player when reading aloud is available, so its contents button opens this.
+  const open = reader ? reader.tocOpen : localOpen
+  const setOpen = reader ? reader.setTocOpen : setLocalOpen
+  const [dialOpen, setDialOpen] = useState(false)
   const [visible, setVisible] = useState(false)
   const [progress, setProgress] = useState(0)
   const panelScrollRef = useRef<HTMLDivElement>(null)
   const drawerScrollRef = useRef<HTMLDivElement>(null)
 
-  // Appears once the first heading is on screen, and tracks how far through the page we are.
+  const hasToc = tree.length > 0
+  const canRead = !!reader && reader.supported !== false
+  const reading = !!reader?.active
+  const holdScroll = reader?.holdScroll
+
+  // Appears once the first heading (or, without headings, the article) is on screen, and
+  // tracks how far through the page we are.
   useEffect(() => {
-    const first = tree[0] && document.getElementById(tree[0].id)
+    const first = (tree[0] && document.getElementById(tree[0].id)) || document.getElementById(CONTENT_ID)
     let frame = 0
     const update = () => {
       frame = 0
@@ -83,7 +114,9 @@ export default function TocFloating({ tree, activeId, onNavigate, labels }: TocF
     }
     document.addEventListener('keydown', onKey)
     // Tablets: the article makes room for the sidebar. The CSS rule only applies between md
-    // and xl, so setting it on phones is harmless.
+    // and xl, so setting it on phones is harmless. Reading aloud stops following the text
+    // while it reflows, so the two do not both move the page.
+    holdScroll?.(SHIFT_MS)
     holdReadingPosition()
     document.documentElement.dataset.tocPanel = ''
     // The drawer covers the page on phones; keep the page from scrolling behind it.
@@ -92,26 +125,55 @@ export default function TocFloating({ tree, activeId, onNavigate, labels }: TocF
     if (isPhone) document.body.style.overflow = 'hidden'
     return () => {
       document.removeEventListener('keydown', onKey)
+      holdScroll?.(SHIFT_MS)
       holdReadingPosition()
       delete document.documentElement.dataset.tocPanel
       if (isPhone) document.body.style.overflow = previousOverflow
     }
-  }, [open])
+  }, [open, setOpen, holdScroll])
+
+  useEffect(() => {
+    if (!dialOpen) return
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setDialOpen(false)
+    }
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+  }, [dialOpen])
+
+  // Starting to read (from anywhere) folds the menu away.
+  useEffect(() => {
+    if (reading) setDialOpen(false)
+  }, [reading])
+
+  if (!hasToc && !canRead) return null
 
   const navigateFromDrawer = (id: string) => {
     setOpen(false)
     // Let the body scroll lock come off before scrolling.
     requestAnimationFrame(() => onNavigate(id))
   }
+  const openToc = () => {
+    setDialOpen(false)
+    setOpen(true)
+  }
+  const startReading = () => {
+    setDialOpen(false)
+    reader?.start()
+  }
+  const both = hasToc && canRead
+  const onMainClick = both ? () => setDialOpen(value => !value) : hasToc ? openToc : startReading
+  const mainLabel = both ? (dialOpen ? readLabels.closeMenu : readLabels.menu) : hasToc ? labels.open : readLabels.listen
+  const showButton = !open && !reading
 
   return (
     <div
       className={`fixed right-4 md:left-4 md:right-auto ${open ? 'z-[60]' : 'z-40'} motion-safe:transition-opacity motion-safe:duration-300 ${
-        visible || open ? 'opacity-100' : 'pointer-events-none opacity-0'
+        (visible && !reading) || open ? 'opacity-100' : 'pointer-events-none opacity-0'
       }`}
       style={{ bottom: 'calc(1rem + env(safe-area-inset-bottom))' }}
     >
-      {open && (
+      {open && hasToc && (
         <>
           {/* Tablets: a sidebar below the header; the article moves right to make room. */}
           <nav
@@ -122,17 +184,20 @@ export default function TocFloating({ tree, activeId, onNavigate, labels }: TocF
               <span className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
                 {labels.title}
               </span>
-              <button
-                type="button"
-                onClick={() => setOpen(false)}
-                aria-label={labels.collapse}
-                title={labels.collapse}
-                className="flex h-7 w-7 items-center justify-center rounded-lg text-gray-500 transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100"
-              >
-                <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth={1.5} aria-hidden>
-                  <path d="M10 3.5 5.5 8l4.5 4.5" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </button>
+              <div className="flex items-center gap-1">
+                <TocPlayButton />
+                <button
+                  type="button"
+                  onClick={() => setOpen(false)}
+                  aria-label={labels.collapse}
+                  title={labels.collapse}
+                  className="flex h-7 w-7 items-center justify-center rounded-lg text-gray-500 transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100"
+                >
+                  <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth={1.5} aria-hidden>
+                    <path d="M10 3.5 5.5 8l4.5 4.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
+              </div>
             </div>
             <div ref={panelScrollRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-2 pb-6">
               <TocTree tree={tree} activeId={activeId} onNavigate={onNavigate} labels={labels} scrollRef={panelScrollRef} />
@@ -178,13 +243,42 @@ export default function TocFloating({ tree, activeId, onNavigate, labels }: TocF
         </>
       )}
 
+      {showButton && dialOpen && (
+        <>
+          {/* A faint veil: tapping anywhere else folds the menu. */}
+          <div aria-hidden className="fixed inset-0 -z-10 bg-black/10 motion-safe:animate-fade-in dark:bg-black/30" onClick={() => setDialOpen(false)} />
+          {/* Rises from the main button: contents nearest the thumb, then play. */}
+          <div className="absolute inset-x-0 bottom-full mb-3 flex flex-col-reverse items-center gap-3">
+            <button type="button" onClick={openToc} aria-label={labels.open} className={dialItem}>
+              <ListIcon className="h-4 w-4" />
+              <span aria-hidden className={tooltip}>
+                {labels.open}
+              </span>
+            </button>
+            <button
+              type="button"
+              onClick={startReading}
+              aria-label={readLabels.listen}
+              className={dialItem}
+              style={{ animationDelay: '40ms' }}
+            >
+              <PlayIcon className="ml-px h-4 w-4" />
+              <span aria-hidden className={tooltip}>
+                {readLabels.listen}
+              </span>
+            </button>
+          </div>
+        </>
+      )}
+
       <button
         type="button"
-        onClick={() => setOpen(value => !value)}
-        aria-label={open ? labels.close : labels.open}
-        aria-expanded={open}
-        // Open, the drawer / sidebar has its own close button and the corner button would sit on it.
-        className={`${open ? 'hidden' : ''} relative flex h-12 w-12 items-center justify-center rounded-full text-gray-700 shadow-lg transition-colors duration-200 hover:text-primary-600 dark:text-gray-200 dark:hover:text-primary-400 ${surface}`}
+        onClick={onMainClick}
+        aria-label={mainLabel}
+        aria-expanded={both ? dialOpen : hasToc ? open : undefined}
+        // Open, the drawer / sidebar has its own close button and the corner button would sit
+        // on it; while reading, the player carries the contents button instead.
+        className={`${showButton ? '' : 'hidden'} relative flex h-12 w-12 items-center justify-center rounded-full text-gray-700 shadow-lg transition-colors duration-200 hover:text-primary-600 dark:text-gray-200 dark:hover:text-primary-400 ${surface}`}
       >
         <svg aria-hidden className="absolute inset-0 h-full w-full -rotate-90" viewBox="0 0 48 48">
           <circle cx="24" cy="24" r={RING_RADIUS} fill="none" strokeWidth={2} className="stroke-gray-200 dark:stroke-gray-800" />
@@ -200,7 +294,25 @@ export default function TocFloating({ tree, activeId, onNavigate, labels }: TocF
             className="stroke-primary-500"
           />
         </svg>
-        <ListIcon className="h-5 w-5" />
+        {both ? (
+          // The list glyph turns into a close cross while the menu is open.
+          <span className="relative h-5 w-5">
+            <ListIcon
+              className={`absolute inset-0 h-5 w-5 motion-safe:transition-[transform,opacity] motion-safe:duration-200 ${
+                dialOpen ? 'rotate-45 opacity-0' : 'opacity-100'
+              }`}
+            />
+            <XIcon
+              className={`absolute inset-0 h-5 w-5 motion-safe:transition-[transform,opacity] motion-safe:duration-200 ${
+                dialOpen ? 'opacity-100' : '-rotate-45 opacity-0'
+              }`}
+            />
+          </span>
+        ) : hasToc ? (
+          <ListIcon className="h-5 w-5" />
+        ) : (
+          <PlayIcon className="ml-0.5 h-4 w-4" />
+        )}
       </button>
     </div>
   )

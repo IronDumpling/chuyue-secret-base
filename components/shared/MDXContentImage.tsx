@@ -31,7 +31,7 @@ export default function MDXContentImage({ src, alt, ...props }: MDXContentImageP
 
       {/* Caption */}
       {alt && (
-        <span className="block text-center text-sm text-gray-500 mt-2 mb-8 italic">
+        <span data-read-aloud-skip className="block text-center text-sm text-gray-500 mt-2 mb-8 italic">
           {alt}
         </span>
       )}

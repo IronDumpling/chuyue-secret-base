@@ -1,9 +1,10 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import type { TocHeading } from '@/lib/rehype-collect-headings'
 import { buildTocTree, TOC_MIN_HEADINGS } from '@/lib/toc'
 import type { Dictionary } from '@/lib/i18n/dictionaries/en'
+import { useReadAloud } from '@/components/shared/read-aloud/context'
 import { useActiveHeading } from './useActiveHeading'
 import TocSidebar from './TocSidebar'
 import TocFloating from './TocFloating'
@@ -19,9 +20,21 @@ export default function TableOfContents({ headings, labels, variant }: TableOfCo
   const tree = useMemo(() => buildTocTree(headings), [headings])
   const ids = useMemo(() => headings.map(h => h.id), [headings])
   const { activeId, jumpTo } = useActiveHeading(ids)
+  const seekToId = useReadAloud()?.seekToId
 
-  if (headings.length < TOC_MIN_HEADINGS) return null
+  // While reading aloud, a jump in the contents also moves the reading position there.
+  const navigate = useCallback(
+    (id: string) => {
+      jumpTo(id)
+      seekToId?.(id)
+    },
+    [jumpTo, seekToId]
+  )
 
-  const Variant = variant === 'sidebar' ? TocSidebar : TocFloating
-  return <Variant tree={tree} activeId={activeId} onNavigate={jumpTo} labels={labels} />
+  const hasToc = headings.length >= TOC_MIN_HEADINGS
+  if (variant === 'sidebar') {
+    return hasToc ? <TocSidebar tree={tree} activeId={activeId} onNavigate={navigate} labels={labels} /> : null
+  }
+  // The corner button stays on short pages too, as the way to start reading aloud.
+  return <TocFloating tree={hasToc ? tree : []} activeId={activeId} onNavigate={navigate} labels={labels} />
 }
