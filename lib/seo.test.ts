@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
-import { summarize, buildPageMetadata } from './seo'
+import { summarize, buildEntryMetadata, buildPageMetadata } from './seo'
+import type { Entry } from './entry-types'
 
 afterEach(() => vi.unstubAllEnvs())
 
@@ -84,5 +85,39 @@ describe('buildPageMetadata', () => {
       { title: 'PA:CT', body: 'x', date: 'not a date' }
     )
     expect((meta.openGraph as any).publishedTime).toBeUndefined()
+  })
+})
+
+describe('buildEntryMetadata', () => {
+  const entry: Entry<'blog'> = {
+    slug: 'her-review',
+    frontMatter: {
+      title: 'Her Review',
+      category: 'films',
+      group: 'reviews',
+      date: '2026-01-04',
+      description: 'Underrated',
+      github: [],
+      demo: [],
+      website: [],
+    },
+    content: 'Body',
+    lang: 'en',
+    isFallback: true,
+    target: { kind: 'blog', category: 'films', slug: 'her-review' },
+    nativeLanguages: ['en'],
+  }
+
+  it('lists only the native languages and canonicalises a fallback page to the real one', () => {
+    vi.stubEnv('NEXT_PUBLIC_BASE_PATH', '/chuyue-secret-base')
+    const meta = buildEntryMetadata(entry, 'zh')
+    expect(meta.title).toBe('Her Review')
+    expect(meta.description).toBe('Underrated')
+    expect(meta.alternates?.canonical).toBe(`${base}/en/blog/films/her-review/`)
+    expect(meta.alternates?.languages).toEqual({
+      en: `${base}/en/blog/films/her-review/`,
+      'x-default': `${base}/en/blog/films/her-review/`,
+    })
+    expect(meta.openGraph).toMatchObject({ url: `${base}/zh/blog/films/her-review/`, publishedTime: '2026-01-04T00:00:00.000Z' })
   })
 })
