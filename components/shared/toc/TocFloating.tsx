@@ -7,7 +7,7 @@ import { useT } from '@/components/shared/LocaleProvider'
 import { useReadAloud } from '@/components/shared/read-aloud/context'
 import { CONTENT_ID } from '@/components/shared/read-aloud/extract'
 import { ArrowUpIcon, EllipsisVerticalIcon, PlayIcon, XIcon } from '@/components/shared/read-aloud/icons'
-import { prefersReducedMotion } from './useActiveHeading'
+import { scrollToTop } from './useActiveHeading'
 import TocTree from './TocTree'
 import { ListIcon, PanelCloseIcon, TocListenRow } from './TocSidebar'
 import { useDragToDismiss } from './useDragToDismiss'
@@ -175,8 +175,7 @@ export default function TocFloating({ tree, activeId, onNavigate, labels }: TocF
   }
   const backToTop = () => {
     setDialOpen(false)
-    // 'instant', not 'auto': `auto` would follow the global `scroll-behavior: smooth`.
-    window.scrollTo({ top: 0, behavior: prefersReducedMotion() ? 'instant' : 'smooth' })
+    scrollToTop()
   }
   // Back to top is always there; a menu is worth opening only with something besides it.
   const menu = hasToc || canRead

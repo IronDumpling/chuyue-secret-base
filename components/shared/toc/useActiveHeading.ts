@@ -12,6 +12,11 @@ export function prefersReducedMotion(): boolean {
   return typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 }
 
+export function scrollToTop() {
+  // 'instant', not 'auto': `auto` would follow the global `scroll-behavior: smooth`.
+  window.scrollTo({ top: 0, behavior: prefersReducedMotion() ? 'instant' : 'smooth' })
+}
+
 // The heading being read, and a way to jump to one.
 export function useActiveHeading(ids: string[]): { activeId: string | null; jumpTo: (id: string) => void } {
   const [activeId, setActiveId] = useState<string | null>(null)
