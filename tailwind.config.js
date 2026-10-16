@@ -47,12 +47,18 @@ module.exports = {
           '0%': { transform: 'translateY(100%)' },
           '100%': { transform: 'none' },
         },
+        // The table-of-contents sidebar sliding in from the left on tablets.
+        'panel-in': {
+          '0%': { transform: 'translateX(-100%)' },
+          '100%': { transform: 'none' },
+        },
       },
       animation: {
         'feed-in': 'feed-in 280ms ease-out both',
         'fade-slide': 'fade-slide 200ms ease-out both',
         'fade-in': 'fade-in 200ms ease-out both',
         'drawer-in': 'drawer-in 260ms ease-out both',
+        'panel-in': 'panel-in 300ms ease-out both',
       },
     },
   },

@@ -345,6 +345,20 @@
   .prose h1, .prose h2, .prose h3 {
     scroll-margin-top: 6rem;
   }
+
+  /* Tablets: while the table-of-contents sidebar is open the article moves right to make
+     room for it, and comes back to the centre when it closes. */
+  @media (min-width: 768px) and (max-width: 1279.98px) {
+    html[data-toc-panel] .toc-shift {
+      padding-left: 18rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .toc-shift {
+      transition: padding-left 300ms ease-out;
+    }
+  }
   
   .prose p {
     @apply mb-4 leading-relaxed;

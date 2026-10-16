@@ -65,7 +65,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   const { content, headings } = await renderMDX(project.content)
 
   return (
-    <article className="section bg-white dark:bg-gray-900">
+    <article className="toc-shift section bg-white dark:bg-gray-900">
       {/* Wide screens: three columns with the table of contents in the left gutter, so the
           body column keeps its width and stays centred. */}
       <div className="container max-w-4xl xl:grid xl:max-w-none xl:grid-cols-[1fr_minmax(0,52rem)_1fr] xl:gap-8">
