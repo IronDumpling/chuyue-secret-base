@@ -189,6 +189,24 @@ export const en = {
     close: 'Close',
     toggleSection: 'Show or hide subsections',
   },
+  readAloud: {
+    listen: 'Listen',
+    play: 'Play',
+    pause: 'Pause',
+    replay: 'Play again',
+    prevSentence: 'Previous sentence',
+    nextSentence: 'Next sentence',
+    prevParagraph: 'Previous paragraph',
+    nextParagraph: 'Next paragraph',
+    restart: 'Start over',
+    speed: 'Playback speed',
+    toc: 'Table of contents',
+    close: 'Stop reading',
+    progress: 'Reading position',
+    menu: 'Reading tools',
+    closeMenu: 'Close',
+    unsupported: 'Your browser has no voice for this language',
+  },
 }
 
 export type Dictionary = typeof en

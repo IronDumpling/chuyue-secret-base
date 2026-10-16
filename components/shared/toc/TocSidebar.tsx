@@ -3,6 +3,9 @@
 import { useRef, useState } from 'react'
 import { flattenToc, type TocNode } from '@/lib/toc'
 import type { Dictionary } from '@/lib/i18n/dictionaries/en'
+import { useT } from '@/components/shared/LocaleProvider'
+import { useReadAloud } from '@/components/shared/read-aloud/context'
+import { PlayIcon } from '@/components/shared/read-aloud/icons'
 import TocTree from './TocTree'
 import { useTocCollapsed } from './useTocCollapsed'
 
@@ -20,6 +23,19 @@ const card =
 const BAR_WIDTH = { 1: 'w-6', 2: 'w-4', 3: 'w-2.5' } as const
 const PEEK_MAX_WIDTH = 256
 const PEEK_MIN_WIDTH = 144
+
+// Starts reading aloud from the contents, so a reader halfway down the page need not scroll
+// back up to the play tile. Hidden while reading (the player is on screen) or unsupported.
+export function TocPlayButton({ className = iconButton }: { className?: string }) {
+  const reader = useReadAloud()
+  const t = useT().readAloud
+  if (!reader || reader.active || reader.supported === false) return null
+  return (
+    <button type="button" onClick={reader.start} aria-label={t.listen} title={t.listen} className={className}>
+      <PlayIcon className="ml-px h-3.5 w-3.5" />
+    </button>
+  )
+}
 
 // The wide-screen table of contents, sticky in the left gutter. Collapsed, it becomes a rail
 // of short bars (one per heading, shorter for deeper levels) that still shows where the
@@ -43,7 +59,7 @@ export default function TocSidebar({ tree, activeId, onNavigate, labels }: TocSi
       <nav
         ref={railRef}
         aria-label={labels.title}
-        className="sticky top-28 ml-auto w-8"
+        className="sticky top-28 ml-auto flex w-8 flex-col items-start gap-1"
         onMouseEnter={openPeek}
         onMouseLeave={closePeek}
         onFocus={() => peekWidth === null && openPeek()}
@@ -51,6 +67,7 @@ export default function TocSidebar({ tree, activeId, onNavigate, labels }: TocSi
           if (!event.currentTarget.contains(event.relatedTarget as Node | null)) closePeek()
         }}
       >
+        <TocPlayButton />
         <button
           type="button"
           onClick={() => {
@@ -87,22 +104,28 @@ export default function TocSidebar({ tree, activeId, onNavigate, labels }: TocSi
   }
 
   return (
-    <nav aria-label={labels.title} className="sticky top-28 ml-auto flex max-h-[calc(100vh-8rem)] w-full max-w-56 flex-col">
+    <nav
+      aria-label={labels.title}
+      className="sticky top-28 ml-auto flex max-h-[calc(100vh-8rem-var(--dock-h,0px))] w-full max-w-56 flex-col"
+    >
       <div className="mb-2 flex items-center justify-between gap-2 pl-1">
         <span className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
           {labels.title}
         </span>
-        <button
-          type="button"
-          onClick={() => setCollapsed(true)}
-          aria-label={labels.collapse}
-          title={labels.collapse}
-          className={iconButton}
-        >
-          <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth={1.5} aria-hidden>
-            <path d="M10 3.5 5.5 8l4.5 4.5" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </button>
+        <div className="flex items-center gap-1">
+          <TocPlayButton />
+          <button
+            type="button"
+            onClick={() => setCollapsed(true)}
+            aria-label={labels.collapse}
+            title={labels.collapse}
+            className={iconButton}
+          >
+            <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth={1.5} aria-hidden>
+              <path d="M10 3.5 5.5 8l4.5 4.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+        </div>
       </div>
       <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain pr-1">
         <TocTree tree={tree} activeId={activeId} onNavigate={onNavigate} labels={labels} scrollRef={scrollRef} />

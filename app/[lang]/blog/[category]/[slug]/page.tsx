@@ -4,6 +4,9 @@ import { getPostBySlug } from '@/lib/blog'
 import Rating from '@/components/blog/Rating'
 import { renderMDX } from '@/components/shared/MDXContent'
 import TableOfContents from '@/components/shared/toc/TableOfContents'
+import ReadAloudProvider from '@/components/shared/read-aloud/ReadAloudProvider'
+import ReadAloudButton from '@/components/shared/read-aloud/ReadAloudButton'
+import { CONTENT_ID, TITLE_ID } from '@/components/shared/read-aloud/extract'
 import MDXHeaderImage from '@/components/shared/MDXHeaderImage'
 import { getCategoryPath, hasRating } from '@/lib/blog-utils'
 import { buildPageMetadata, summarize } from '@/lib/seo'
@@ -14,6 +17,7 @@ import { getShareProps } from '@/lib/share'
 import { INTL_LOCALE, LOCALES, type Locale } from '@/lib/i18n/config'
 import { localePath } from '@/lib/i18n/paths'
 import { getDictionary } from '@/lib/i18n'
+import { TOC_MIN_HEADINGS } from '@/lib/toc'
 import ListBackLink from '@/components/shared/ListBackLink'
 import FallbackNotice from '@/components/shared/FallbackNotice'
 
@@ -71,97 +75,104 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
   return (
     <article className="toc-shift section bg-white dark:bg-gray-900">
-      {/* Wide screens: three columns with the table of contents in the left gutter, so the
-          body column keeps its width and stays centred. */}
-      <div className="container max-w-4xl xl:grid xl:max-w-none xl:grid-cols-[1fr_minmax(0,52rem)_1fr] xl:gap-8">
-        <aside className="hidden xl:block">
-          <TableOfContents headings={headings} labels={t.toc} variant="sidebar" />
-        </aside>
-        <div className="min-w-0">
-          <FallbackNotice pageLang={params.lang} contentLang={post.lang} />
-          {/* Header */}
-          <div className="mb-8">
-            <ListBackLink
-              href={localePath(params.lang, '/blog')}
-              className="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 hover:underline mb-4"
-            >
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-              {t.blog.back}
-            </ListBackLink>
-            <h1 lang={post.lang} className="text-4xl font-bold mb-4">{post.frontMatter.title}</h1>
-            <div className="flex flex-wrap items-center gap-4 text-gray-600 dark:text-gray-400 mb-4">
-              <span className="text-sm">
-                {new Date(post.frontMatter.date).toLocaleDateString(INTL_LOCALE[params.lang], {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                })}
-              </span>
-              {getCategoryPath(post.frontMatter.category, params.lang).map((name, index, path) => (
-                <span
-                  key={name}
-                  className={
-                    index === path.length - 1
-                      ? 'px-3 py-1 text-sm bg-primary-100 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 rounded-full'
-                      : 'px-3 py-1 text-sm bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full'
-                  }
-                >
-                  {name}
+      <ReadAloudProvider
+        lang={post.lang ?? params.lang}
+        title={post.frontMatter.title}
+        hasToc={headings.length >= TOC_MIN_HEADINGS}
+      >
+        {/* Wide screens: three columns with the table of contents in the left gutter, so the
+            body column keeps its width and stays centred. */}
+        <div className="container max-w-4xl xl:grid xl:max-w-none xl:grid-cols-[1fr_minmax(0,52rem)_1fr] xl:gap-8">
+          <aside className="hidden xl:block">
+            <TableOfContents headings={headings} labels={t.toc} variant="sidebar" />
+          </aside>
+          <div className="min-w-0">
+            <FallbackNotice pageLang={params.lang} contentLang={post.lang} />
+            {/* Header */}
+            <div className="mb-8">
+              <ListBackLink
+                href={localePath(params.lang, '/blog')}
+                className="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 hover:underline mb-4"
+              >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+                {t.blog.back}
+              </ListBackLink>
+              <h1 id={TITLE_ID} lang={post.lang} className="text-4xl font-bold mb-4">{post.frontMatter.title}</h1>
+              <div className="flex flex-wrap items-center gap-4 text-gray-600 dark:text-gray-400 mb-4">
+                <span className="text-sm">
+                  {new Date(post.frontMatter.date).toLocaleDateString(INTL_LOCALE[params.lang], {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  })}
                 </span>
-              ))}
-              {hasRating(post.frontMatter.group) && post.frontMatter.rating && (
-                <Rating score={post.frontMatter.rating} />
-              )}
+                {getCategoryPath(post.frontMatter.category, params.lang).map((name, index, path) => (
+                  <span
+                    key={name}
+                    className={
+                      index === path.length - 1
+                        ? 'px-3 py-1 text-sm bg-primary-100 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 rounded-full'
+                        : 'px-3 py-1 text-sm bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full'
+                    }
+                  >
+                    {name}
+                  </span>
+                ))}
+                {hasRating(post.frontMatter.group) && post.frontMatter.rating && (
+                  <Rating score={post.frontMatter.rating} />
+                )}
+              </div>
+            </div>
+
+            {/* Header Image */}
+            <MDXHeaderImage
+              images={
+                post.frontMatter.images && post.frontMatter.images.length > 0
+                  ? post.frontMatter.images
+                  : ['/images/placeholder/blog-default.jpg']
+              }
+              title={post.frontMatter.title}
+            />
+
+            {/* Website Link + Share: same icon-tile row as portfolio's detail page. */}
+            {(() => {
+              const website = post.frontMatter.website
+                ? typeof post.frontMatter.website === 'string'
+                  ? { url: post.frontMatter.website }
+                  : post.frontMatter.website
+                : null
+              return (
+                <div className="flex flex-wrap items-start gap-4 mb-8">
+                  {website &&
+                    (() => {
+                      const info = describeLink(website)
+                      return <LinkTile href={website.url} iconId={info.iconId} label={info.label} accent />
+                    })()}
+                  <ShareBar
+                    {...getShareProps(
+                      { kind: 'blog', category: post.frontMatter.category, slug: post.slug },
+                      params.lang,
+                      post.frontMatter.title,
+                      summarize(post.frontMatter.description, post.content)
+                    )}
+                  />
+                  <ReadAloudButton />
+                </div>
+              )
+            })()}
+
+            {/* MDX Content */}
+            <div id={CONTENT_ID} lang={post.lang} className="prose prose-lg dark:prose-invert max-w-none">
+              {content}
             </div>
           </div>
-
-          {/* Header Image */}
-          <MDXHeaderImage
-            images={
-              post.frontMatter.images && post.frontMatter.images.length > 0
-                ? post.frontMatter.images
-                : ['/images/placeholder/blog-default.jpg']
-            }
-            title={post.frontMatter.title}
-          />
-
-          {/* Website Link + Share: same icon-tile row as portfolio's detail page. */}
-          {(() => {
-            const website = post.frontMatter.website
-              ? typeof post.frontMatter.website === 'string'
-                ? { url: post.frontMatter.website }
-                : post.frontMatter.website
-              : null
-            return (
-              <div className="flex flex-wrap items-start gap-4 mb-8">
-                {website &&
-                  (() => {
-                    const info = describeLink(website)
-                    return <LinkTile href={website.url} iconId={info.iconId} label={info.label} accent />
-                  })()}
-                <ShareBar
-                  {...getShareProps(
-                    { kind: 'blog', category: post.frontMatter.category, slug: post.slug },
-                    params.lang,
-                    post.frontMatter.title,
-                    summarize(post.frontMatter.description, post.content)
-                  )}
-                />
-              </div>
-            )
-          })()}
-
-          {/* MDX Content */}
-          <div lang={post.lang} className="prose prose-lg dark:prose-invert max-w-none">
-            {content}
-          </div>
         </div>
-      </div>
-      <div className="xl:hidden">
-        <TableOfContents headings={headings} labels={t.toc} variant="floating" />
-      </div>
+        <div className="xl:hidden">
+          <TableOfContents headings={headings} labels={t.toc} variant="floating" />
+        </div>
+      </ReadAloudProvider>
     </article>
   )
 }

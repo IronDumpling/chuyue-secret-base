@@ -52,6 +52,11 @@ module.exports = {
           '0%': { transform: 'translateX(-100%)' },
           '100%': { transform: 'none' },
         },
+        // The corner menu's items popping up one after another.
+        'dial-in': {
+          '0%': { opacity: '0', transform: 'translateY(8px) scale(0.8)' },
+          '100%': { opacity: '1', transform: 'none' },
+        },
       },
       animation: {
         'feed-in': 'feed-in 280ms ease-out both',
@@ -59,6 +64,7 @@ module.exports = {
         'fade-in': 'fade-in 200ms ease-out both',
         'drawer-in': 'drawer-in 260ms ease-out both',
         'panel-in': 'panel-in 300ms ease-out both',
+        'dial-in': 'dial-in 180ms ease-out both',
       },
     },
   },

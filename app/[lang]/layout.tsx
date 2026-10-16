@@ -10,9 +10,10 @@ import { absoluteUrl, siteOrigin } from '@/lib/site'
 import { siteOgPath } from '@/lib/share-paths'
 import '../globals.css'
 
-// Only the languages listed here exist; anything else is a 404.
-export const dynamicParams = false
-
+// Only the languages listed here exist; anything else is a 404 (the static export only has
+// these, and the layout calls notFound() for the rest). Not `dynamicParams = false`: with
+// `output: 'export'` the Next 14 dev server then fails every page under [lang] with a
+// misleading "missing generateStaticParams()" error.
 export function generateStaticParams() {
   return LOCALES.map(lang => ({ lang }))
 }
