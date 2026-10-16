@@ -18,6 +18,6 @@ Categories were listed by hand in about six places (the loaders, both list compo
 ## Consequences
 
 - Adding a category is one line in the taxonomy, two dictionary entries and a folder. Regrouping, or turning a group into its own section, changes no files and no URLs.
-- Old URLs were not kept (`/blog/films-shows/review/...`, `/blog/photography/casual/...`, `/portfolio/student-projects/...`), because the site is young and GitHub Pages cannot send real redirects. Portfolio URLs that did not change (`/portfolio/applications/...`) still work through the existing language redirect.
+- Old URLs were not kept (`/blog/films-shows/review/...`, `/blog/photography/casual/...`, `/portfolio/student-projects/...`), because the site is young and GitHub Pages cannot send real redirects. (Update 2026-10-16: the language redirects for URLs without a language were removed as well; only the root URL still redirects.)
 - Moving a category to another **section** (as photography and illustration moved from blog to portfolio) still changes its URLs. Keep sections few and stable.
 - The site and `chuyue-content` must change together. The site is merged first: new site code with old content fails the build (nothing is deployed), whereas old site code with new content would build without the moved posts.

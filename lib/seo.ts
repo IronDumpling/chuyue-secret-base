@@ -3,6 +3,7 @@ import { absoluteUrl } from './site'
 import { pagePath, shareImagePath, type ShareTarget } from './share-paths'
 import { DEFAULT_LOCALE, LOCALES, type Locale } from './i18n/config'
 import { getDictionary } from './i18n'
+import type { Entry } from './entry-types'
 
 export function summarize(description: string | undefined, body: string, max = 160): string {
   if (description && description.trim()) return description.trim()
@@ -70,4 +71,17 @@ export function buildPageMetadata(t: ShareTarget, lang: Locale, o: PageMetaInput
       images: [image],
     },
   }
+}
+
+// Metadata for a Post or Project page. Only the languages the entry is really written in
+// get an hreflang link; a fallback page's canonical points at the real language.
+export function buildEntryMetadata(entry: Entry, pageLang: Locale): Metadata {
+  return buildPageMetadata(entry.target, pageLang, {
+    title: entry.frontMatter.title,
+    description: entry.frontMatter.description,
+    body: entry.content,
+    date: String(entry.frontMatter.date),
+    contentLang: entry.lang,
+    languages: entry.nativeLanguages,
+  })
 }

@@ -59,7 +59,7 @@ npm run dev
 chuyue-secret-base/
 ├── app/                    # Next.js App Router pages
 │   ├── [lang]/            # the site, once per language (/en/..., /zh/...)
-│   └── (legacy)/          # the root URL and pre-language URLs, which redirect to /en/
+│   └── (root)/            # the root URL, which redirects to /en/ or /zh/
 ├── components/             # React components
 ├── content/                # clone of the chuyue-content repository (git-ignored)
 │   ├── blog/              # Blog post MDX files
@@ -143,7 +143,7 @@ Your casual blog content here...
 
 ## Languages
 
-The site is bilingual: English (default) at `/en/...` and Chinese at `/zh/...`. The root URL `/` and the old unprefixed URLs (`/blog/...`, `/portfolio/...`) are small redirect pages, because GitHub Pages cannot send HTTP redirects; they go to `/en/...` (the root goes to the language the visitor last picked, if any).
+The site is bilingual: English (default) at `/en/...` and Chinese at `/zh/...`. The root URL `/` is a small redirect page, because GitHub Pages cannot send HTTP redirects; it goes to the language the visitor last picked, or `/en/`. URLs without a language (`/blog/...`, `/portfolio/...`) no longer exist.
 
 - **Interface text** lives in `lib/i18n/dictionaries/en.ts` (the source of truth) and `zh.ts`, which must have the same shape: a missing translation is a type error. Skills and experience entries carry `{ en, zh }` pairs next to their data (`lib/i18n/localized.ts`); a plain string means "same in both languages".
 - **Posts and projects** are written once per language: `her-review.en.mdx` and `her-review.zh.mdx` in the same folder, same slug. Every file must carry its language in the name, and its text must really be in that language: `npm run sync:content` (which `dev` and `build` run first) fails when a file has no `.en`/`.zh`, when an `.en` file is more than about 5% Chinese or a `.zh` file less than about 20%, when the title or description is in the wrong language, or when the two versions disagree on the shared fields (date, rating, images, github, demo). Tags are translated per version, like the title. So a post cannot hold both languages in one file. If a language is missing, the page shows the other language with a notice, and its canonical link points at the real one.

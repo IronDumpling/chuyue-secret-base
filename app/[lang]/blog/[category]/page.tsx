@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { getPostsByCategory } from '@/lib/blog'
+import { getEntries } from '@/lib/content'
 import { getCategoryDisplayName } from '@/lib/blog-utils'
 import BlogList from '@/components/blog/BlogList'
 import type { Locale } from '@/lib/i18n/config'
@@ -22,7 +22,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
     notFound()
   }
 
-  const posts = getPostsByCategory(params.category, params.lang)
+  const posts = getEntries('blog', params.lang, params.category)
 
   return (
     <section className="section bg-white dark:bg-gray-900">

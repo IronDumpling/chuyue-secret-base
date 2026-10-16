@@ -31,6 +31,13 @@ export function formatDay(value: string, locale: Locale): string {
   return date.toLocaleDateString(INTL_LOCALE[locale], { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' })
 }
 
+// 'January 4, 2026' / '2026年1月4日': the date on a post's own page.
+export function formatLongDay(value: string, locale: Locale): string {
+  const date = toUtcDate(value)
+  if (!date) return String(value)
+  return date.toLocaleDateString(INTL_LOCALE[locale], { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' })
+}
+
 // 'February 2026' / '2026年2月'
 export function formatMonth(value: string, locale: Locale): string {
   const date = toUtcDate(value)

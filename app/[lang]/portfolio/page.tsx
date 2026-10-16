@@ -1,4 +1,4 @@
-import { getAllProjects } from '@/lib/portfolio'
+import { getEntries } from '@/lib/content'
 import ProjectGrid from '@/components/portfolio/ProjectGrid'
 import type { Locale } from '@/lib/i18n/config'
 import { getDictionary } from '@/lib/i18n'
@@ -9,7 +9,7 @@ export function generateMetadata({ params }: { params: { lang: Locale } }) {
 }
 
 export default function PortfolioPage({ params }: { params: { lang: Locale } }) {
-  const projects = getAllProjects(params.lang)
+  const projects = getEntries('portfolio', params.lang)
 
   return (
     <section className="section bg-white dark:bg-gray-900">
@@ -20,4 +20,3 @@ export default function PortfolioPage({ params }: { params: { lang: Locale } }) 
     </section>
   )
 }
-

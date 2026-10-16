@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { formatDay, formatMonth, monthKey, parseDateParts } from './date'
+import { formatDay, formatLongDay, formatMonth, monthKey, parseDateParts } from './date'
 
 describe('post dates', () => {
   it('reads the day as written, including unpadded months and days', () => {
@@ -29,5 +29,11 @@ describe('post dates', () => {
   it('does not throw on an unreadable date', () => {
     expect(formatDay('soon', 'en')).toBe('soon')
     expect(monthKey('soon')).toBe('')
+  })
+
+  it('writes the month out in full on a post page, in UTC', () => {
+    expect(formatLongDay('2026-03-01', 'en')).toBe('March 1, 2026')
+    expect(formatLongDay('2026-1-4', 'zh')).toBe('2026年1月4日')
+    expect(formatLongDay('soon', 'en')).toBe('soon')
   })
 })

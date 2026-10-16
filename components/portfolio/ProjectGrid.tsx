@@ -1,7 +1,7 @@
 'use client'
 
 import { useMemo } from 'react'
-import type { PortfolioProject } from '@/lib/portfolio-types'
+import type { PortfolioProject } from '@/lib/entry-types'
 import ProjectCard from './ProjectCard'
 import CategoryFilter from '@/components/shared/filter/CategoryFilter'
 import { useUrlSelection } from '@/components/shared/filter/useUrlSelection'

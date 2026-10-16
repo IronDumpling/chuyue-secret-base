@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import type { CSSProperties } from 'react'
-import type { BlogPost } from '@/lib/blog-types'
+import type { BlogPost } from '@/lib/entry-types'
 import { getCategoryPath, getExcerpt, hasRating } from '@/lib/blog-utils'
 import { formatDay } from '@/lib/date'
 import Rating from '@/components/blog/Rating'
