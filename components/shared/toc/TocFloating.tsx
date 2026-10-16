@@ -166,9 +166,11 @@ export default function TocFloating({ tree, activeId, onNavigate, labels }: TocF
   const mainLabel = both ? (dialOpen ? readLabels.closeMenu : readLabels.menu) : hasToc ? labels.open : readLabels.listen
   const showButton = !open && !reading
 
+  // Open on a phone, the drawer covers the header (z-50); on a tablet the sidebar stays under it
+  // so the header's scroll shadow falls across the sidebar the same as across the article.
   return (
     <div
-      className={`fixed right-4 md:left-4 md:right-auto ${open ? 'z-[60]' : 'z-40'} motion-safe:transition-opacity motion-safe:duration-300 ${
+      className={`fixed right-4 md:left-4 md:right-auto ${open ? 'z-[60] md:z-40' : 'z-40'} motion-safe:transition-opacity motion-safe:duration-300 ${
         (visible && !reading) || open ? 'opacity-100' : 'pointer-events-none opacity-0'
       }`}
       style={{ bottom: 'calc(1rem + env(safe-area-inset-bottom))' }}
@@ -181,7 +183,7 @@ export default function TocFloating({ tree, activeId, onNavigate, labels }: TocF
             className="fixed bottom-0 left-0 top-20 hidden w-72 flex-col border-r border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900 md:flex motion-safe:animate-panel-in"
           >
             <div className="flex items-center justify-between gap-2 px-4 pb-2 pt-4">
-              <span className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+              <span className="text-base font-semibold text-gray-900 dark:text-gray-100">
                 {labels.title}
               </span>
               <div className="flex items-center gap-1">
@@ -216,7 +218,7 @@ export default function TocFloating({ tree, activeId, onNavigate, labels }: TocF
             >
               <div aria-hidden className="mx-auto mt-2 h-1 w-10 rounded-full bg-gray-300 dark:bg-gray-700" />
               <div className="flex items-center justify-between px-4 py-2">
-                <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">{labels.title}</span>
+                <span className="text-base font-semibold text-gray-900 dark:text-gray-100">{labels.title}</span>
                 <button
                   type="button"
                   onClick={() => setOpen(false)}

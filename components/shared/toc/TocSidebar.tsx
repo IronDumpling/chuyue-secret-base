@@ -109,7 +109,7 @@ export default function TocSidebar({ tree, activeId, onNavigate, labels }: TocSi
       className="sticky top-28 ml-auto flex max-h-[calc(100vh-8rem-var(--dock-h,0px))] w-full max-w-56 flex-col"
     >
       <div className="mb-2 flex items-center justify-between gap-2 pl-1">
-        <span className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+        <span className="text-base font-semibold text-gray-900 dark:text-gray-100">
           {labels.title}
         </span>
         <div className="flex items-center gap-1">
