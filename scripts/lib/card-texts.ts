@@ -1,23 +1,23 @@
-import type { ContentEntry } from './content-index'
+import type { Entry } from '../../lib/entry-types'
 import type { Locale } from '../../lib/i18n/config'
 import { getDictionary } from '../../lib/i18n'
 import { getCategoryPath, hasRating } from '../../lib/blog-utils'
-import { getGroupOf, type BlogCategory } from '../../lib/taxonomy'
+import { getCategoryDisplayName } from '../../lib/portfolio-utils'
 
 // The title comes from the post itself; the label above it comes from the dictionary of
 // the language the card is made for.
-export function entryTexts(entry: ContentEntry, lang: Locale): { title: string; badge: string } {
-  const t = getDictionary(lang)
+export function entryTexts(entry: Entry, lang: Locale): { title: string; badge: string } {
+  const { title } = entry.frontMatter
 
-  if (entry.kind === 'blog') {
-    const category = entry.category as BlogCategory
+  if (entry.target.kind === 'blog') {
+    const { category, group, rating } = (entry as Entry<'blog'>).frontMatter
     const path = getCategoryPath(category, lang).join(' · ')
-    const rating = hasRating(getGroupOf('blog', category)) && entry.rating ? ` · ${entry.rating}/10` : ''
-    return { title: entry.title, badge: `${path}${rating}` }
+    const score = hasRating(group) && rating ? ` · ${rating}/10` : ''
+    return { title, badge: `${path}${score}` }
   }
 
-  const category = t.portfolio.categories[entry.category as keyof typeof t.portfolio.categories] ?? entry.category
-  return { title: entry.title, badge: `${t.nav.portfolio} · ${category}` }
+  const { category } = (entry as Entry<'portfolio'>).frontMatter
+  return { title, badge: `${getDictionary(lang).nav.portfolio} · ${getCategoryDisplayName(category, lang)}` }
 }
 
 // Chinese needs a CJK font; the bundled Latin fallback would draw empty boxes.

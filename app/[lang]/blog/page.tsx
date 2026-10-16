@@ -1,4 +1,4 @@
-import { getAllPosts } from '@/lib/blog'
+import { getEntries } from '@/lib/content'
 import BlogList from '@/components/blog/BlogList'
 import type { Locale } from '@/lib/i18n/config'
 import { getDictionary } from '@/lib/i18n'
@@ -9,7 +9,7 @@ export function generateMetadata({ params }: { params: { lang: Locale } }) {
 }
 
 export default function BlogPage({ params }: { params: { lang: Locale } }) {
-  const posts = getAllPosts(params.lang)
+  const posts = getEntries('blog', params.lang)
 
   return (
     <section className="section bg-white dark:bg-gray-900">
@@ -20,4 +20,3 @@ export default function BlogPage({ params }: { params: { lang: Locale } }) {
     </section>
   )
 }
-

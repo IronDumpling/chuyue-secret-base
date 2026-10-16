@@ -1,20 +1,20 @@
 import LegacyRedirect from '@/components/shared/LegacyRedirect'
 import type { Metadata } from 'next'
-import { getAllProjects, getProjectBySlug } from '@/lib/portfolio'
+import { getEntries, getEntry } from '@/lib/content'
 import { buildPageMetadata } from '@/lib/seo'
 
 export function generateStaticParams() {
-  return getAllProjects('en').map(project => ({
+  return getEntries('portfolio', 'en').map(project => ({
     category: project.frontMatter.category,
     slug: project.slug,
   }))
 }
 
 export function generateMetadata({ params }: { params: { category: string; slug: string } }): Metadata {
-  const project = getProjectBySlug(params.slug, params.category, 'en')
+  const project = getEntry('portfolio', params.category, params.slug, 'en')
   if (!project) return {}
   return buildPageMetadata(
-    { kind: 'portfolio', category: params.category, slug: project.slug },
+    project.target,
     'en',
     {
       title: project.frontMatter.title,

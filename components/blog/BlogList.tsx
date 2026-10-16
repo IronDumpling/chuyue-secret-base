@@ -1,7 +1,7 @@
 'use client'
 
 import { useMemo } from 'react'
-import type { BlogPost } from '@/lib/blog-types'
+import type { BlogPost } from '@/lib/entry-types'
 import BlogListItem from './BlogListItem'
 import CategoryFilter from '@/components/shared/filter/CategoryFilter'
 import { useUrlSelection } from '@/components/shared/filter/useUrlSelection'

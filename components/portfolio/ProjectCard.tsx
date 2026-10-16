@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import type { PortfolioProject } from '@/lib/portfolio-types'
+import type { PortfolioProject } from '@/lib/entry-types'
 import RotatingImage from '@/components/shared/RotatingImage'
 import { useLocale, useLocalePath } from '@/components/shared/LocaleProvider'
 import { getContextDisplayName } from '@/lib/portfolio-utils'

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { getPostBySlug } from '@/lib/blog'
+import { getEntries, getEntry } from '@/lib/content'
 import Rating from '@/components/blog/Rating'
 import { renderMDX } from '@/components/shared/MDXContent'
 import TableOfContents from '@/components/shared/toc/TableOfContents'
@@ -14,7 +14,7 @@ import ShareBar from '@/components/shared/ShareBar'
 import LinkTile from '@/components/shared/LinkTile'
 import { describeLink } from '@/lib/link-icon'
 import { getShareProps } from '@/lib/share'
-import { INTL_LOCALE, LOCALES, type Locale } from '@/lib/i18n/config'
+import { INTL_LOCALE, type Locale } from '@/lib/i18n/config'
 import { localePath } from '@/lib/i18n/paths'
 import { getDictionary } from '@/lib/i18n'
 import { TOC_MIN_HEADINGS } from '@/lib/toc'
@@ -30,10 +30,9 @@ interface BlogPostPageProps {
 }
 
 export async function generateStaticParams() {
-  const { getAllPosts } = await import('@/lib/blog')
   // Every post exists in both languages (the other one is the fallback), so the
   // parent [lang] segment supplies the language and this only lists the posts.
-  const posts = getAllPosts('en')
+  const posts = getEntries('blog', 'en')
   
   return posts.map(post => ({
     category: post.frontMatter.category,
@@ -42,15 +41,10 @@ export async function generateStaticParams() {
 }
 
 export function generateMetadata({ params }: BlogPostPageProps): Metadata {
-  const post = getPostBySlug(params.slug, params.category, params.lang)
+  const post = getEntry('blog', params.category, params.slug, params.lang)
   if (!post) return {}
-  // Languages this post is really written in (the other one is only a fallback).
-  const languages = LOCALES.filter(l => {
-    const version = getPostBySlug(params.slug, params.category, l)
-    return version && !version.isFallback
-  })
   return buildPageMetadata(
-    { kind: 'blog', category: post.frontMatter.category, slug: post.slug },
+    post.target,
     params.lang,
     {
       title: post.frontMatter.title,
@@ -58,13 +52,13 @@ export function generateMetadata({ params }: BlogPostPageProps): Metadata {
       body: post.content,
       date: String(post.frontMatter.date),
       contentLang: post.lang,
-      languages,
+      languages: post.nativeLanguages,
     }
   )
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
-  const post = getPostBySlug(params.slug, params.category, params.lang)
+  const post = getEntry('blog', params.category, params.slug, params.lang)
 
   if (!post) {
     notFound()
@@ -76,7 +70,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   return (
     <article className="toc-shift section bg-white dark:bg-gray-900">
       <ReadAloudProvider
-        lang={post.lang ?? params.lang}
+        lang={post.lang}
         title={post.frontMatter.title}
         hasToc={headings.length >= TOC_MIN_HEADINGS}
       >
@@ -138,11 +132,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
             {/* Website Link + Share: same icon-tile row as portfolio's detail page. */}
             {(() => {
-              const website = post.frontMatter.website
-                ? typeof post.frontMatter.website === 'string'
-                  ? { url: post.frontMatter.website }
-                  : post.frontMatter.website
-                : null
+              const website = post.frontMatter.website[0]
               return (
                 <div className="flex flex-wrap items-start gap-4 mb-8">
                   {website &&
@@ -152,7 +142,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                     })()}
                   <ShareBar
                     {...getShareProps(
-                      { kind: 'blog', category: post.frontMatter.category, slug: post.slug },
+                      post.target,
                       params.lang,
                       post.frontMatter.title,
                       summarize(post.frontMatter.description, post.content)

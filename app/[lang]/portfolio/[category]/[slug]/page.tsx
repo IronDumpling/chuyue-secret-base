@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { getProjectBySlug } from '@/lib/portfolio'
+import { getEntries, getEntry } from '@/lib/content'
 import { describeLink, pickPrimaryLink, secondaryLinks } from '@/lib/link-icon'
 import { renderMDX } from '@/components/shared/MDXContent'
 import TableOfContents from '@/components/shared/toc/TableOfContents'
@@ -12,7 +12,7 @@ import ShareBar from '@/components/shared/ShareBar'
 import LinkTile from '@/components/shared/LinkTile'
 import { getShareProps } from '@/lib/share'
 import { buildPageMetadata, summarize } from '@/lib/seo'
-import { INTL_LOCALE, LOCALES, type Locale } from '@/lib/i18n/config'
+import { INTL_LOCALE, type Locale } from '@/lib/i18n/config'
 import { localePath } from '@/lib/i18n/paths'
 import { getDictionary } from '@/lib/i18n'
 import { TOC_MIN_HEADINGS } from '@/lib/toc'
@@ -28,8 +28,7 @@ interface ProjectPageProps {
 }
 
 export async function generateStaticParams() {
-  const { getAllProjects } = await import('@/lib/portfolio')
-  const projects = getAllProjects('en')
+  const projects = getEntries('portfolio', 'en')
   
   return projects.map(project => ({
     category: project.frontMatter.category,
@@ -38,14 +37,10 @@ export async function generateStaticParams() {
 }
 
 export function generateMetadata({ params }: ProjectPageProps): Metadata {
-  const project = getProjectBySlug(params.slug, params.category, params.lang)
+  const project = getEntry('portfolio', params.category, params.slug, params.lang)
   if (!project) return {}
-  const languages = LOCALES.filter(l => {
-    const version = getProjectBySlug(params.slug, params.category, l)
-    return version && !version.isFallback
-  })
   return buildPageMetadata(
-    { kind: 'portfolio', category: project.frontMatter.category, slug: project.slug },
+    project.target,
     params.lang,
     {
       title: project.frontMatter.title,
@@ -53,13 +48,13 @@ export function generateMetadata({ params }: ProjectPageProps): Metadata {
       body: project.content,
       date: String(project.frontMatter.date),
       contentLang: project.lang,
-      languages,
+      languages: project.nativeLanguages,
     }
   )
 }
 
 export default async function ProjectPage({ params }: ProjectPageProps) {
-  const project = getProjectBySlug(params.slug, params.category, params.lang)
+  const project = getEntry('portfolio', params.category, params.slug, params.lang)
 
   if (!project) {
     notFound()
@@ -71,7 +66,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   return (
     <article className="toc-shift section bg-white dark:bg-gray-900">
       <ReadAloudProvider
-        lang={project.lang ?? params.lang}
+        lang={project.lang}
         title={project.frontMatter.title}
         hasToc={headings.length >= TOC_MIN_HEADINGS}
       >
@@ -133,9 +128,9 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                 no more mixing a big primary button with small secondary ones. */}
             {(() => {
               const groups = {
-                github: project.frontMatter.github ?? [],
-                demo: project.frontMatter.demo ?? [],
-                website: project.frontMatter.website ?? [],
+                github: project.frontMatter.github,
+                demo: project.frontMatter.demo,
+                website: project.frontMatter.website,
               }
               const primary = pickPrimaryLink(groups)
               const secondary = secondaryLinks(groups, primary)
@@ -152,7 +147,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                   })}
                   <ShareBar
                     {...getShareProps(
-                      { kind: 'portfolio', category: project.frontMatter.category, slug: project.slug },
+                      project.target,
                       params.lang,
                       project.frontMatter.title,
                       summarize(project.frontMatter.description, project.content)

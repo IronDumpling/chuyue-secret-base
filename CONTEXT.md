@@ -22,6 +22,10 @@ One entry in the blog: a review or a moment.
 **Project**:
 One entry in the portfolio: an application, a game, a piece of systems or AI work, a photo series, an illustration.
 
+**Entry**:
+A Post or a Project, in one language, as the site and the build scripts load it (`lib/entries.ts`). It knows its category, group, URL target and the languages it is really written in; a missing translation is served as the other language and marked as a fallback.
+_Avoid_: item, article, MDX file
+
 **Context**:
 Where a Project was made (`course`, `research`, `work`, `personal`). It is a label on the card, not a category.
 _Avoid_: category
