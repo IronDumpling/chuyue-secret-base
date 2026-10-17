@@ -1,166 +1,62 @@
 # Chuyue Secret Base
 
-A modern portfolio and blog website built with Next.js, MDX, and Tailwind CSS.
+**Website:** [https://irondumpling.github.io/chuyue-secret-base/](https://irondumpling.github.io/chuyue-secret-base/)
 
-## Features
+Chuyue Zhang's personal corner of the internet: a portfolio of the things built, and a blog about the things watched, played, read, listened to and photographed. The whole site is available in English and 中文.
 
-- **Portfolio**: Showcase projects in four categories (Student Projects, Work Projects, Video Games, Applications)
-- **Blog**: Write reviews and recommendations with MDX support
-- **Dark Mode**: Toggle between light and dark themes
-- **Responsive Design**: Optimized for all device sizes
-- **Static Site Generation**: Fast, SEO-friendly static pages
-- **GitHub Pages Deployment**: Automated deployment via GitHub Actions
+## Pages
 
-## Tech Stack
+| Page | What you'll find |
+| --- | --- |
+| **Home** | A short introduction and the way into everything else. |
+| **About** | Who Chuyue is and what they care about. |
+| **Portfolio** | Projects, grouped by category (see below). |
+| **Blog** | Reviews, recommendations and casual posts (see below). |
+| **Skills** | The tools, languages and technologies Chuyue works with. |
+| **Experiences** | Work and study history. |
+| **Contact** | Where to reach Chuyue. |
 
-- Next.js 14+ (App Router, SSG mode)
-- TypeScript
-- Tailwind CSS
-- MDX (for blog posts and portfolio projects)
-- GitHub Actions (for CI/CD)
+A PDF résumé is also available from the site.
 
-## Getting Started
+## Portfolio
 
-### Prerequisites
+Every project has its own page with a description, screenshots, tags for the tech used, and links to the source code on GitHub or a live demo where there is one.
 
-- Node.js 20+
-- npm or yarn
+- **Student Projects**: coursework and school projects.
+- **Work Projects**: things built professionally.
+- **Video Games**: games made by Chuyue.
+- **Applications**: apps and tools.
 
-### Installation
+## Blog
 
-1. Clone the repository:
-```bash
-git clone https://github.com/IronDumpling/chuyue-secret-base.git
-cd chuyue-secret-base
-```
+Posts are sorted by category, and each category has two kinds of posts:
 
-2. Install dependencies:
-```bash
-npm install
-```
+- **Reviews**: a write-up with a star rating, for example of a film, an album or a book.
+- **Casual**: loose thoughts and notes with no rating.
 
-3. Clone the content repository into `content/` (blog posts, portfolio projects and their images live there, not in this repo):
-```bash
-git clone https://github.com/IronDumpling/chuyue-content.git content
-```
+Categories:
 
-4. Run the development server:
-```bash
-npm run dev
-```
+- Photography
+- Illustration
+- Films & Shows
+- Music
+- Video Games
+- Books
 
-5. Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-`npm run dev` and `npm run build` first run `npm run sync:content`, which copies `content/images/*` into `public/images/` and stops with an error if `content/` is missing or has no posts, so an empty site is never built.
-
-## Project Structure
-
-```
-chuyue-secret-base/
-├── app/                    # Next.js App Router pages
-│   ├── [lang]/            # the site, once per language (/en/..., /zh/...)
-│   └── (root)/            # the root URL, which redirects to /en/ or /zh/
-├── components/             # React components
-├── content/                # clone of the chuyue-content repository (git-ignored)
-│   ├── blog/              # Blog post MDX files
-│   ├── portfolio/         # Portfolio project MDX files
-│   └── images/            # Blog and portfolio images (synced to public/images)
-├── lib/                   # Utility functions
-│   └── i18n/              # locales, paths and the en/zh dictionaries
-├── public/                # Static assets
-└── .github/workflows/     # GitHub Actions workflows
-```
-
-## Adding Content
-
-Content lives in the separate repository [`chuyue-content`](https://github.com/IronDumpling/chuyue-content). Commit and push there (from your clone in `content/`, or on GitHub). Every push to its `main` branch triggers a rebuild and deploy of this site through GitHub Actions (`repository_dispatch`, see `.github/workflows/deploy.yml`). Put images in `content/images/blog/...` or `content/images/portfolio/...` and reference them as `/images/blog/...` or `/images/portfolio/...`.
-
-### Writing from a phone (Sveltia CMS)
-
-Open `<site>/admin/` and sign in with a GitHub fine-grained personal access token scoped to the `chuyue-content` repository only, with Contents: read and write (create one at GitHub Settings → Developer settings → Personal access tokens → Fine-grained tokens). The token is entered on the login screen and stays in that browser's local storage; it is never committed or added to CI, and it has no access to this site repository.
-
-Posts and photos are committed straight to `chuyue-content`'s `main`, which rebuilds the site the same way a manual push does; photos are converted to WebP at up to 2048px on the device before upload. The form has one entry per Blog and Portfolio category, generated from `lib/taxonomy.ts` by `npm run generate:cms` (part of `predev`/`prebuild`) — adding a category there is enough for the editor to pick it up, no editor changes needed. The generated files under `public/admin/` are git-ignored and rebuilt on every `dev`/`build`.
-
-### Portfolio Projects
-
-Create a new MDX file in `content/portfolio/{category}/{slug}.mdx` (in the content repo):
-
-```mdx
----
-title: "Project Name"
-category: "video-games"  # student-projects, video-games, or applications
-date: "2024-01-01"
-tags: ["Unity", "C#"]
-github: "https://github.com/..."
-demo: "https://..."
-images:
-  - "/images/project-image.png"
-description: "Project description"
----
-
-# Project Name
-
-Your project content here...
-```
-
-### Blog Posts
-
-Create a new MDX file in `content/blog/{category}/{type}/{slug}.mdx` (in the content repo; add `.zh` before the extension for the Chinese version, see Languages), where `category` is one of `photography`, `illustration`, `films-shows`, `music`, `video-games`, `books` and `type` is `review` or `casual`:
-
-```mdx
----
-title: "Post Title"
-category: "review"  # review or casual
-subcategory: "movies"  # music, movies, video-games, shows, or books (only for review)
-date: "2024-01-15"
-tags: ["Sci-Fi", "Thriller"]
-rating: 5  # Only for review posts
-description: "Post description"
----
-
-# Post Title
-
-<Rating score={5} />
-
-Your blog content here...
-```
-
-For casual posts (no subcategory or rating):
-
-```mdx
----
-title: "Casual Post Title"
-category: "casual"
-date: "2024-01-15"
-tags: ["Thoughts", "Life"]
-description: "Post description"
----
-
-# Casual Post Title
-
-Your casual blog content here...
-```
+Posts carry tags and a date, and every post has a share card, so links look good when sent in a chat or posted on social media.
 
 ## Languages
 
-The site is bilingual: English (default) at `/en/...` and Chinese at `/zh/...`. The root URL `/` is a small redirect page, because GitHub Pages cannot send HTTP redirects; it goes to the language the visitor last picked, or `/en/`. URLs without a language (`/blog/...`, `/portfolio/...`) no longer exist.
+- English: `/en/`
+- 中文: `/zh/`
 
-- **Interface text** lives in `lib/i18n/dictionaries/en.ts` (the source of truth) and `zh.ts`, which must have the same shape: a missing translation is a type error. Skills and experience entries carry `{ en, zh }` pairs next to their data (`lib/i18n/localized.ts`); a plain string means "same in both languages".
-- **Posts and projects** are written once per language: `her-review.en.mdx` and `her-review.zh.mdx` in the same folder, same slug. Every file must carry its language in the name, and its text must really be in that language: `npm run sync:content` (which `dev` and `build` run first) fails when a file has no `.en`/`.zh`, when an `.en` file is more than about 5% Chinese or a `.zh` file less than about 20%, when the title or description is in the wrong language, or when the two versions disagree on the shared fields (date, rating, images, github, demo). Tags are translated per version, like the title. So a post cannot hold both languages in one file. If a language is missing, the page shows the other language with a notice, and its canonical link points at the real one.
-- Share cards are generated per language (`public/share/og/{en,zh}/...`); Chinese cards need a CJK font, downloaded from Google Fonts at build time and cached in `.cache/fonts`. The build fails rather than shipping cards with empty boxes.
+Posts and projects are written separately in each language rather than machine-translated. If a post only exists in one language, the other version of the site shows it with a short notice. Opening the root address takes you to the language you used last, or to English if this is your first visit.
 
-## Building for Production
+## Reading Experience
 
-```bash
-npm run build
-```
-
-This generates a static site in the `out/` directory, ready for deployment.
-
-## Deployment
-
-The site is automatically deployed to GitHub Pages via GitHub Actions when you push to the `main` branch.
+- Light and dark themes, switchable from the page.
+- Works on phones, tablets and desktops.
 
 ## License
 
-All rights reserved.
+All rights reserved. The text, images and projects on the site belong to Chuyue Zhang.
