@@ -62,7 +62,8 @@ export default function AboutSection({ identity, direction, onIdentityChange }: 
           <h2 className="section-title">{t.about.heading}</h2>
           <IdentitySwitcher currentIdentity={identity} onIdentityChange={onIdentityChange} />
 
-          <div className={`identity-card-surface ${slideClass}`}>
+          {/* Keyed by identity: the card is a new element on every switch, so the slide plays each time (the direction class alone repeats). */}
+          <div key={identity} className={`identity-card-surface ${slideClass}`}>
             <div className="identity-card-bg-glow" aria-hidden="true" />
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 p-8 md:p-12 relative">

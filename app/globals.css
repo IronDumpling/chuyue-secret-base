@@ -1,3 +1,9 @@
+@property --pct {
+  syntax: '<percentage>';
+  inherits: true;
+  initial-value: 0%;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -32,12 +38,13 @@
   /* No global `scroll-behavior`: scripts pick it, so reduced-motion is honoured in one place. */
 
   body {
-    @apply bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200;
+    @apply bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100;
   }
 
-  /* Room for the read-aloud player while it is open (it sets --dock-h). */
+  /* Room for the read-aloud player while it is open (it sets --dock-h); eases in and out with it. */
   body {
     padding-bottom: var(--dock-h, 0px);
+    transition: background-color 200ms, color 200ms, padding-bottom var(--dur-base) var(--ease-ios);
   }
   
   /* Smooth scroll offset for fixed header */
@@ -366,7 +373,7 @@
 
   @media (prefers-reduced-motion: no-preference) {
     .toc-shift {
-      transition: padding-left 300ms ease-out;
+      transition: padding-left var(--dur-slow) var(--ease-ios);
     }
   }
 
@@ -374,12 +381,16 @@
      thin primary bar to its left (the second shadow, peeking out past the first). Lands a
      little above the table of contents' 120px "current heading" line, so the contents follow
      along by themselves. */
+  .prose :is(p, li, h1, h2, h3, h4, h5, h6, blockquote) {
+    /* On the plain blocks, not only the highlighted one: a transition declared only on
+       [data-reading] stops applying the moment the attribute goes, so the wash would snap off. */
+    transition: background-color var(--dur-slow) var(--ease-ios), box-shadow var(--dur-slow) var(--ease-ios);
+  }
   .prose [data-reading] {
     border-radius: 0.375rem;
     background-color: rgb(240 249 255 / 0.8); /* primary-50 */
     box-shadow: 0 0 0 6px rgb(240 249 255 / 0.8), -9px 0 0 0 #0ea5e9; /* primary-500 */
     scroll-margin-top: 7rem;
-    transition: background-color 300ms ease-out, box-shadow 300ms ease-out;
   }
   .dark .prose [data-reading] {
     background-color: rgb(12 74 110 / 0.25); /* primary-900 */
@@ -394,18 +405,24 @@
   }
   @media (prefers-reduced-motion: no-preference) {
     .read-aloud-dock {
-      transition: left 300ms ease-out;
+      transition: left var(--dur-slow) var(--ease-ios);
     }
   }
 
   /* Read aloud: the progress bar. A tall hit area around a 4px track filled up to --pct. */
   .read-aloud-range {
+    /* --pct is registered (see @property below) so the fill glides between sentences instead of stepping. */
+    transition: --pct 250ms var(--ease-ios);
     -webkit-appearance: none;
     appearance: none;
     height: 1rem;
     margin: 0;
     background: transparent;
     cursor: pointer;
+  }
+  /* Dragging the thumb must not lag behind the finger. */
+  .read-aloud-range:active {
+    transition: none;
   }
   .read-aloud-range::-webkit-slider-runnable-track {
     height: 4px;
@@ -538,11 +555,11 @@
   }
 
   .slide-in-left-soft {
-    animation: slideInLeftSoft 0.5s ease-out;
+    animation: slideInLeftSoft var(--dur-slow) var(--ease-ios);
   }
 
   .slide-in-right-soft {
-    animation: slideInRightSoft 0.5s ease-out;
+    animation: slideInRightSoft var(--dur-slow) var(--ease-ios);
   }
 }
 
@@ -556,4 +573,11 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* Mid-resize (see ResizeGuard): no element trails the window edge. */
+html[data-resizing] *,
+html[data-resizing] *::before,
+html[data-resizing] *::after {
+  transition: none !important;
 }

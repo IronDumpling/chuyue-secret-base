@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, type RefObject } from 'react'
 import { prefersReducedMotion } from './useActiveHeading'
+import { readDuration } from '@/lib/motion/usePresence'
 
 // Past this far down (or a quarter of the sheet, if less), or flicked faster than this, the
 // sheet goes; otherwise it springs back.
@@ -9,7 +10,7 @@ const DISMISS_PX = 80
 const DISMISS_SPEED = 0.5 // px per ms
 // Movement before the gesture counts as a drag (or as a scroll, upwards).
 const SLOP_PX = 4
-const SETTLE = '220ms cubic-bezier(0.2, 0, 0, 1)'
+const SETTLE = 'var(--dur-base) var(--ease-ios)'
 
 // A bottom sheet that can be dragged down and away, like the ones it imitates. Anywhere on the
 // sheet works, except that inside its scrolling list a downward drag only takes the sheet once
@@ -102,7 +103,7 @@ export function useDragToDismiss({
         place(height, SETTLE)
         sheet.addEventListener('transitionend', go, { once: true })
         // In case the transition never runs (already at the bottom).
-        window.setTimeout(go, 300)
+        window.setTimeout(go, readDuration('base', 250) + 50)
       } else {
         place(0, SETTLE)
       }

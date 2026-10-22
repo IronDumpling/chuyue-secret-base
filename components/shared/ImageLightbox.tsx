@@ -4,6 +4,9 @@ import { useState, useEffect, useCallback } from 'react'
 import { createPortal } from 'react-dom'
 import SafeImage from '@/components/shared/SafeImage'
 import { useT } from '@/components/shared/LocaleProvider'
+import { usePresence } from '@/lib/motion/usePresence'
+import { lockScroll } from '@/lib/scroll-lock'
+import { withBasePath } from '@/lib/utils'
 
 interface ImageLightboxProps {
   images: string[]
@@ -28,6 +31,9 @@ export default function ImageLightbox({
 }: ImageLightboxProps) {
   const t = useT()
   const [currentIndex, setCurrentIndex] = useState(initialIndex)
+  // Fades in and out (--dur-base) instead of popping; the picture settles in with a slight scale.
+  const { mounted, state } = usePresence(isOpen, 250)
+  const shown = state === 'entered'
 
   // Start at initialIndex every time the lightbox opens, not only when it changes:
   // otherwise reopening at the same picture would resume wherever it was last left.
@@ -64,24 +70,27 @@ export default function ImageLightbox({
 
   // Prevent body scroll when lightbox is open
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = 'unset'
-    }
-    return () => {
-      document.body.style.overflow = 'unset'
-    }
+    if (isOpen) return lockScroll()
   }, [isOpen])
 
-  if (!isOpen || typeof document === 'undefined') return null
+  // Warm the neighbours so stepping to them does not wait on the network.
+  useEffect(() => {
+    if (!isOpen || images.length < 2) return
+    for (const offset of [1, -1]) {
+      new Image().src = withBasePath(images[(currentIndex + offset + images.length) % images.length])
+    }
+  }, [isOpen, currentIndex, images])
+
+  if (!mounted || typeof document === 'undefined') return null
 
   // Rendered into <body>, not where the component sits: an ancestor with backdrop-filter,
   // transform or overflow (the About card has them) would otherwise turn "fixed, full
   // screen" into "inside that ancestor".
   return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm"
+      className={`fixed inset-0 z-50 flex items-center justify-center bg-black/90 motion-safe:transition-opacity motion-safe:duration-base motion-safe:ease-ios ${
+        shown ? 'opacity-100' : 'pointer-events-none opacity-0'
+      }`}
       onClick={onClose}
     >
       {/* Close button */}
@@ -143,11 +152,14 @@ export default function ImageLightbox({
 
       {/* Image container */}
       <div
-        className="relative w-full h-full flex items-center justify-center p-4 md:p-12"
+        className={`relative w-full h-full flex items-center justify-center p-4 md:p-12 motion-safe:transition-transform motion-safe:duration-slow motion-safe:ease-spring ${
+          shown ? 'scale-100' : 'scale-95'
+        }`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="relative max-w-7xl max-h-full w-full h-full flex items-center justify-center">
-          <div className="relative w-full h-full animate-[fadeIn_0.3s_ease-out]">
+          {/* Keyed by picture, so stepping to another one fades it in rather than swapping it. */}
+          <div key={currentIndex} className="relative w-full h-full motion-safe:animate-fade-in">
             <SafeImage
               src={images[currentIndex]}
               alt={`${alt} ${currentIndex + 1}`}

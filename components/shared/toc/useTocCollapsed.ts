@@ -1,15 +1,17 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
+import { useIsomorphicLayoutEffect } from '@/lib/useIsomorphicLayoutEffect'
 
 const KEY = 'toc:collapsed'
 
 // Whether the wide-screen table of contents is folded to its rail; remembered across posts.
-// Read after mount so the server render and the first client render agree (expanded).
+// Read right after hydration, before the first paint: the server render and the first client
+// render agree (expanded), and a reader who folded it never sees the full panel flash.
 export function useTocCollapsed(): [boolean, (collapsed: boolean) => void] {
   const [collapsed, setCollapsed] = useState(false)
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     try {
       setCollapsed(window.localStorage.getItem(KEY) === '1')
     } catch {

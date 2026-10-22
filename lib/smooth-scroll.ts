@@ -34,7 +34,9 @@ export function glideTo(top: number, onDone?: () => void): () => void {
     onDone?.()
     return () => {}
   }
-  const duration = Math.min(900, Math.max(450, 300 + Math.abs(distance) * 0.4))
+  // A hop of a line or two (stepping through list items) gets a short glide; longer trips take longer.
+  const floor = Math.abs(distance) < 160 ? 240 : 450
+  const duration = Math.min(900, Math.max(floor, 300 + Math.abs(distance) * 0.4))
   const start = performance.now()
   let frame = requestAnimationFrame(function step(now) {
     const t = Math.min(1, (now - start) / duration)

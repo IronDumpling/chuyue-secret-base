@@ -90,7 +90,7 @@ export default function TocTree({ tree, activeId, onNavigate, labels, dense = tr
                   }`}
                 >
                   <svg
-                    className={`h-3 w-3 motion-safe:transition-transform motion-safe:duration-200 ${open ? 'rotate-90' : ''}`}
+                    className={`h-3 w-3 motion-safe:transition-transform motion-safe:duration-base motion-safe:ease-ios ${open ? 'rotate-90' : ''}`}
                     viewBox="0 0 12 12"
                     fill="none"
                     stroke="currentColor"
@@ -118,7 +118,16 @@ export default function TocTree({ tree, activeId, onNavigate, labels, dense = tr
                 <span className="line-clamp-2">{node.text}</span>
               </a>
             </div>
-            {hasChildren && open && renderList(node.children, true)}
+            {/* Always rendered so it can fold: the row height eases between 0fr and 1fr, and closed rows leave the tab order. */}
+            {hasChildren && (
+              <div
+                className={`grid motion-safe:transition-[grid-template-rows,opacity,visibility] motion-safe:duration-base motion-safe:ease-ios ${
+                  open ? 'grid-rows-[1fr] visible opacity-100' : 'grid-rows-[0fr] invisible opacity-0'
+                }`}
+              >
+                <div className="min-h-0 overflow-hidden">{renderList(node.children, true)}</div>
+              </div>
+            )}
           </li>
         )
       })}

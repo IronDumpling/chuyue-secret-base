@@ -12,6 +12,8 @@ import {
   normalizeSelection,
   selectionKey,
 } from '@/lib/filter-model'
+import SwapFade from '@/components/shared/SwapFade'
+import { staggerDelay } from '@/lib/motion/stagger'
 import { useLocale, useT } from '@/components/shared/LocaleProvider'
 import { format } from '@/lib/i18n/format'
 import type { PortfolioCategory, PortfolioGroup } from '@/lib/taxonomy'
@@ -19,11 +21,6 @@ import type { PortfolioCategory, PortfolioGroup } from '@/lib/taxonomy'
 interface ProjectGridProps {
   projects: PortfolioProject[]
 }
-
-// Each card waits a little longer than the one before it, up to a cap, so the grid settles
-// instead of all cards appearing at once.
-const STAGGER_MS = 40
-const STAGGER_CARDS = 8
 
 export default function ProjectGrid({ projects }: ProjectGridProps) {
   const locale = useLocale()
@@ -65,6 +62,7 @@ export default function ProjectGrid({ projects }: ProjectGridProps) {
         />
       </div>
 
+      <SwapFade swapKey={selectionKey(selection)}>
       {visible.length > 0 ? (
         // Keyed by the selection so a new choice replays the fade-in.
         <div key={selectionKey(selection)} className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -72,7 +70,7 @@ export default function ProjectGrid({ projects }: ProjectGridProps) {
             <div
               key={`${project.frontMatter.category}-${project.slug}`}
               className="motion-safe:animate-feed-in"
-              style={{ animationDelay: `${Math.min(index, STAGGER_CARDS) * STAGGER_MS}ms` }}
+              style={{ animationDelay: staggerDelay(index) }}
             >
               <ProjectCard project={project} />
             </div>
@@ -83,6 +81,7 @@ export default function ProjectGrid({ projects }: ProjectGridProps) {
           <p className="text-gray-600 dark:text-gray-400">{t.portfolio.noProjects}</p>
         </div>
       )}
+      </SwapFade>
     </div>
   )
 }

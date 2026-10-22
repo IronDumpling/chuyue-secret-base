@@ -3,6 +3,7 @@
 import { useT } from '@/components/shared/LocaleProvider'
 import { tileIconClass, tileLabelClass } from '@/components/shared/tileStyles'
 import { useReadAloud } from './context'
+import IconSwap from '@/components/shared/IconSwap'
 import { PauseIcon, PlayIcon } from './icons'
 
 // The entry point in the links / share row: same tile as its neighbours. Once reading has
@@ -23,10 +24,10 @@ export default function ReadAloudButton() {
       disabled={unsupported}
       aria-label={unsupported ? t.unsupported : label}
       title={unsupported ? t.unsupported : label}
-      className="flex flex-col items-center gap-1.5 disabled:cursor-not-allowed disabled:opacity-50"
+      className="flex flex-col items-center gap-1.5 transition-opacity duration-base disabled:cursor-not-allowed disabled:opacity-50"
     >
       <span className={tileIconClass(reader.active)}>
-        {playing ? <PauseIcon className="h-5 w-5" /> : <PlayIcon className="ml-0.5 h-5 w-5" />}
+        <IconSwap a={<PlayIcon className="ml-0.5 h-5 w-5" />} b={<PauseIcon className="h-5 w-5" />} showB={playing} />
       </span>
       <span className={tileLabelClass}>{label}</span>
     </button>

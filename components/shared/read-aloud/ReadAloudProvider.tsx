@@ -4,7 +4,6 @@ import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } fro
 import type { Locale } from '@/lib/i18n/config'
 import { buildQueue, nextBlockStart, pickVoice, prevBlockStart, type QueuedSentence } from '@/lib/read-aloud'
 import { glideTo } from '@/lib/smooth-scroll'
-import { prefersReducedMotion } from '@/components/shared/toc/useActiveHeading'
 import { extractBlocks, type ReadBlock } from './extract'
 import ReadAloudPlayer from './ReadAloudPlayer'
 import { ReadAloudContext, type ReadAloudValue, type ReadStatus, type ScrollMode } from './context'
@@ -262,13 +261,9 @@ export default function ReadAloudProvider({ lang, title, hasToc, children }: Rea
     const shouldScroll = mode === 'force' || (mode === 'follow' && changed && performance.now() >= holdUntil.current)
     if (shouldScroll) {
       stopGlide.current()
-      if (prefersReducedMotion()) {
-        // 'instant', not 'auto': `auto` would follow the global `scroll-behavior: smooth`.
-        block.el.scrollIntoView({ behavior: 'instant', block: 'start' })
-      } else {
-        const margin = parseFloat(getComputedStyle(block.el).scrollMarginTop) || 0
-        stopGlide.current = glideTo(block.el.getBoundingClientRect().top + window.scrollY - margin)
-      }
+      // glideTo handles reduced motion itself (it jumps).
+      const margin = parseFloat(getComputedStyle(block.el).scrollMarginTop) || 0
+      stopGlide.current = glideTo(block.el.getBoundingClientRect().top + window.scrollY - margin)
     }
   }, [active, status, index])
 

@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import { useIsomorphicLayoutEffect } from '@/lib/useIsomorphicLayoutEffect'
 import { useT } from '@/components/shared/LocaleProvider'
 import IconSwap from '@/components/shared/IconSwap'
 
@@ -9,7 +10,8 @@ export default function ThemeToggle() {
   const [isDark, setIsDark] = useState(false)
   const [mounted, setMounted] = useState(false)
 
-  useEffect(() => {
+  // Before the first paint, so a dark-mode visitor never sees the moon swap to the sun.
+  useIsomorphicLayoutEffect(() => {
     setMounted(true)
     const theme = localStorage.getItem('theme')
     const isDarkMode = theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)

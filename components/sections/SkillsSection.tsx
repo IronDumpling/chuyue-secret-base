@@ -267,7 +267,7 @@ export function SkillsAccordion({ identity }: { identity: Identity }) {
       {categories.map((category, index) => (
         <div
           key={index}
-          className={`rounded-xl overflow-hidden transition-all duration-300 ${
+          className={`rounded-xl overflow-hidden transition-all duration-base ease-ios ${
             openCategory === index ? 'identity-card-ring-active' : ''
           }`}
         >
@@ -287,7 +287,7 @@ export function SkillsAccordion({ identity }: { identity: Identity }) {
                 </div>
               </div>
             <svg
-              className={`w-5 h-5 text-gray-500 dark:text-slate-400 transition-transform ${
+              className={`w-5 h-5 text-gray-500 dark:text-slate-400 transition-transform duration-base ease-ios ${
                 openCategory === index ? 'rotate-180' : ''
               }`}
               fill="none"
@@ -300,12 +300,15 @@ export function SkillsAccordion({ identity }: { identity: Identity }) {
           </button>
 
           <div
-            className={`overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
-              openCategory === index ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'
+            // Height eases between 0fr and 1fr, so it is exact for any content and closing is as quick
+            // as opening; closed, the chips leave the tab order (invisible).
+            className={`grid transition-[grid-template-rows,opacity,visibility] duration-slow ease-ios ${
+              openCategory === index ? 'grid-rows-[1fr] visible opacity-100' : 'grid-rows-[0fr] invisible opacity-0'
             }`}
           >
+            <div className="min-h-0 overflow-hidden">
             <div
-              className={`p-4 pt-0 space-y-4 transform-gpu origin-top transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
+              className={`p-4 pt-0 space-y-4 transform-gpu origin-top transition-[transform] duration-slow ease-spring ${
                 openCategory === index ? 'scale-100 translate-y-0' : 'scale-95 -translate-y-2'
               }`}
             >
@@ -324,6 +327,7 @@ export function SkillsAccordion({ identity }: { identity: Identity }) {
                   ))}
               </div>
             </div>
+            </div>
           </div>
         </div>
       ))}
@@ -338,7 +342,7 @@ export default function SkillsSection({ identity, direction }: SkillsSectionProp
   return (
     <section id="skills-section" className="section">
       <div className="container">
-        <div className={`identity-card-surface space-y-8 ${slideClass}`}>
+        <div key={identity} className={`identity-card-surface space-y-8 ${slideClass}`}>
           <h2 className="section-title">{t.skills.heading}</h2>
           <SkillsAccordion identity={identity} />
         </div>

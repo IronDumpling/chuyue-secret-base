@@ -23,7 +23,7 @@ export default function MDXHeaderImage({ images, title }: MDXHeaderImageProps) {
     <>
       {/* Cover Image */}
       <div 
-        className="relative w-full h-[300px] md:h-[450px] rounded-xl overflow-hidden cursor-pointer group mb-8"
+        className="relative w-full h-[300px] md:h-[450px] rounded-xl overflow-hidden cursor-pointer group mb-8 bg-gray-100 dark:bg-gray-800"
         onClick={() => setLightboxOpen(true)}
       >
         <SafeImage
@@ -32,7 +32,7 @@ export default function MDXHeaderImage({ images, title }: MDXHeaderImageProps) {
           fill
           // Priority loading for the cover image
           priority
-          className="object-cover group-hover:scale-105 transition-transform duration-500"
+          className="object-cover group-hover:scale-105 transition-transform duration-slow ease-ios"
         />
 
         {/* Overlay: Darken on hover, hint that it's clickable */}

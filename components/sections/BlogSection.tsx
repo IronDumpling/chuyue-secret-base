@@ -69,7 +69,7 @@ export default function BlogSection() {
             <style jsx>{`
               @keyframes float {
                 0%, 100% { transform: translateY(0px) rotate(var(--tw-rotate)); }
-                50% { transform: translateY(-10px) rotate(var(--tw-rotate) + 2deg); }
+                50% { transform: translateY(-10px) rotate(calc(var(--tw-rotate) + 2deg)); }
               }
             `}</style>
           </div>

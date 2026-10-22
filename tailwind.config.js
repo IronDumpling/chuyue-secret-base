@@ -93,6 +93,8 @@ module.exports = {
         'drawer-in': 'drawer-in 350ms cubic-bezier(0.2, 0, 0, 1) both',
         'panel-in': 'panel-in 350ms cubic-bezier(0.2, 0, 0, 1) both',
         'dial-in': 'dial-in 180ms cubic-bezier(0.32, 1.2, 0.4, 1) both',
+        // A page arriving; `backwards`, not `both`, so nothing is held once it has finished.
+        'page-in': 'feed-in 350ms cubic-bezier(0.2, 0, 0, 1) backwards',
         'fade-out': 'fade-out 200ms cubic-bezier(0.2, 0, 0, 1) both',
         'drawer-out': 'drawer-out 250ms cubic-bezier(0.2, 0, 0, 1) both',
         'panel-out': 'panel-out 250ms cubic-bezier(0.2, 0, 0, 1) both',

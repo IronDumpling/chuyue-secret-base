@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
+import ResizeGuard from '@/components/shared/ResizeGuard'
 import { LocaleProvider } from '@/components/shared/LocaleProvider'
 import { LOCALES, isLocale } from '@/lib/i18n/config'
 import { getDictionary } from '@/lib/i18n'
@@ -50,8 +51,18 @@ export default function RootLayout({
 
   return (
     <html lang={params.lang} suppressHydrationWarning>
+      <head>
+        {/* Sets the dark class before the first paint, so a dark-mode visitor never sees a light flash. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "try{var t=localStorage.getItem('theme');if(t==='dark'||(!t&&matchMedia('(prefers-color-scheme: dark)').matches))document.documentElement.classList.add('dark')}catch(e){}",
+          }}
+        />
+      </head>
       <body className="antialiased">
         <LocaleProvider locale={params.lang} dictionary={getDictionary(params.lang)}>
+          <ResizeGuard />
           <Header />
           <main className="pt-16 md:pt-20">
             {children}

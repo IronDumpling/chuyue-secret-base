@@ -295,7 +295,7 @@ export default function ExperiencesSection() {
                       <h3 className="text-xl font-semibold mb-1 flex items-center gap-2 md:justify-end">
                         {pick(exp.title, locale)}
                         <svg
-                          className={`w-5 h-5 transition-transform ${openIndex === index ? 'rotate-90' : ''}`}
+                          className={`w-5 h-5 transition-transform duration-base ease-ios ${openIndex === index ? 'rotate-90' : ''}`}
                           fill="none"
                           viewBox="0 0 24 24"
                           stroke="currentColor"
@@ -316,17 +316,19 @@ export default function ExperiencesSection() {
                   {/* Right side (even) or Left side (odd) */}
                   <div className={`md:${index % 2 === 0 ? 'pl-8' : 'pr-8 order-1'}`}>
                     <div
-                      className={`overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
+                      // Height eases between 0fr and 1fr (exact for any content); closed, the links leave the tab order.
+                      className={`grid transition-[grid-template-rows,opacity,visibility] duration-slow ease-ios ${
                         openIndex === index
-                          ? 'max-h-[2000px] opacity-100'
-                          : 'max-h-0 opacity-0'
+                          ? 'grid-rows-[1fr] visible opacity-100'
+                          : 'grid-rows-[0fr] invisible opacity-0'
                       }`}
                     >
+                      <div className="min-h-0 overflow-hidden">
                       <div
-                        className={`bg-gray-50 dark:bg-gray-800 rounded-lg p-6 space-y-6 shadow-lg transform-gpu origin-center transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
+                        className={`bg-gray-50 dark:bg-gray-800 rounded-lg p-6 space-y-6 shadow-lg transform-gpu origin-center transition-[transform] duration-slow ease-spring ${
                           openIndex === index
                             ? 'scale-100 translate-y-0'
-                            : 'scale-90 translate-y-4'
+                            : 'scale-95 translate-y-2'
                         }`}
                       >
                         {exp.details.map((detail, detailIndex) => (
@@ -354,6 +356,7 @@ export default function ExperiencesSection() {
                             )}
                           </div>
                         ))}
+                      </div>
                       </div>
                     </div>
                   </div>

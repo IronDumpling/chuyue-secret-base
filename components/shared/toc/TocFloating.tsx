@@ -11,6 +11,10 @@ import { scrollToTop } from './useActiveHeading'
 import TocTree from './TocTree'
 import { ListIcon, PanelCloseIcon, TocListenRow } from './TocSidebar'
 import { useDragToDismiss } from './useDragToDismiss'
+import IconSwap from '@/components/shared/IconSwap'
+import { usePresence, readDuration } from '@/lib/motion/usePresence'
+import { lockScroll } from '@/lib/scroll-lock'
+import { useBreakpoint } from '@/lib/useBreakpoint'
 
 interface TocFloatingProps {
   // Empty when the page is too short for a table of contents; the button then only offers
@@ -23,8 +27,8 @@ interface TocFloatingProps {
 
 const RING_RADIUS = 21
 const RING_LENGTH = 2 * Math.PI * RING_RADIUS
-// How long the article takes to move aside (matches `.toc-shift` in globals.css), plus a margin.
-const SHIFT_MS = 350
+// How long the article takes to move aside (`.toc-shift` uses --dur-slow in globals.css), plus a margin.
+const shiftMs = () => readDuration('slow', 350) + 50
 
 // The article reflows while it moves aside for the sidebar; keep the paragraph being read at
 // the same height on screen through every frame of that, instead of letting the text slide away.
@@ -43,7 +47,7 @@ function holdReadingPosition() {
   const anchor = reading ?? Array.from(blocks).find(el => el.getBoundingClientRect().top >= header)
   if (!anchor) return
   const top = anchor.getBoundingClientRect().top
-  const until = performance.now() + SHIFT_MS
+  const until = performance.now() + shiftMs()
   const step = () => {
     const drift = anchor.getBoundingClientRect().top - top
     if (Math.abs(drift) >= 1) window.scrollBy({ top: drift, behavior: 'instant' })
@@ -53,7 +57,10 @@ function holdReadingPosition() {
 }
 
 const surface = 'border border-gray-200 bg-white/95 backdrop-blur dark:border-gray-800 dark:bg-gray-900/95'
-const dialItem = `group relative flex h-10 w-10 items-center justify-center rounded-full text-gray-700 shadow-md transition-colors duration-200 hover:text-primary-600 dark:text-gray-200 dark:hover:text-primary-400 motion-safe:animate-dial-in ${surface}`
+const dialItem = (exiting: boolean) =>
+  `group relative flex h-10 w-10 items-center justify-center rounded-full text-gray-700 shadow-md transition-colors duration-200 hover:text-primary-600 dark:text-gray-200 dark:hover:text-primary-400 ${
+    exiting ? 'pointer-events-none motion-safe:animate-dial-out' : 'motion-safe:animate-dial-in'
+  } ${surface}`
 // Icon-only items explain themselves on hover: to the left on phones (button at the right
 // edge), to the right on tablets (button at the left edge).
 const tooltip =
@@ -81,11 +88,27 @@ export default function TocFloating({ tree, activeId, onNavigate, labels }: TocF
   const drawerScrollRef = useRef<HTMLDivElement>(null)
   const drawerRef = useRef<HTMLDivElement>(null)
   const backdropRef = useRef<HTMLDivElement>(null)
+  const wide = useBreakpoint('md')
 
   const hasToc = tree.length > 0
   const canRead = !!reader && reader.supported !== false
   const reading = !!reader?.active
   const holdScroll = reader?.holdScroll
+
+  const showButton = !open && !reading
+  // Drawer, backdrop and sidebar play their entrance (350ms), then rest; closing plays the exit
+  // (250ms) before they unmount. Once settled they carry no animation class, so a resize across
+  // `md` that reveals the other layout does not replay it.
+  const toc = usePresence(open && hasToc, 250, 350)
+  const dial = usePresence(showButton && dialOpen, 150, 300)
+  // Whole class names, so Tailwind can see them.
+  const ANIM = {
+    drawer: { enter: 'motion-safe:animate-drawer-in', exit: 'motion-safe:animate-drawer-out' },
+    panel: { enter: 'motion-safe:animate-panel-in', exit: 'motion-safe:animate-panel-out' },
+    fade: { enter: 'motion-safe:animate-fade-in', exit: 'motion-safe:animate-fade-out' },
+  }
+  const tocAnim = (kind: keyof typeof ANIM) =>
+    toc.state === 'exit' ? `pointer-events-none ${ANIM[kind].exit}` : toc.state === 'enter' ? ANIM[kind].enter : ''
 
   // Appears once the first heading (or, without headings, the article) is on screen, and
   // tracks how far through the page we are.
@@ -121,21 +144,22 @@ export default function TocFloating({ tree, activeId, onNavigate, labels }: TocF
     // Tablets: the article makes room for the sidebar. The CSS rule only applies between md
     // and xl, so setting it on phones is harmless. Reading aloud stops following the text
     // while it reflows, so the two do not both move the page.
-    holdScroll?.(SHIFT_MS)
+    holdScroll?.(shiftMs())
     holdReadingPosition()
     document.documentElement.dataset.tocPanel = ''
-    // The drawer covers the page on phones; keep the page from scrolling behind it.
-    const isPhone = window.matchMedia('(max-width: 767.98px)').matches
-    const previousOverflow = document.body.style.overflow
-    if (isPhone) document.body.style.overflow = 'hidden'
     return () => {
       document.removeEventListener('keydown', onKey)
-      holdScroll?.(SHIFT_MS)
+      holdScroll?.(shiftMs())
       holdReadingPosition()
       delete document.documentElement.dataset.tocPanel
-      if (isPhone) document.body.style.overflow = previousOverflow
     }
   }, [open, setOpen, holdScroll])
+
+  // The drawer covers the page on phones; keep the page from scrolling behind it. Follows the
+  // viewport, so resizing across `md` while open locks or unlocks to match.
+  useEffect(() => {
+    if (open && !wide) return lockScroll()
+  }, [open, wide])
 
   useEffect(() => {
     if (!dialOpen) return
@@ -152,7 +176,7 @@ export default function TocFloating({ tree, activeId, onNavigate, labels }: TocF
   }, [reading])
 
   useDragToDismiss({
-    enabled: open && hasToc,
+    enabled: open && hasToc && toc.state !== 'exit',
     sheetRef: drawerRef,
     scrollRef: drawerScrollRef,
     backdropRef,
@@ -181,8 +205,6 @@ export default function TocFloating({ tree, activeId, onNavigate, labels }: TocF
   const menu = hasToc || canRead
   const onMainClick = menu ? () => setDialOpen(value => !value) : backToTop
   const mainLabel = menu ? (dialOpen ? readLabels.closeMenu : readLabels.menu) : labels.backToTop
-  const showButton = !open && !reading
-
   // Open on a phone, the drawer covers the header (z-50); on a tablet the sidebar stays under it
   // so the header's scroll shadow falls across the sidebar the same as across the article.
   return (
@@ -192,12 +214,12 @@ export default function TocFloating({ tree, activeId, onNavigate, labels }: TocF
       }`}
       style={{ bottom: 'calc(1rem + env(safe-area-inset-bottom))' }}
     >
-      {open && hasToc && (
+      {toc.mounted && (
         <>
           {/* Tablets: a sidebar below the header; the article moves right to make room. */}
           <nav
             aria-label={labels.title}
-            className="fixed bottom-0 left-0 top-20 hidden w-72 flex-col border-r border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900 md:flex motion-safe:animate-panel-in"
+            className={`fixed bottom-0 left-0 top-20 hidden w-72 flex-col border-r border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900 md:flex ${tocAnim('panel')}`}
           >
             <div className="flex items-center justify-between gap-2 px-4 pb-2 pt-4">
               <span className="text-base font-semibold text-gray-900 dark:text-gray-100">
@@ -224,7 +246,7 @@ export default function TocFloating({ tree, activeId, onNavigate, labels }: TocF
             <div
               ref={backdropRef}
               aria-hidden
-              className="fixed inset-0 bg-black/40 motion-safe:animate-fade-in"
+              className={`fixed inset-0 bg-black/40 ${tocAnim('fade')}`}
               onClick={() => setOpen(false)}
             />
             {/* Drags down and away (useDragToDismiss), like the sheets it imitates. */}
@@ -233,7 +255,7 @@ export default function TocFloating({ tree, activeId, onNavigate, labels }: TocF
               role="dialog"
               aria-modal="true"
               aria-label={labels.title}
-              className={`fixed inset-x-0 bottom-0 flex max-h-[70vh] flex-col rounded-t-2xl shadow-2xl motion-safe:animate-drawer-in ${surface}`}
+              className={`fixed inset-x-0 bottom-0 flex max-h-[70vh] flex-col rounded-t-2xl shadow-2xl ${tocAnim('drawer')} ${surface}`}
               style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
             >
               <div aria-hidden className="mx-auto mt-2 h-1 w-10 rounded-full bg-gray-300 dark:bg-gray-700" />
@@ -266,10 +288,10 @@ export default function TocFloating({ tree, activeId, onNavigate, labels }: TocF
         </>
       )}
 
-      {showButton && dialOpen && (
+      {dial.mounted && (
         <>
           {/* A faint veil: tapping anywhere else folds the menu. */}
-          <div aria-hidden className="fixed inset-0 -z-10 bg-black/10 motion-safe:animate-fade-in dark:bg-black/30" onClick={() => setDialOpen(false)} />
+          <div aria-hidden className={`fixed inset-0 -z-10 bg-black/10 dark:bg-black/30 ${dial.state === 'exit' ? 'pointer-events-none motion-safe:animate-fade-out' : 'motion-safe:animate-fade-in'}`} onClick={() => setDialOpen(false)} />
           {/* Rises from the main button: contents nearest the thumb, then play, then back to
               top, the one used least while reading. */}
           <div className="absolute inset-x-0 bottom-full mb-3 flex flex-col-reverse items-center gap-3">
@@ -285,8 +307,8 @@ export default function TocFloating({ tree, activeId, onNavigate, labels }: TocF
                   type="button"
                   onClick={item.onClick}
                   aria-label={item.label}
-                  className={dialItem}
-                  style={{ animationDelay: `${i * 40}ms` }}
+                  className={dialItem(dial.state === 'exit')}
+                  style={{ animationDelay: dial.state === 'exit' ? '0ms' : `${i * 40}ms` }}
                 >
                   {item.icon}
                   <span aria-hidden className={tooltip}>
@@ -305,7 +327,11 @@ export default function TocFloating({ tree, activeId, onNavigate, labels }: TocF
         aria-expanded={menu ? dialOpen : undefined}
         // Open, the drawer / sidebar has its own close button and the corner button would sit
         // on it; while reading, the player carries the contents button instead.
-        className={`${showButton ? '' : 'hidden'} relative flex h-12 w-12 items-center justify-center rounded-full text-gray-700 shadow-lg transition-colors duration-200 hover:text-primary-600 dark:text-gray-200 dark:hover:text-primary-400 ${surface}`}
+        tabIndex={showButton ? undefined : -1}
+        aria-hidden={!showButton}
+        className={`relative flex h-12 w-12 items-center justify-center rounded-full text-gray-700 shadow-lg motion-safe:transition-[color,opacity,transform,visibility] motion-safe:duration-base motion-safe:ease-ios hover:text-primary-600 dark:text-gray-200 dark:hover:text-primary-400 ${
+          showButton ? 'visible scale-100 opacity-100' : 'pointer-events-none invisible scale-75 opacity-0'
+        } ${surface}`}
       >
         <svg aria-hidden className="absolute inset-0 h-full w-full -rotate-90" viewBox="0 0 48 48">
           <circle cx="24" cy="24" r={RING_RADIUS} fill="none" strokeWidth={2} className="stroke-gray-200 dark:stroke-gray-800" />
@@ -324,18 +350,7 @@ export default function TocFloating({ tree, activeId, onNavigate, labels }: TocF
         {menu ? (
           // The dots (a menu, not the contents' list glyph, and the same on either side of the
           // screen) turn flat and give way to a close cross while the menu is open.
-          <span className="relative h-5 w-5">
-            <EllipsisVerticalIcon
-              className={`absolute inset-0 h-5 w-5 motion-safe:transition-[transform,opacity] motion-safe:duration-200 ${
-                dialOpen ? 'rotate-90 scale-75 opacity-0' : 'opacity-100'
-              }`}
-            />
-            <XIcon
-              className={`absolute inset-0 h-5 w-5 motion-safe:transition-[transform,opacity] motion-safe:duration-200 ${
-                dialOpen ? 'opacity-100' : '-rotate-45 opacity-0'
-              }`}
-            />
-          </span>
+          <IconSwap a={<EllipsisVerticalIcon className="h-5 w-5" />} b={<XIcon className="h-5 w-5" />} showB={dialOpen} />
         ) : (
           <ArrowUpIcon className="h-5 w-5" />
         )}

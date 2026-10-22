@@ -4,6 +4,8 @@ import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { useT } from '@/components/shared/LocaleProvider'
 import { ListIcon } from '@/components/shared/toc/TocSidebar'
+import IconSwap from '@/components/shared/IconSwap'
+import { usePresence } from '@/lib/motion/usePresence'
 import { useReadAloud } from './context'
 import {
   FastForwardIcon,
@@ -68,6 +70,11 @@ export default function ReadAloudPlayer() {
   useEffect(() => setMounted(true), [])
 
   const active = !!reader?.active
+  // Slides away over 250ms (drawer-out) instead of vanishing; the page's bottom padding follows.
+  const presence = usePresence(active, 250, 350)
+  // The state the dock showed while open, so its text does not jump to "0 / n" as it leaves.
+  const lastReader = useRef(reader)
+  if (reader?.active) lastReader.current = reader
   useEffect(() => {
     const dock = dockRef.current
     if (!active || !dock) return
@@ -101,9 +108,12 @@ export default function ReadAloudPlayer() {
     return () => range.removeEventListener('change', commit)
   }, [seek, active, mounted])
 
-  if (!reader || !reader.active || !mounted) return null
+  const shown = reader?.active ? reader : lastReader.current
+  if (!shown || !presence.mounted || !mounted) return null
+  const exiting = presence.state === 'exit'
+  const enterClass = exiting ? 'motion-safe:animate-drawer-out pointer-events-none' : presence.state === 'enter' ? 'motion-safe:animate-drawer-in' : ''
 
-  const { status, index, total, chapter, rate, hasToc } = reader
+  const { status, index, total, chapter, rate, hasToc } = shown
   const playing = status === 'playing'
   const ended = status === 'ended'
   const max = Math.max(0, total - 1)
@@ -114,7 +124,7 @@ export default function ReadAloudPlayer() {
   const mainLabel = playing ? t.pause : ended ? t.replay : t.play
 
   return createPortal(
-    <div ref={dockRef} className="read-aloud-dock fixed inset-x-0 bottom-0 z-40 motion-safe:animate-drawer-in md:bottom-4">
+    <div ref={dockRef} className={`read-aloud-dock fixed inset-x-0 bottom-0 z-40 md:bottom-4 ${enterClass}`}>
       <div
         className="flex flex-col border-t border-gray-200 bg-white/95 shadow-[0_-4px_16px_rgba(0,0,0,0.06)] backdrop-blur dark:border-gray-800 dark:bg-gray-900/95 md:mx-auto md:w-[calc(100%-2rem)] md:max-w-[52rem] md:rounded-2xl md:border md:shadow-xl"
         style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
@@ -132,7 +142,7 @@ export default function ReadAloudPlayer() {
             aria-valuetext={`${index + 1} / ${total}`}
             onPointerDown={beginScrub}
             onKeyDown={beginScrub}
-            onChange={event => reader.seek(Number(event.target.value), { autoplay: false, scroll: 'force' })}
+            onChange={event => shown.seek(Number(event.target.value), { autoplay: false, scroll: 'force' })}
             className="read-aloud-range block w-full"
             style={{ '--pct': `${percent}%` } as React.CSSProperties}
           />
@@ -143,7 +153,7 @@ export default function ReadAloudPlayer() {
               (a chapter name out of context often does not); wider screens add where in it. */}
           <div className="min-w-0 flex-1 pr-1">
             <div className="truncate text-[15px] font-semibold text-gray-900 dark:text-gray-100 md:text-sm md:font-medium">
-              {reader.title}
+              {shown.title}
             </div>
             <div className="hidden truncate text-xs tabular-nums text-gray-500 dark:text-gray-400 md:block">
               {chapter ? `${chapter} · ` : ''}
@@ -153,43 +163,42 @@ export default function ReadAloudPlayer() {
 
           {/* Transport */}
           <div className="flex items-center gap-0.5 md:gap-1">
-            <Control label={t.prevParagraph} onClick={reader.prevParagraph} disabled={index === 0} className="hidden md:flex">
+            <Control label={t.prevParagraph} onClick={shown.prevParagraph} disabled={index === 0} className="hidden md:flex">
               <SkipBackIcon className="h-4 w-4" />
             </Control>
-            <Control label={t.prevSentence} onClick={reader.prevSentence} disabled={index === 0}>
+            <Control label={t.prevSentence} onClick={shown.prevSentence} disabled={index === 0}>
               <RewindIcon className="h-4 w-4" />
             </Control>
             <button
               type="button"
-              onClick={ended ? reader.restart : reader.toggle}
+              onClick={ended ? shown.restart : shown.toggle}
               aria-label={mainLabel}
               title={mainLabel}
               className="mx-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary-600 text-white shadow-sm transition-[background-color,transform] duration-200 hover:bg-primary-700 active:scale-95 dark:bg-primary-500 dark:hover:bg-primary-400"
             >
-              {playing ? (
-                <PauseIcon className="h-5 w-5" />
-              ) : ended ? (
-                <RotateCcwIcon className="h-5 w-5" />
-              ) : (
-                <PlayIcon className="ml-0.5 h-5 w-5" />
-              )}
+              <IconSwap
+                className="h-5 w-5"
+                showB={playing}
+                a={ended ? <RotateCcwIcon className="h-5 w-5" /> : <PlayIcon className="ml-0.5 h-5 w-5" />}
+                b={<PauseIcon className="h-5 w-5" />}
+              />
             </button>
-            <Control label={t.nextSentence} onClick={reader.nextSentence} disabled={index >= max}>
+            <Control label={t.nextSentence} onClick={shown.nextSentence} disabled={index >= max}>
               <FastForwardIcon className="h-4 w-4" />
             </Control>
-            <Control label={t.nextParagraph} onClick={reader.nextParagraph} disabled={index >= max} className="hidden md:flex">
+            <Control label={t.nextParagraph} onClick={shown.nextParagraph} disabled={index >= max} className="hidden md:flex">
               <SkipForwardIcon className="h-4 w-4" />
             </Control>
           </div>
 
           {/* Secondary: on phones a divider keeps stop from reading as part of the transport. */}
           <div className="ml-1 flex items-center justify-end gap-0.5 border-l border-gray-200 pl-1 dark:border-gray-800 md:ml-0 md:gap-1 md:border-0 md:pl-0">
-            <Control label={t.restart} onClick={reader.restart} className="hidden md:flex">
+            <Control label={t.restart} onClick={shown.restart} className="hidden md:flex">
               <RotateCcwIcon className="h-4 w-4" />
             </Control>
             <button
               type="button"
-              onClick={reader.cycleRate}
+              onClick={shown.cycleRate}
               aria-label={`${t.speed}: ${rate}×`}
               title={t.speed}
               className={`${control} ${tones.normal} hidden w-12 text-xs font-semibold tabular-nums md:flex`}
@@ -197,11 +206,11 @@ export default function ReadAloudPlayer() {
               {rate}×
             </button>
             {hasToc && (
-              <Control label={t.toc} onClick={() => reader.setTocOpen(open => !open)} tone="muted" className="xl:hidden">
+              <Control label={t.toc} onClick={() => shown.setTocOpen(open => !open)} tone="muted" className="xl:hidden">
                 <ListIcon className="h-5 w-5" />
               </Control>
             )}
-            <Control label={t.close} onClick={reader.close} tone="muted">
+            <Control label={t.close} onClick={shown.close} tone="muted">
               <XIcon className="h-4 w-4" />
             </Control>
           </div>

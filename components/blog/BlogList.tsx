@@ -13,6 +13,8 @@ import {
   normalizeSelection,
   selectionKey,
 } from '@/lib/filter-model'
+import SwapFade from '@/components/shared/SwapFade'
+import { staggerDelay } from '@/lib/motion/stagger'
 import { useLocale, useT } from '@/components/shared/LocaleProvider'
 import { format } from '@/lib/i18n/format'
 import type { BlogCategory, BlogGroup } from '@/lib/taxonomy'
@@ -21,11 +23,6 @@ interface BlogListProps {
   posts: BlogPost[]
   showFilters?: boolean
 }
-
-// How long each row waits before it fades in, so the list settles top to bottom. Capped so a
-// long list does not keep the last rows waiting.
-const STAGGER_MS = 40
-const STAGGER_ROWS = 8
 
 export default function BlogList({ posts, showFilters = true }: BlogListProps) {
   const locale = useLocale()
@@ -76,7 +73,7 @@ export default function BlogList({ posts, showFilters = true }: BlogListProps) {
                   key={`${post.frontMatter.category}-${post.slug}`}
                   post={post}
                   className="motion-safe:animate-feed-in"
-                  style={{ animationDelay: `${Math.min(row++, STAGGER_ROWS) * STAGGER_MS}ms` }}
+                  style={{ animationDelay: staggerDelay(row++) }}
                 />
               ))}
             </div>
@@ -89,8 +86,10 @@ export default function BlogList({ posts, showFilters = true }: BlogListProps) {
       </div>
     )
 
+  const swap = <SwapFade swapKey={selectionKey(selection)}>{feed}</SwapFade>
+
   if (!showFilters) {
-    return <div className="mx-auto mt-10 max-w-3xl">{feed}</div>
+    return <div className="mx-auto mt-10 max-w-3xl">{swap}</div>
   }
 
   return (
@@ -112,7 +111,7 @@ export default function BlogList({ posts, showFilters = true }: BlogListProps) {
           />
         </div>
       </aside>
-      <div className="min-h-[24rem] min-w-0">{feed}</div>
+      <div className="min-h-[24rem] min-w-0">{swap}</div>
     </div>
   )
 }

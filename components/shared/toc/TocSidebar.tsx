@@ -9,6 +9,7 @@ import { ArrowUpIcon, PlayIcon } from '@/components/shared/read-aloud/icons'
 import TocTree from './TocTree'
 import { scrollToTop } from './useActiveHeading'
 import { useTocCollapsed } from './useTocCollapsed'
+import { usePresence } from '@/lib/motion/usePresence'
 
 interface TocSidebarProps {
   tree: TocNode[]
@@ -166,16 +167,27 @@ function RailEnd({ activeId, showTop, topLabel }: { activeId: string | null; sho
 export default function TocSidebar({ tree, activeId, onNavigate, labels }: TocSidebarProps) {
   const [collapsed, setCollapsed] = useTocCollapsed()
   // Width of the hover card while it is shown; it fits into the gutter left of the rail.
-  const [peekWidth, setPeekWidth] = useState<number | null>(null)
+  const [peekWidth, setPeekWidth] = useState(PEEK_MIN_WIDTH)
+  const [peekOpen, setPeekOpen] = useState(false)
+  const peek = usePresence(peekOpen, 150, 200)
+  const closeTimer = useRef<ReturnType<typeof setTimeout>>()
   const railRef = useRef<HTMLElement>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
   const scrolledDown = useScrolledDown()
 
   const openPeek = () => {
     const left = railRef.current?.getBoundingClientRect().left ?? 0
+    clearTimeout(closeTimer.current)
     setPeekWidth(Math.min(PEEK_MAX_WIDTH, Math.max(PEEK_MIN_WIDTH, left - 24)))
+    setPeekOpen(true)
   }
-  const closePeek = () => setPeekWidth(null)
+  // A short grace period, so brushing past the edge of the rail does not flash the card shut.
+  const closePeek = (immediate = false) => {
+    clearTimeout(closeTimer.current)
+    if (immediate) setPeekOpen(false)
+    else closeTimer.current = setTimeout(() => setPeekOpen(false), 120)
+  }
+  useEffect(() => () => clearTimeout(closeTimer.current), [])
 
   if (collapsed) {
     // Play and back to top end the rail, outside the part that opens the hover card on the way.
@@ -186,16 +198,16 @@ export default function TocSidebar({ tree, activeId, onNavigate, labels }: TocSi
           aria-label={labels.title}
           className="relative flex flex-col items-end gap-1"
           onMouseEnter={openPeek}
-          onMouseLeave={closePeek}
-          onFocus={() => peekWidth === null && openPeek()}
+          onMouseLeave={() => closePeek()}
+          onFocus={() => !peekOpen && openPeek()}
           onBlur={event => {
-            if (!event.currentTarget.contains(event.relatedTarget as Node | null)) closePeek()
+            if (!event.currentTarget.contains(event.relatedTarget as Node | null)) closePeek(true)
           }}
         >
           <button
             type="button"
             onClick={() => {
-              closePeek()
+              closePeek(true)
               setCollapsed(false)
             }}
             aria-label={labels.expand}
@@ -214,9 +226,18 @@ export default function TocSidebar({ tree, activeId, onNavigate, labels }: TocSi
               />
             ))}
           </div>
-          {peekWidth !== null && (
+          {peek.mounted && (
             <div className="absolute right-full top-0 z-30 pr-2">
-              <div className={`${card} motion-safe:animate-fade-slide`} style={{ width: peekWidth }}>
+              <div
+                className={`${card} ${
+                  peek.state === 'exit'
+                    ? 'pointer-events-none motion-safe:animate-fade-out'
+                    : peek.state === 'enter'
+                      ? 'motion-safe:animate-fade-slide'
+                      : ''
+                }`}
+                style={{ width: peekWidth }}
+              >
                 <div ref={scrollRef} className="max-h-[calc(100vh-10rem)] overflow-y-auto overscroll-contain p-2">
                   <TocTree tree={tree} activeId={activeId} onNavigate={onNavigate} labels={labels} scrollRef={scrollRef} />
                   <TocListenRow activeId={activeId} />

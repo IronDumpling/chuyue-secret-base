@@ -7,6 +7,10 @@ import { withBasePath } from '@/lib/utils'
 import { SHARE_TARGETS } from '@/lib/share-targets'
 import ImageLightbox from '@/components/shared/ImageLightbox'
 import { tileIconClass, tileLabelClass } from '@/components/shared/tileStyles'
+import IconSwap from '@/components/shared/IconSwap'
+import { usePresence, readDuration } from '@/lib/motion/usePresence'
+import { lockScroll } from '@/lib/scroll-lock'
+import { useBreakpoint } from '@/lib/useBreakpoint'
 
 interface ShareBarProps {
   title: string
@@ -15,9 +19,6 @@ interface ShareBarProps {
   posterPath: string
   filename: string
 }
-
-const MOBILE_TRANSITION_MS = 300
-const DESKTOP_TRANSITION_MS = 150
 
 function ShareIcon({ className = 'w-5 h-5' }: { className?: string }) {
   return (
@@ -130,13 +131,17 @@ function Tile({
 export default function ShareBar({ title, description, url, posterPath, filename }: ShareBarProps) {
   const t = useT()
   const triggerRef = useRef<HTMLButtonElement>(null)
-  const [mounted, setMounted] = useState(false)
-  const [visible, setVisible] = useState(false)
-  const [mode, setMode] = useState<'mobile' | 'desktop'>('mobile')
+  const [open, setOpen] = useState(false)
   const [position, setPosition] = useState<{ top: number; left: number } | null>(null)
   const [copied, setCopied] = useState(false)
   const [canShare, setCanShare] = useState(false)
   const [previewOpen, setPreviewOpen] = useState(false)
+  // Bottom sheet on narrow screens, anchored popover from `md`; follows the viewport while open.
+  const desktop = useBreakpoint('md')
+  const mode = desktop ? 'desktop' : 'mobile'
+  // The sheet and popover leave over --dur-slow / --dur-fast (the classes below); wait the same.
+  const { mounted, state } = usePresence(open, readDuration(desktop ? 'fast' : 'slow', desktop ? 150 : 350))
+  const visible = state === 'entered'
 
   // navigator.share only exists on some browsers; decide after mount so the server-rendered
   // and first client-rendered HTML stay identical.
@@ -153,61 +158,42 @@ export default function ShareBar({ title, description, url, posterPath, filename
   }
 
   const openMenu = () => {
-    const isDesktop = typeof window !== 'undefined' && window.matchMedia('(min-width: 768px)').matches
-    setMode(isDesktop ? 'desktop' : 'mobile')
-    setMounted(true)
-    if (isDesktop) updateDesktopPosition()
-    // Mount closed, then flip to visible on the next frame so the CSS transition runs
-    // instead of the panel appearing already in its open state.
-    requestAnimationFrame(() => requestAnimationFrame(() => setVisible(true)))
+    if (desktop) updateDesktopPosition()
+    setOpen(true)
   }
 
-  const closeMenu = () => {
-    setVisible(false)
-    setTimeout(() => setMounted(false), mode === 'mobile' ? MOBILE_TRANSITION_MS : DESKTOP_TRANSITION_MS)
-  }
+  const closeMenu = () => setOpen(false)
 
-  // Keep the mode (and desktop position) correct if the viewport crosses the breakpoint, or
-  // the page scrolls/resizes, while the menu is open.
+  // Keep the popover anchored if the viewport resizes (or crosses the breakpoint) while it is open.
   useEffect(() => {
-    if (!mounted) return
-    const onResize = () => {
-      const isDesktop = window.matchMedia('(min-width: 768px)').matches
-      setMode(isDesktop ? 'desktop' : 'mobile')
-      if (isDesktop) updateDesktopPosition()
-    }
-    window.addEventListener('resize', onResize)
-    return () => window.removeEventListener('resize', onResize)
-  }, [mounted])
+    if (!open || !desktop) return
+    updateDesktopPosition()
+    window.addEventListener('resize', updateDesktopPosition)
+    return () => window.removeEventListener('resize', updateDesktopPosition)
+  }, [open, desktop])
 
   useEffect(() => {
-    if (!mounted) return
+    if (!open) return
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') closeMenu()
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mounted])
+  }, [open])
 
-  // Lock body scroll only for the mobile bottom sheet — the desktop popover doesn't cover
-  // the page, so scrolling underneath it is fine.
+  // Lock page scroll only for the mobile bottom sheet; the desktop popover doesn't cover the page.
   useEffect(() => {
-    if (mounted && mode === 'mobile') {
-      document.body.style.overflow = 'hidden'
-      return () => {
-        document.body.style.overflow = 'unset'
-      }
-    }
-  }, [mounted, mode])
+    if (open && !desktop) return lockScroll()
+  }, [open, desktop])
 
   const copyLink = async () => {
     try {
       await navigator.clipboard.writeText(url)
       setCopied(true)
+      // Let the check mark show a moment, close, then restore the label once the panel is gone.
       setTimeout(() => {
-        setCopied(false)
         closeMenu()
+        setTimeout(() => setCopied(false), 400)
       }, 1200)
     } catch {
       window.prompt(t.share.copyLink, url)
@@ -249,13 +235,13 @@ export default function ShareBar({ title, description, url, posterPath, filename
     mode === 'mobile' ? (
       createPortal(
         <div
-          className={`fixed inset-0 z-50 bg-black/50 backdrop-blur-sm transition-opacity duration-300 ease-out ${
+          className={`fixed inset-0 z-50 bg-black/50 transition-opacity duration-slow ease-ios ${
             visible ? 'opacity-100' : 'opacity-0'
           }`}
           onClick={closeMenu}
         >
           <div
-            className={`absolute bottom-0 inset-x-0 rounded-t-2xl bg-white dark:bg-gray-900 p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] transition-transform duration-300 ease-out ${
+            className={`absolute bottom-0 inset-x-0 rounded-t-2xl bg-white dark:bg-gray-900 p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] transition-transform duration-slow ease-ios ${
               visible ? 'translate-y-0' : 'translate-y-full'
             }`}
             onClick={(e) => e.stopPropagation()}
@@ -283,7 +269,7 @@ export default function ShareBar({ title, description, url, posterPath, filename
               visible backdrop over the page. */}
           <div className="fixed inset-0 z-40" onClick={closeMenu} />
           <div
-            className={`fixed z-50 w-72 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-xl p-4 transition-all duration-150 ease-out ${
+            className={`fixed z-50 w-72 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-xl p-4 transition-[opacity,transform] duration-fast ease-ios ${
               visible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
             }`}
             style={{ top: position?.top ?? 0, left: position?.left ?? 0 }}
@@ -315,7 +301,7 @@ export default function ShareBar({ title, description, url, posterPath, filename
         ref={triggerRef}
         onClick={openMenu}
         aria-haspopup="true"
-        aria-expanded={mounted}
+        aria-expanded={open}
         className="flex flex-col items-center gap-1.5"
       >
         <span className={tileIconClass(false)}>
@@ -359,7 +345,7 @@ function ShareOptions({
         <DownloadIcon />
       </Tile>
       <Tile onClick={onCopyLink} accent label={copied ? t.share.copied : t.share.copyLink}>
-        {copied ? <CheckIcon /> : <LinkIcon />}
+        <IconSwap a={<LinkIcon />} b={<CheckIcon />} showB={copied} className="h-6 w-6" />
       </Tile>
       {canShare && (
         <Tile onClick={onSystemShare} label={t.share.shareButton}>
