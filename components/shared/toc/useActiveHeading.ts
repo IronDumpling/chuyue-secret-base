@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { pickActiveId } from '@/lib/toc'
+import { glideTo } from '@/lib/smooth-scroll'
 
 // While a click-jump scrolls, the highlight stays on the target instead of flicking through
 // every heading on the way. Control returns on `scrollend`, or after this long at the latest
@@ -13,8 +14,7 @@ export function prefersReducedMotion(): boolean {
 }
 
 export function scrollToTop() {
-  // 'instant', not 'auto': `auto` would follow the global `scroll-behavior: smooth`.
-  window.scrollTo({ top: 0, behavior: prefersReducedMotion() ? 'instant' : 'smooth' })
+  glideTo(0)
 }
 
 // The heading being read, and a way to jump to one.
@@ -75,8 +75,9 @@ export function useActiveHeading(ids: string[]): { activeId: string | null; jump
     }
     cancelPending.current = stop
     window.addEventListener('scrollend', release)
-    // 'instant', not 'auto': `auto` would follow the global `scroll-behavior: smooth`.
-    el.scrollIntoView({ behavior: prefersReducedMotion() ? 'instant' : 'smooth', block: 'start' })
+    // Land where `scrollIntoView` would: the heading's top, minus its scroll-margin for the fixed header.
+    const margin = parseFloat(getComputedStyle(el).scrollMarginTop) || 0
+    glideTo(el.getBoundingClientRect().top + window.scrollY - margin, release)
     history.replaceState(null, '', `#${encodeURIComponent(id)}`)
   }, [])
 

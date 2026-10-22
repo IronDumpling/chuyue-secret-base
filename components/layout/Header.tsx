@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import ThemeToggle from './ThemeToggle'
@@ -8,6 +8,7 @@ import LanguageSwitch from './LanguageSwitch'
 import { scrollToSection } from '@/lib/smooth-scroll'
 import { splitLocale } from '@/lib/i18n/paths'
 import { useLocalePath, useT } from '@/components/shared/LocaleProvider'
+import { useBreakpoint } from '@/lib/useBreakpoint'
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -17,6 +18,29 @@ export default function Header() {
   const router = useRouter()
   const t = useT()
   const lp = useLocalePath()
+  const wide = useBreakpoint('md')
+  const headerRef = useRef<HTMLElement>(null)
+
+  // Widening past the mobile layout hides the menu button; close the menu with it so it does not
+  // stay open (and keep the header blurred) behind the desktop nav, ready to reappear on narrowing.
+  useEffect(() => {
+    if (wide) setIsMenuOpen(false)
+  }, [wide])
+
+  // Escape or a tap outside the header closes the open menu.
+  useEffect(() => {
+    if (!isMenuOpen) return
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setIsMenuOpen(false)
+    const onPointer = (e: PointerEvent) => {
+      if (!headerRef.current?.contains(e.target as Node)) setIsMenuOpen(false)
+    }
+    document.addEventListener('keydown', onKey)
+    document.addEventListener('pointerdown', onPointer)
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      document.removeEventListener('pointerdown', onPointer)
+    }
+  }, [isMenuOpen])
 
   // Paths below are language-neutral ('/blog'); lp() adds /en or /zh.
   const navLinks = [
@@ -73,7 +97,8 @@ export default function Header() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      ref={headerRef}
+      className={`fixed top-0 left-0 right-0 z-50 transition-[background-color,box-shadow,backdrop-filter] duration-slow ease-ios ${
         // As long as the menu is open (isMenuOpen) or the page has been scrolled (isScrolled),
         isMenuOpen || isScrolled
           ? 'bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-md'
@@ -151,24 +176,35 @@ export default function Header() {
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
               aria-label={t.nav.toggleMenu}
+              aria-expanded={isMenuOpen}
+              aria-controls="mobile-nav"
             >
-              {isMenuOpen ? (
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              ) : (
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              )}
+              {/* Three bars that fold into a cross: the outer two slide to the middle and turn, the middle one fades. */}
+              <span className="relative block h-6 w-6">
+                {[
+                  isMenuOpen ? 'top-1/2 -translate-y-1/2 rotate-45' : 'top-[6px] rotate-0',
+                  isMenuOpen ? 'top-1/2 -translate-y-1/2 scale-x-0 opacity-0' : 'top-[11px] opacity-100',
+                  isMenuOpen ? 'top-1/2 -translate-y-1/2 -rotate-45' : 'top-[16px] rotate-0',
+                ].map((pos, i) => (
+                  <span
+                    key={i}
+                    className={`absolute left-[3px] h-0.5 w-[18px] rounded-full bg-current motion-safe:transition-all motion-safe:duration-base motion-safe:ease-ios ${pos}`}
+                  />
+                ))}
+              </span>
             </button>
           </div>
         </div>
 
         {/* Mobile Navigation */}
-        {isMenuOpen && (
-          <div className="md:hidden py-4 border-t border-gray-200 dark:border-gray-800">
-            <div className="flex flex-col space-y-2">
+        <div
+          id="mobile-nav"
+          className={`grid md:hidden motion-safe:transition-[grid-template-rows,opacity,visibility] motion-safe:duration-slow motion-safe:ease-ios ${
+            isMenuOpen ? 'grid-rows-[1fr] opacity-100 visible' : 'grid-rows-[0fr] opacity-0 invisible'
+          }`}
+        >
+          <div className="overflow-hidden">
+            <div className="flex flex-col space-y-2 py-4 border-t border-gray-200 dark:border-gray-800">
               {navLinks.map((link) => {
                 let isActive = false
                 if (link.href.startsWith('/#')) {
@@ -214,7 +250,7 @@ export default function Header() {
               })}
             </div>
           </div>
-        )}
+        </div>
       </nav>
     </header>
   )

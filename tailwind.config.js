@@ -26,6 +26,16 @@ module.exports = {
       fontFamily: {
         sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
       },
+      // Motion tokens. The same values live in globals.css as --ease-* / --dur-* so scripts can read them.
+      transitionTimingFunction: {
+        ios: 'cubic-bezier(0.2, 0, 0, 1)',
+        spring: 'cubic-bezier(0.32, 1.2, 0.4, 1)',
+      },
+      transitionDuration: {
+        fast: '150ms',
+        base: '250ms',
+        slow: '350ms',
+      },
       // Used with `motion-safe:` so they switch off for visitors who asked for less motion.
       keyframes: {
         // A list or grid coming back after the filter changed.
@@ -57,14 +67,36 @@ module.exports = {
           '0%': { opacity: '0', transform: 'translateY(8px) scale(0.8)' },
           '100%': { opacity: '1', transform: 'none' },
         },
+        // Exits mirror the entrances above so a layer leaves the way it arrived.
+        'fade-out': {
+          '0%': { opacity: '1' },
+          '100%': { opacity: '0' },
+        },
+        'drawer-out': {
+          '0%': { transform: 'none' },
+          '100%': { transform: 'translateY(100%)' },
+        },
+        'panel-out': {
+          '0%': { transform: 'none' },
+          '100%': { transform: 'translateX(-100%)' },
+        },
+        'dial-out': {
+          '0%': { opacity: '1', transform: 'none' },
+          '100%': { opacity: '0', transform: 'translateY(8px) scale(0.8)' },
+        },
       },
       animation: {
-        'feed-in': 'feed-in 280ms ease-out both',
-        'fade-slide': 'fade-slide 200ms ease-out both',
-        'fade-in': 'fade-in 200ms ease-out both',
-        'drawer-in': 'drawer-in 260ms ease-out both',
-        'panel-in': 'panel-in 300ms ease-out both',
-        'dial-in': 'dial-in 180ms ease-out both',
+        'feed-in': 'feed-in 280ms cubic-bezier(0.2, 0, 0, 1) both',
+        'fade-slide': 'fade-slide 200ms cubic-bezier(0.2, 0, 0, 1) both',
+        'fade-in': 'fade-in 200ms cubic-bezier(0.2, 0, 0, 1) both',
+        // No overshoot on edge-anchored sheets: it would open a gap against the screen edge.
+        'drawer-in': 'drawer-in 350ms cubic-bezier(0.2, 0, 0, 1) both',
+        'panel-in': 'panel-in 350ms cubic-bezier(0.2, 0, 0, 1) both',
+        'dial-in': 'dial-in 180ms cubic-bezier(0.32, 1.2, 0.4, 1) both',
+        'fade-out': 'fade-out 200ms cubic-bezier(0.2, 0, 0, 1) both',
+        'drawer-out': 'drawer-out 250ms cubic-bezier(0.2, 0, 0, 1) both',
+        'panel-out': 'panel-out 250ms cubic-bezier(0.2, 0, 0, 1) both',
+        'dial-out': 'dial-out 150ms cubic-bezier(0.2, 0, 0, 1) both',
       },
     },
   },

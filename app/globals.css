@@ -6,6 +6,13 @@
   --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
+
+  /* Motion tokens; mirrored in tailwind.config.js. Scripts read the durations via lib/motion. */
+  --ease-ios: cubic-bezier(0.2, 0, 0, 1);
+  --ease-spring: cubic-bezier(0.32, 1.2, 0.4, 1);
+  --dur-fast: 150ms;
+  --dur-base: 250ms;
+  --dur-slow: 350ms;
 }
 
 /* Chinese pages: list the platform CJK fonts explicitly, before the Latin-first stack,
@@ -22,10 +29,8 @@
 }
 
 @layer base {
-  html {
-    scroll-behavior: smooth;
-  }
-  
+  /* No global `scroll-behavior`: scripts pick it, so reduced-motion is honoured in one place. */
+
   body {
     @apply bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200;
   }
@@ -541,3 +546,14 @@
   }
 }
 
+
+/* One switch for visitors who asked for less motion: every animation and transition ends at once. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
