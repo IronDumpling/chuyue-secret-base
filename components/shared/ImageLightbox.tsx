@@ -1,12 +1,13 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import SafeImage from '@/components/shared/SafeImage'
 import { useT } from '@/components/shared/LocaleProvider'
 import { usePresence } from '@/lib/motion/usePresence'
 import { lockScroll } from '@/lib/scroll-lock'
 import { withBasePath } from '@/lib/utils'
+import { posterSaveMode, shouldFallbackToDownload } from '@/lib/poster-save'
 
 interface ImageLightboxProps {
   images: string[]
@@ -34,6 +35,57 @@ export default function ImageLightbox({
   // Fades in and out (--dur-base) instead of popping; the picture settles in with a slight scale.
   const { mounted, state } = usePresence(isOpen, 250)
   const shown = state === 'entered'
+  const canSave = Boolean(downloadHref && downloadFilename)
+  const saveLinkRef = useRef<HTMLAnchorElement>(null)
+  // On iOS the poster is shared (the share sheet's "Save Image" puts it in Photos). It is
+  // fetched as soon as the preview opens: fetching on tap would let iOS decide the share no
+  // longer follows a tap and refuse it.
+  const shareFileRef = useRef<File | null>(null)
+  // Touch screens get a long-press hint: in WeChat's browser that is the only way to save.
+  // Decided after mount so the server-rendered and first client-rendered HTML match.
+  const [touch, setTouch] = useState(false)
+
+  useEffect(() => {
+    setTouch(window.matchMedia('(pointer: coarse)').matches)
+  }, [])
+
+  useEffect(() => {
+    shareFileRef.current = null
+    if (!isOpen || !downloadHref || !downloadFilename) return
+    const probe = new File([], downloadFilename, { type: 'image/jpeg' })
+    const mode = posterSaveMode({
+      userAgent: navigator.userAgent,
+      platform: navigator.platform,
+      maxTouchPoints: navigator.maxTouchPoints,
+      canShareFiles: typeof navigator.share === 'function' && Boolean(navigator.canShare?.({ files: [probe] })),
+    })
+    if (mode !== 'share') return
+    let cancelled = false
+    fetch(downloadHref)
+      .then(res => res.blob())
+      .then(blob => {
+        if (!cancelled) shareFileRef.current = new File([blob], downloadFilename, { type: blob.type || 'image/jpeg' })
+      })
+      .catch(() => {
+        // Not fetched: the button falls back to the plain download.
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [isOpen, downloadHref, downloadFilename])
+
+  const save = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.stopPropagation()
+    const file = shareFileRef.current
+    if (!file) return // plain download through the link
+    e.preventDefault()
+    navigator.share({ files: [file] }).catch(error => {
+      if (shouldFallbackToDownload(error)) {
+        shareFileRef.current = null
+        saveLinkRef.current?.click()
+      }
+    })
+  }
 
   // Start at initialIndex every time the lightbox opens, not only when it changes:
   // otherwise reopening at the same picture would resume wherever it was last left.
@@ -106,13 +158,14 @@ export default function ImageLightbox({
 
       {/* Save button (only when the caller passed a download target, e.g. the share menu's
           poster preview) */}
-      {downloadHref && downloadFilename && (
+      {canSave && (
         <a
+          ref={saveLinkRef}
           href={downloadHref}
           download={downloadFilename}
           target="_blank"
           rel="noopener noreferrer"
-          onClick={(e) => e.stopPropagation()}
+          onClick={save}
           className="absolute top-4 right-16 z-50 inline-flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-full text-sm transition-colors"
         >
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -186,6 +239,12 @@ export default function ImageLightbox({
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
         </button>
+      )}
+
+      {canSave && touch && (
+        <p className="pointer-events-none absolute inset-x-0 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-50 text-center text-sm text-white/70">
+          {t.share.longPressHint}
+        </p>
       )}
 
       {/* Thumbnail navigation (optional, for many images) */}
