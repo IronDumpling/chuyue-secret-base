@@ -121,6 +121,16 @@ export const en = {
     filterLabel: 'Filter posts',
     back: 'Back to Blog',
     visitWebsite: 'Visit Website',
+    // The rating scale a reader opens by clicking a review's score.
+    rating: {
+      scaleTitle: 'How I rate {category}',
+      thisPost: 'this post',
+      backTo: 'Back to {n}',
+      meterLabel: 'Rated {n} out of 10, {name}. Show rating scale.',
+      sliderLabel: 'Score',
+      valueText: '{n}, {name}',
+      close: 'Close',
+    },
     groups: {
       moments: 'Moments',
       reviews: 'Reviews',

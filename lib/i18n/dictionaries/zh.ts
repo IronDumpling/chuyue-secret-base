@@ -119,6 +119,15 @@ export const zh: Dictionary = {
     filterLabel: '筛选文章',
     back: '返回博客',
     visitWebsite: '访问网站',
+    rating: {
+      scaleTitle: '我如何给{category}打分',
+      thisPost: '本篇',
+      backTo: '回到 {n}',
+      meterLabel: '评分 {n}/10，{name}。查看评分标准。',
+      sliderLabel: '分数',
+      valueText: '{n}，{name}',
+      close: '关闭',
+    },
     groups: {
       moments: '随笔',
       reviews: '评测',

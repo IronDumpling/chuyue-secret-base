@@ -341,6 +341,41 @@
 }
 
 /* Prose styles for MDX content */
+@layer components {
+  /* The rating scale's slider: a transparent native range over a drawn track, so keyboard and
+     screen-reader behavior stay native. Only the thumb is styled here. */
+  .rating-range {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+  }
+  .rating-range::-webkit-slider-runnable-track { height: 28px; background: transparent; }
+  .rating-range::-moz-range-track { height: 28px; background: transparent; }
+  .rating-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    margin-top: 4px;
+    border-radius: 9999px;
+    background: #fff;
+    border: 2px solid theme('colors.gray.900');
+    box-shadow: 0 1px 4px rgb(0 0 0 / 0.25);
+  }
+  .rating-range::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 9999px;
+    background: #fff;
+    border: 2px solid theme('colors.gray.900');
+  }
+  .rating-range:focus { outline: none; }
+  .rating-range:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 4px theme('colors.primary.200'); }
+  .rating-range:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 4px theme('colors.primary.200'); }
+  .dark .rating-range::-webkit-slider-thumb { border-color: theme('colors.gray.100'); background: theme('colors.gray.900'); }
+  .dark .rating-range::-moz-range-thumb { border-color: theme('colors.gray.100'); background: theme('colors.gray.900'); }
+}
+
 @layer utilities {
   .prose {
     @apply text-gray-700 dark:text-gray-300;
