@@ -1,4 +1,4 @@
-import { getEntries } from '@/lib/content'
+import { getEntries, getRatingScales } from '@/lib/content'
 import BlogList from '@/components/blog/BlogList'
 import type { Locale } from '@/lib/i18n/config'
 import { getDictionary } from '@/lib/i18n'
@@ -15,7 +15,7 @@ export default function BlogPage({ params }: { params: { lang: Locale } }) {
     <section className="section bg-white dark:bg-gray-900">
       <div className="container">
         <h1 className="section-title">{getDictionary(params.lang).blog.pageTitle}</h1>
-        <BlogList posts={posts} />
+        <BlogList posts={posts} ratingScales={getRatingScales(params.lang)} />
       </div>
     </section>
   )

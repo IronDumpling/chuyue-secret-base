@@ -112,17 +112,23 @@ export default function RatingBadge({ score, scale, categoryName, size = 'sm', c
     }
   }
 
-  // Swipe down on the grab handle to close the sheet.
+  // Swipe down on the grab handle to close the sheet. The start is kept in a ref, not state: a
+  // quick flick can deliver move and up before React re-renders with the new state.
+  const dragStart = useRef<number | null>(null)
   const onHandleDown = (event: PointerEvent<HTMLDivElement>) => {
     event.currentTarget.setPointerCapture(event.pointerId)
+    dragStart.current = event.clientY
     setDrag({ startY: event.clientY, dy: 0 })
   }
   const onHandleMove = (event: PointerEvent<HTMLDivElement>) => {
-    if (drag) setDrag({ ...drag, dy: Math.max(0, event.clientY - drag.startY) })
+    const start = dragStart.current
+    if (start !== null) setDrag({ startY: start, dy: Math.max(0, event.clientY - start) })
   }
-  const onHandleUp = () => {
-    if (drag && drag.dy > SWIPE_CLOSE_PX) close()
+  const onHandleUp = (event: PointerEvent<HTMLDivElement>) => {
+    const start = dragStart.current
+    dragStart.current = null
     setDrag(null)
+    if (start !== null && event.clientY - start > SWIPE_CLOSE_PX) close()
   }
 
   const explorer = (
@@ -174,7 +180,10 @@ export default function RatingBadge({ score, scale, categoryName, size = 'sm', c
               onPointerDown={onHandleDown}
               onPointerMove={onHandleMove}
               onPointerUp={onHandleUp}
-              onPointerCancel={() => setDrag(null)}
+              onPointerCancel={() => {
+                dragStart.current = null
+                setDrag(null)
+              }}
             >
               <span className="h-1 w-10 rounded-full bg-gray-300 dark:bg-gray-700" />
             </div>

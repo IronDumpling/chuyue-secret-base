@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { getEntries } from '@/lib/content'
+import { getEntries, getRatingScales } from '@/lib/content'
 import { getCategoryDisplayName } from '@/lib/blog-utils'
 import BlogList from '@/components/blog/BlogList'
 import type { Locale } from '@/lib/i18n/config'
@@ -29,7 +29,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
       <div className="container">
         <h1 className="section-title">{getCategoryDisplayName(params.category, params.lang)}</h1>
         <span className="section-subtitle">{getDictionary(params.lang).blog.browseByCategory}</span>
-        <BlogList posts={posts} showFilters={false} />
+        <BlogList posts={posts} ratingScales={getRatingScales(params.lang)} showFilters={false} />
       </div>
     </section>
   )

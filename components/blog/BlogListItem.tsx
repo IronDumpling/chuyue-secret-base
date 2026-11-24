@@ -3,23 +3,26 @@
 import Link from 'next/link'
 import type { CSSProperties } from 'react'
 import type { BlogPost } from '@/lib/entry-types'
-import { getCategoryPath, getExcerpt, hasRating } from '@/lib/blog-utils'
+import type { RatingScale } from '@/lib/ratings'
+import { getCategoryDisplayName, getCategoryPath, getExcerpt, hasRating } from '@/lib/blog-utils'
 import { formatDay } from '@/lib/date'
-import Rating from '@/components/blog/Rating'
+import RatingBadge from '@/components/blog/rating/RatingBadge'
 import RotatingImage from '@/components/shared/RotatingImage'
 import { useLocale, useLocalePath } from '@/components/shared/LocaleProvider'
 
 interface BlogListItemProps {
   post: BlogPost
+  scale?: RatingScale // the post category's rating scale, for reviews
   className?: string
   style?: CSSProperties
 }
 
 // One post in the blog list: category, title, a two-line summary and a line of facts on the
-// left, a small cover on the right. The whole row is the link (the title's ::after covers it),
-// so the rating inside it stays plain text instead of a nested link. The divider
+// left, a small cover on the right. The whole row is the link (the title's ::after covers it);
+// the rating is a button raised above that overlay, so it opens the rating scale instead of the
+// post, and is not a nested link. The divider
 // sits on the outer element so it stays straight while the row inside has rounded corners.
-export default function BlogListItem({ post, className = '', style }: BlogListItemProps) {
+export default function BlogListItem({ post, scale, className = '', style }: BlogListItemProps) {
   const locale = useLocale()
   const lp = useLocalePath()
   const { frontMatter } = post
@@ -53,11 +56,13 @@ export default function BlogListItem({ post, className = '', style }: BlogListIt
           )}
           <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-gray-500 dark:text-gray-400">
             <time dateTime={frontMatter.date}>{formatDay(frontMatter.date, locale)}</time>
-            {score !== undefined && (
-              <span className="inline-flex items-center gap-1">
-                <Rating score={score} size="sm" />
-                <span className="tabular-nums">{score}/10</span>
-              </span>
+            {score !== undefined && scale && (
+              <RatingBadge
+                score={score}
+                scale={scale}
+                categoryName={getCategoryDisplayName(frontMatter.category, locale)}
+                size="sm"
+              />
             )}
             {post.isFallback && (
               // The text is in the other language than the page.

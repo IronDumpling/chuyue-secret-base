@@ -2,6 +2,7 @@
 
 import { useMemo } from 'react'
 import type { BlogPost } from '@/lib/entry-types'
+import type { RatingScales, ReviewCategory } from '@/lib/ratings'
 import BlogListItem from './BlogListItem'
 import CategoryFilter from '@/components/shared/filter/CategoryFilter'
 import { useUrlSelection } from '@/components/shared/filter/useUrlSelection'
@@ -21,10 +22,11 @@ import type { BlogCategory, BlogGroup } from '@/lib/taxonomy'
 
 interface BlogListProps {
   posts: BlogPost[]
+  ratingScales: RatingScales // the page language's scale for each review category
   showFilters?: boolean
 }
 
-export default function BlogList({ posts, showFilters = true }: BlogListProps) {
+export default function BlogList({ posts, ratingScales, showFilters = true }: BlogListProps) {
   const locale = useLocale()
   const t = useT()
   const { selection: chosen, choose: setChosen, watcher } = useUrlSelection(showFilters)
@@ -72,6 +74,7 @@ export default function BlogList({ posts, showFilters = true }: BlogListProps) {
                 <BlogListItem
                   key={`${post.frontMatter.category}-${post.slug}`}
                   post={post}
+                  scale={ratingScales[post.frontMatter.category as ReviewCategory]}
                   className="motion-safe:animate-feed-in"
                   style={{ animationDelay: staggerDelay(row++) }}
                 />

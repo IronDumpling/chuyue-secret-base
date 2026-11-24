@@ -1,9 +1,10 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { getEntries, getEntry } from '@/lib/content'
-import Rating from '@/components/blog/Rating'
+import { getEntries, getEntry, getRatingScales } from '@/lib/content'
+import type { ReviewCategory } from '@/lib/ratings'
+import RatingBadge from '@/components/blog/rating/RatingBadge'
 import EntryDetail from '@/components/shared/EntryDetail'
-import { getCategoryPath, hasRating } from '@/lib/blog-utils'
+import { getCategoryDisplayName, getCategoryPath, hasRating } from '@/lib/blog-utils'
 import { buildEntryMetadata } from '@/lib/seo'
 import type { Locale } from '@/lib/i18n/config'
 
@@ -34,6 +35,7 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
   if (!post) notFound()
 
   const { category, group, rating } = post.frontMatter
+  const scale = getRatingScales(params.lang)[category as ReviewCategory]
   const badges = (
     <>
       {getCategoryPath(category, params.lang).map((name, index, path) => (
@@ -48,7 +50,14 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
           {name}
         </span>
       ))}
-      {hasRating(group) && rating && <Rating score={rating} />}
+      {hasRating(group) && rating !== undefined && scale && (
+        <RatingBadge
+          score={rating}
+          scale={scale}
+          categoryName={getCategoryDisplayName(category, params.lang)}
+          size="md"
+        />
+      )}
     </>
   )
 
