@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { getEntries, getEntry, getRatingScales } from '@/lib/content'
 import type { ReviewCategory } from '@/lib/ratings'
 import RatingBadge from '@/components/blog/rating/RatingBadge'
+import { hasScore } from '@/lib/rating-meter'
 import EntryDetail from '@/components/shared/EntryDetail'
 import { getCategoryDisplayName, getCategoryPath, hasRating } from '@/lib/blog-utils'
 import { buildEntryMetadata } from '@/lib/seo'
@@ -50,7 +51,7 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
           {name}
         </span>
       ))}
-      {hasRating(group) && rating !== undefined && scale && (
+      {hasRating(group) && hasScore(rating) && scale && (
         <RatingBadge
           score={rating}
           scale={scale}

@@ -53,33 +53,32 @@ export default function RatingBadge({ score, scale, categoryName, size = 'sm', c
   // Focus returns to the meter once the layer is gone.
   const wasOpen = useRef(false)
   useEffect(() => {
-    if (wasOpen.current && !open) trigger.current?.focus()
+    // preventScroll: if the reader has scrolled away, closing must not pull the page back.
+    if (wasOpen.current && !open) trigger.current?.focus({ preventScroll: true })
     wasOpen.current = open
   }, [open])
 
-  // Desktop: place under the meter (or above, if it does not fit), follow scroll and resize,
-  // and close once the meter has left the viewport.
+  // Desktop: place under the meter (or above, if it does not fit) once on open and again on
+  // resize. The popover sits in page coordinates, so it scrolls with the page like the meter
+  // does: no per-frame repositioning (which lagged a frame behind and shook), and scrolling never
+  // closes it.
   useIsomorphicLayoutEffect(() => {
     if (!open || !desktop) return
     const place = () => {
       const rect = trigger.current?.getBoundingClientRect()
       if (!rect) return
-      if (rect.bottom < 0 || rect.top > window.innerHeight) return close()
       const height = panel.current?.offsetHeight ?? 0
+      // clientWidth leaves out the scrollbar, so the popover never slides under it.
       const { top, left } = placePopover(
         rect,
         { width: POPOVER_WIDTH, height },
-        { width: window.innerWidth, height: window.innerHeight }
+        { width: document.documentElement.clientWidth, height: window.innerHeight }
       )
-      setPosition({ top, left })
+      setPosition({ top: top + window.scrollY, left: left + window.scrollX })
     }
     place()
     window.addEventListener('resize', place)
-    window.addEventListener('scroll', place, true)
-    return () => {
-      window.removeEventListener('resize', place)
-      window.removeEventListener('scroll', place, true)
-    }
+    return () => window.removeEventListener('resize', place)
   }, [open, desktop, mounted])
 
   useEffect(() => {
@@ -141,14 +140,15 @@ export default function RatingBadge({ score, scale, categoryName, size = 'sm', c
     createPortal(
       desktop ? (
         <>
-          {/* Transparent click-catcher: an outside click closes the popover. */}
-          <div className="fixed inset-0 z-40" onClick={close} />
+          {/* Transparent click-catcher: an outside click closes the popover. Both stay under the
+              fixed header (z-50), since the popover now scrolls with the page. */}
+          <div className="fixed inset-0 z-30" onClick={close} />
           <div
             ref={panel}
             role="dialog"
             aria-modal="false"
             aria-labelledby={headingId}
-            className={`fixed z-50 rounded-2xl border border-gray-200 bg-white p-4 shadow-xl transition-[opacity,transform] duration-fast ease-ios dark:border-gray-800 dark:bg-gray-900 ${
+            className={`absolute z-40 rounded-2xl border border-gray-200 bg-white p-4 shadow-xl transition-[opacity,transform] duration-fast ease-ios dark:border-gray-800 dark:bg-gray-900 ${
               visible ? 'translate-y-0 opacity-100' : 'translate-y-1 opacity-0'
             }`}
             style={{ top: position.top, left: position.left, width: POPOVER_WIDTH }}
@@ -187,6 +187,17 @@ export default function RatingBadge({ score, scale, categoryName, size = 'sm', c
             >
               <span className="h-1 w-10 rounded-full bg-gray-300 dark:bg-gray-700" />
             </div>
+            {/* Swipe and backdrop tap don't reach screen-reader users; this does. */}
+            <button
+              type="button"
+              onClick={close}
+              aria-label={t.close}
+              className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full text-gray-500 hover:bg-gray-100 hover:text-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-200"
+            >
+              <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} aria-hidden="true">
+                <path strokeLinecap="round" d="M6 6l12 12M18 6L6 18" />
+              </svg>
+            </button>
             {explorer}
           </div>
         </div>

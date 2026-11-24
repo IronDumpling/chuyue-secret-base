@@ -61,3 +61,9 @@ export function keyStep(key: string, position: number): Score | null {
       return null
   }
 }
+
+// Frontmatter is hand-written: `rating:` (null), `rating: ""` or `rating: "7"` is not a score,
+// and must not be drawn as one.
+export function hasScore(rating: unknown): rating is number {
+  return typeof rating === 'number' && Number.isFinite(rating)
+}

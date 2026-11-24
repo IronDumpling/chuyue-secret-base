@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { clampScore, keyStep, meterFill, placePopover } from './rating-meter'
+import { clampScore, hasScore, keyStep, meterFill, placePopover } from './rating-meter'
 
 describe('clampScore', () => {
   it('rounds to a whole score', () => {
@@ -83,5 +83,19 @@ describe('keyStep', () => {
   })
   it('ignores other keys', () => {
     expect(keyStep('a', 7)).toBeNull()
+  })
+})
+
+describe('hasScore', () => {
+  it('accepts a finite number', () => {
+    expect(hasScore(7)).toBe(true)
+    expect(hasScore(7.5)).toBe(true)
+  })
+  it('rejects a missing, empty or non-numeric rating', () => {
+    expect(hasScore(undefined)).toBe(false)
+    expect(hasScore(null)).toBe(false)
+    expect(hasScore('')).toBe(false)
+    expect(hasScore('7')).toBe(false)
+    expect(hasScore(NaN)).toBe(false)
   })
 })

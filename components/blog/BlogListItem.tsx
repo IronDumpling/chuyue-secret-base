@@ -7,6 +7,7 @@ import type { RatingScale } from '@/lib/ratings'
 import { getCategoryDisplayName, getCategoryPath, getExcerpt, hasRating } from '@/lib/blog-utils'
 import { formatDay } from '@/lib/date'
 import RatingBadge from '@/components/blog/rating/RatingBadge'
+import { hasScore } from '@/lib/rating-meter'
 import RotatingImage from '@/components/shared/RotatingImage'
 import { useLocale, useLocalePath } from '@/components/shared/LocaleProvider'
 
@@ -56,7 +57,7 @@ export default function BlogListItem({ post, scale, className = '', style }: Blo
           )}
           <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-gray-500 dark:text-gray-400">
             <time dateTime={frontMatter.date}>{formatDay(frontMatter.date, locale)}</time>
-            {score !== undefined && scale && (
+            {hasScore(score) && scale && (
               <RatingBadge
                 score={score}
                 scale={scale}
