@@ -14,7 +14,8 @@ const SIZES = {
 }
 
 // Score chip · a bar centered on 5 · the tier's name. The bar grows right from the center for a
-// score above 5 and left for one below; a 5 has no bar, only a dot on the center line. Purely
+// score above 5 and left for one below, square where it meets the center line and round at its
+// outer end; a 5 has no bar, only a dot on the center line. Purely
 // presentational: RatingBadge makes it a button.
 export default function RatingMeter({ score, name, size = 'sm' }: RatingMeterProps) {
   const fill = meterFill(score)
@@ -29,7 +30,7 @@ export default function RatingMeter({ score, name, size = 'sm' }: RatingMeterPro
           <span className="absolute left-1/2 top-1/2 h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gray-500" />
         ) : (
           <span
-            className={`absolute inset-y-0 rounded-full ${FILL_BG[score]}`}
+            className={`absolute inset-y-0 ${fill.side === 'above' ? 'rounded-r-full' : 'rounded-l-full'} ${FILL_BG[score]}`}
             style={{ left: `${fill.start * 100}%`, width: `${fill.width * 100}%` }}
           />
         )}

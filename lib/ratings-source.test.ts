@@ -47,6 +47,6 @@ describe('createRatingsSource', () => {
   it('accepts the committed content files', () => {
     const source = createRatingsSource(path.join(process.cwd(), 'content'))
     expect(source.scales('en').films!.tiers[5].name).toBe('Competent')
-    expect(source.scales('zh').films!.tiers[5].name).toBe('合格作品')
+    expect(source.scales('zh').films!.tiers[5].name).toBe('合格')
   })
 })

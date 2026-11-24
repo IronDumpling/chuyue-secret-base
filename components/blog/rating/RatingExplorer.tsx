@@ -61,7 +61,7 @@ export default function RatingExplorer({ scale, categoryName, postScore, autoFoc
       <div className="relative mx-[10px] h-12">
         <span className="absolute inset-x-0 top-[18px] h-2 rounded-full bg-gray-100 dark:bg-gray-800" />
         <span
-          className={`absolute top-[18px] h-2 rounded-full transition-all duration-150 ${FILL_BG[value]}`}
+          className={`absolute top-[18px] h-2 transition-all duration-150 ${value > 5 ? 'rounded-r-full' : 'rounded-l-full'} ${FILL_BG[value]}`}
           style={{ left: `${pos(from)}%`, width: `${pos(to) - pos(from)}%` }}
         />
         <span className="absolute top-3 h-5 w-0.5 -translate-x-1/2 bg-gray-400" style={{ left: `${pos(5)}%` }} />
