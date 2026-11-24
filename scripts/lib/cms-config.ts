@@ -1,7 +1,9 @@
 // Generates the Sveltia CMS config from lib/taxonomy.ts, so the editor's form always
 // matches the categories the site actually reads. Adding a category later is a one-line
 // change to the taxonomy, not a config edit here.
-import { getGroups, type BlogGroup, type PortfolioGroup } from '../../lib/taxonomy'
+import { getGroups, type BlogGroup, type PortfolioCategory } from '../../lib/taxonomy'
+
+const NO_CODE: readonly PortfolioCategory[] = ['photography', 'illustration', 'novel']
 import { hasRating } from '../../lib/blog-utils'
 import { en } from '../../lib/i18n/dictionaries/en'
 
@@ -92,7 +94,7 @@ function blogFields(group: BlogGroup): CmsField[] {
   return fields
 }
 
-function portfolioFields(group: PortfolioGroup): CmsField[] {
+function portfolioFields(category: PortfolioCategory): CmsField[] {
   const fields: CmsField[] = [
     localField({ name: 'title', label: 'Title', widget: 'string' }),
     localField({ name: 'description', label: 'One-line summary', widget: 'text', required: false }),
@@ -107,8 +109,9 @@ function portfolioFields(group: PortfolioGroup): CmsField[] {
       options: ['course', 'research', 'work', 'personal'],
     }),
   ]
-  // Art-group work (photography, illustration, novel) has no code repository or live demo.
-  if (group !== 'art') {
+  // Pictures and writing have no code repository or live demo. Games do, though they sit in
+  // the Art group, so this follows the category, not the group.
+  if (!NO_CODE.includes(category)) {
     fields.push(linkListField('github', 'GitHub links'))
     fields.push(linkListField('demo', 'Demo links'))
   }
@@ -148,7 +151,7 @@ export function buildCmsConfig({ repo, branch }: CmsOptions): Record<string, unk
       i18n: true,
       media_folder: `/images/portfolio/${category}`,
       public_folder: `/images/portfolio/${category}`,
-      fields: portfolioFields(group.id),
+      fields: portfolioFields(category),
     }))
   )
 

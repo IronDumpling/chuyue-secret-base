@@ -32,6 +32,8 @@ export interface PosterContent {
 export const TITLE_MAX = 60
 // 0 means the layout shows no description.
 export const DESC_MAX: Record<PosterLayout, number> = { project: 60, review: 40, art: 0, novel: 90, moment: 50 }
+// Art posters let the picture speak, except a game's: its one line says how it plays.
+const GAMEPLAY_MAX = 50
 
 export function posterLayoutOf(entry: Entry): PosterLayout {
   if (entry.target.kind === 'blog') {
@@ -76,7 +78,8 @@ function label(entry: Entry, lang: Locale): string {
 export function posterContent(entry: Entry, lang: Locale): PosterContent {
   const layout = posterLayoutOf(entry)
   const { title, description, date, images } = entry.frontMatter
-  const max = DESC_MAX[layout]
+  const isGame = entry.target.kind === 'portfolio' && entry.target.category === 'games'
+  const max = isGame ? GAMEPLAY_MAX : DESC_MAX[layout]
   const text = max > 0 ? clip(summarize(description, entry.content, max), max) : ''
 
   let rating: number | undefined

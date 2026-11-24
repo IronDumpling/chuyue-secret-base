@@ -20,8 +20,9 @@ export const TAXONOMY = {
   },
   portfolio: {
     groups: [
-      { id: 'computing', categories: ['applications', 'games', 'systems', 'ai'] },
-      { id: 'art', categories: ['photography', 'illustration', 'novel'] },
+      { id: 'computing', categories: ['applications', 'systems', 'ai'] },
+      // Games are shown for their play, not their engineering, so they sit with art.
+      { id: 'art', categories: ['games', 'photography', 'illustration', 'novel'] },
     ],
   },
 } as const

@@ -37,7 +37,7 @@ describe('posterLayoutOf', () => {
     for (const c of getCategories('blog')) {
       expect(posterLayoutOf(post(c))).toBe(c === 'moments' ? 'moment' : 'review')
     }
-    const art: Record<string, string> = { photography: 'art', illustration: 'art', novel: 'novel' }
+    const art: Record<string, string> = { games: 'art', photography: 'art', illustration: 'art', novel: 'novel' }
     for (const c of getCategories('portfolio')) {
       expect(posterLayoutOf(project(c))).toBe(art[c] ?? 'project')
     }
@@ -96,8 +96,13 @@ describe('posterContent', () => {
     expect(c.description!.endsWith('…')).toBe(true)
   })
 
-  it('shows no description on art posters', () => {
+  it('shows no description on photo, illustration posters, but a gameplay line on games', () => {
     expect(posterContent(project('photography', { description: 'Visit' }), 'zh').description).toBeUndefined()
+    expect(posterContent(project('illustration', { description: 'Ink' }), 'zh').description).toBeUndefined()
+    const game = posterContent(project('games', { description: 'A 2D stealth platformer with sound-based resonance' }), 'en')
+    expect(game.layout).toBe('art')
+    expect(game.description).toBe('A 2D stealth platformer with sound-based resonance')
+    expect(posterContent(project('games'), 'zh').label).toBe('作品集 · 游戏')
   })
 
   it('empty quote is undefined', () => {

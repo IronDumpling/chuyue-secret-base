@@ -43,6 +43,12 @@ export const POSTER_IMAGE_SIZE: Record<PosterLayout, { width: number; height: nu
   novel: null,
 }
 
+// An art poster with a gameplay line gives the picture up some height to fit it.
+export function posterImageSize(c: PosterContent): { width: number; height: number } | null {
+  if (c.layout === 'art' && c.description) return { width: IMAGE_WIDTH, height: 900 }
+  return POSTER_IMAGE_SIZE[c.layout]
+}
+
 export async function qrDataUri(url: string): Promise<string> {
   return QRCode.toDataURL(url, { margin: 1, width: 440, color: { dark: '#0f172a', light: '#ffffff' } })
 }
@@ -278,8 +284,13 @@ function reviewLayout({ content: c, imageDataUri }: PosterInput): (Node | null)[
 
 function artLayout({ content: c, imageDataUri }: PosterInput): (Node | null)[] {
   return [
-    imageDataUri ? floatingImage(imageDataUri, POSTER_IMAGE_SIZE.art!.height, 52) : null,
-    h('div', { style: flex({ padding: `0 ${SIDE}px` }) }, titleText(c.title, 74, 70)),
+    imageDataUri ? floatingImage(imageDataUri, posterImageSize(c)!.height, 52) : null,
+    h(
+      'div',
+      { style: flex({ flexDirection: 'column', padding: `0 ${SIDE}px` }) },
+      titleText(c.title, 74, 70),
+      c.description ? bodyText(c.description, 43, 18, { color: MUTED }) : null
+    ),
   ]
 }
 

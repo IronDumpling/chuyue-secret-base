@@ -6,9 +6,9 @@ describe('taxonomy', () => {
     expect(getCategories('blog')).toEqual(['moments', 'films', 'shows', 'music', 'video-games', 'books'])
     expect(getCategories('portfolio')).toEqual([
       'applications',
-      'games',
       'systems',
       'ai',
+      'games',
       'photography',
       'illustration',
       'novel',
@@ -25,7 +25,7 @@ describe('taxonomy', () => {
   it('finds the group of a category', () => {
     expect(getGroupOf('blog', 'films')).toBe('reviews')
     expect(getGroupOf('blog', 'moments')).toBe('moments')
-    expect(getGroupOf('portfolio', 'games')).toBe('computing')
+    expect(getGroupOf('portfolio', 'games')).toBe('art')
     expect(getGroupOf('portfolio', 'photography')).toBe('art')
   })
 

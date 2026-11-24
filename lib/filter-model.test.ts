@@ -40,9 +40,9 @@ describe('buildFilterModel', () => {
   })
 
   it('works for the portfolio sections', () => {
-    const model = buildFilterModel('portfolio', posts('applications', 'games', 'photography'), labels)
+    const model = buildFilterModel('portfolio', posts('applications', 'systems', 'photography'), labels)
     expect(model.map(g => g.id)).toEqual(['computing', 'art'])
-    expect(model[0].categories.map(c => c.id)).toEqual(['applications', 'games'])
+    expect(model[0].categories.map(c => c.id)).toEqual(['applications', 'systems'])
     expect(model[1].categories).toEqual([]) // only photography has work in it
   })
 })

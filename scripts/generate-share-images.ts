@@ -3,7 +3,7 @@ import path from 'path'
 import { createContentIndex } from '../lib/entries'
 import type { Entry } from '../lib/entry-types'
 import { buildCardTree, coverDataUri, renderJpeg } from './lib/card'
-import { buildPosterTree, POSTER_IMAGE_SIZE, qrDataUri } from './lib/poster'
+import { buildPosterTree, posterImageSize, qrDataUri } from './lib/poster'
 import { posterContent, type PosterContent } from './lib/poster-content'
 import { avatarDataUri, blurredBackgroundDataUri, posterImageDataUri } from './lib/poster-assets'
 import { containsCjk, entryTexts } from './lib/card-texts'
@@ -119,7 +119,7 @@ async function main() {
 
       const c = posterContent(entry, lang)
       const picture = publicFile(c.imagePath)
-      const size = POSTER_IMAGE_SIZE[c.layout]
+      const size = posterImageSize(c)
       const poster = buildPosterTree({
         content: c,
         backgroundDataUri: c.layout === 'novel' ? undefined : await blurredBackgroundDataUri(picture),

@@ -135,5 +135,10 @@ describe('poster renderer', () => {
       expect(pixel(x, y).every(v => v > 235)).toBe(true)
     }
   }, 30_000)
+
+  it('shows the gameplay line on an art poster when there is one', () => {
+    const t = texts(buildPosterTree(input(content('art', { description: 'Stealth with sound' }), true, TINY)))
+    expect(t).toContain('Stealth with sound')
+  })
 })
 
