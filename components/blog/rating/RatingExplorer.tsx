@@ -1,9 +1,11 @@
 'use client'
 
-import { useEffect, useId, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState, type KeyboardEvent } from 'react'
 import { SCORES, type RatingScale, type Score } from '@/lib/ratings'
 import { useT } from '@/components/shared/LocaleProvider'
 import { format } from '@/lib/i18n/format'
+import { clampScore, keyStep } from '@/lib/rating-meter'
+import { prefersReducedMotion, readDuration } from '@/lib/motion/usePresence'
 import { CHIP_BG, FILL_BG } from './tones'
 
 interface RatingExplorerProps {
@@ -18,21 +20,71 @@ interface RatingExplorerProps {
 const pos = (n: number) => ((n - 1) / 9) * 100
 
 // One slider over the whole scale: it starts at the post's score and shows the name and
-// definition of whichever score the thumb is on. Remounted on every open, so it always starts
-// at the post's score.
+// definition of whichever score the thumb is nearest. Under a finger or mouse the thumb and bar
+// move continuously; on release they ease onto the nearest whole score. The keyboard moves one
+// score at a time, eased the same way. Remounted on every open, so it starts at the post's score.
 export default function RatingExplorer({ scale, categoryName, postScore, autoFocus, headingId }: RatingExplorerProps) {
   const t = useT().blog.rating
-  const [value, setValue] = useState<Score>(postScore)
+  // Where the thumb is, continuous; the score shown is the nearest whole one.
+  const [position, setPosition] = useState<number>(postScore)
+  const positionRef = useRef<number>(postScore)
+  const frame = useRef<number>()
+  const value = clampScore(position)
   const input = useRef<HTMLInputElement>(null)
   const ownId = useId()
   const titleId = headingId ?? ownId
   const tier = scale.tiers[value]
-  const from = Math.min(value, 5)
-  const to = Math.max(value, 5)
+  const from = Math.min(position, 5)
+  const to = Math.max(position, 5)
+
+  const moveTo = (next: number) => {
+    positionRef.current = next
+    setPosition(next)
+  }
+
+  // Ease the thumb from where it is onto `target` (a native thumb cannot CSS-transition).
+  const glideTo = (target: number) => {
+    if (frame.current) cancelAnimationFrame(frame.current)
+    const start = positionRef.current
+    const duration = readDuration('fast', 150)
+    if (start === target || prefersReducedMotion() || duration <= 0) return moveTo(target)
+    const began = performance.now()
+    const step = (now: number) => {
+      const t = Math.min(1, (now - began) / duration)
+      const eased = 1 - Math.pow(1 - t, 3)
+      moveTo(start + (target - start) * eased)
+      if (t < 1) frame.current = requestAnimationFrame(step)
+    }
+    frame.current = requestAnimationFrame(step)
+  }
+
+  // Snap to the nearest score when a drag ends, wherever the pointer is released.
+  const dragging = useRef(false)
+  useEffect(() => {
+    const release = () => {
+      if (!dragging.current) return
+      dragging.current = false
+      glideTo(Math.round(positionRef.current))
+    }
+    window.addEventListener('pointerup', release)
+    window.addEventListener('pointercancel', release)
+    return () => {
+      window.removeEventListener('pointerup', release)
+      window.removeEventListener('pointercancel', release)
+      if (frame.current) cancelAnimationFrame(frame.current)
+    }
+  }, [])
 
   useEffect(() => {
     if (autoFocus) input.current?.focus()
   }, [autoFocus])
+
+  const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    const next = keyStep(event.key, positionRef.current)
+    if (next === null) return
+    event.preventDefault()
+    glideTo(next)
+  }
 
   return (
     <div className="text-sm">
@@ -61,7 +113,7 @@ export default function RatingExplorer({ scale, categoryName, postScore, autoFoc
       <div className="relative mx-[10px] h-12">
         <span className="absolute inset-x-0 top-[18px] h-2 rounded-full bg-gray-100 dark:bg-gray-800" />
         <span
-          className={`absolute top-[18px] h-2 transition-all duration-150 ${value > 5 ? 'rounded-r-full' : 'rounded-l-full'} ${FILL_BG[value]}`}
+          className={`absolute top-[18px] h-2 transition-colors duration-150 ${position > 5 ? 'rounded-r-full' : 'rounded-l-full'} ${FILL_BG[value]}`}
           style={{ left: `${pos(from)}%`, width: `${pos(to) - pos(from)}%` }}
         />
         <span className="absolute top-3 h-5 w-0.5 -translate-x-1/2 bg-gray-400" style={{ left: `${pos(5)}%` }} />
@@ -85,9 +137,14 @@ export default function RatingExplorer({ scale, categoryName, postScore, autoFoc
           type="range"
           min={1}
           max={10}
-          step={1}
-          value={value}
-          onChange={event => setValue(Number(event.target.value) as Score)}
+          step="any"
+          value={position}
+          onPointerDown={() => {
+            dragging.current = true
+            if (frame.current) cancelAnimationFrame(frame.current)
+          }}
+          onChange={event => moveTo(Number(event.target.value))}
+          onKeyDown={onKeyDown}
           aria-label={t.sliderLabel}
           aria-valuetext={format(t.valueText, { n: value, name: tier.name })}
           className="rating-range absolute -inset-x-[10px] top-2 m-0 h-7 w-[calc(100%+20px)]"
@@ -97,7 +154,7 @@ export default function RatingExplorer({ scale, categoryName, postScore, autoFoc
       <div className="mt-3 border-t border-gray-100 pt-2.5 dark:border-gray-800">
         <button
           type="button"
-          onClick={() => setValue(postScore)}
+          onClick={() => glideTo(postScore)}
           className={`text-xs text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 ${
             value === postScore ? 'invisible' : ''
           }`}

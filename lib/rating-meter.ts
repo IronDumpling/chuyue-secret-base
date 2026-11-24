@@ -41,3 +41,23 @@ export function placePopover(
   const left = Math.max(margin, Math.min(anchor.left, maxLeft))
   return { top: placement === 'below' ? below : above, left, placement }
 }
+
+// The slider moves continuously under a finger, but the keyboard moves one whole score at a
+// time, from the score the thumb is nearest. null for keys the slider does not handle.
+export function keyStep(key: string, position: number): Score | null {
+  const current = clampScore(position)
+  switch (key) {
+    case 'ArrowRight':
+    case 'ArrowUp':
+      return clampScore(current + 1)
+    case 'ArrowLeft':
+    case 'ArrowDown':
+      return clampScore(current - 1)
+    case 'Home':
+      return 1
+    case 'End':
+      return 10
+    default:
+      return null
+  }
+}

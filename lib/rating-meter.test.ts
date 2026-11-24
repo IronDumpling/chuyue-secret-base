@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { clampScore, meterFill, placePopover } from './rating-meter'
+import { clampScore, keyStep, meterFill, placePopover } from './rating-meter'
 
 describe('clampScore', () => {
   it('rounds to a whole score', () => {
@@ -63,5 +63,25 @@ describe('placePopover', () => {
   it('keeps inside the left edge', () => {
     const anchor = { top: 100, bottom: 120, left: 2, width: 80 }
     expect(placePopover(anchor, pop, viewport).left).toBeGreaterThanOrEqual(12)
+  })
+})
+
+describe('keyStep', () => {
+  it('moves one whole score with the arrow keys, from wherever the thumb is', () => {
+    expect(keyStep('ArrowRight', 7)).toBe(8)
+    expect(keyStep('ArrowUp', 7)).toBe(8)
+    expect(keyStep('ArrowLeft', 7)).toBe(6)
+    expect(keyStep('ArrowDown', 7.4)).toBe(6)
+  })
+  it('jumps to the ends with Home and End', () => {
+    expect(keyStep('Home', 7)).toBe(1)
+    expect(keyStep('End', 3)).toBe(10)
+  })
+  it('stops at the ends', () => {
+    expect(keyStep('ArrowRight', 10)).toBe(10)
+    expect(keyStep('ArrowLeft', 1)).toBe(1)
+  })
+  it('ignores other keys', () => {
+    expect(keyStep('a', 7)).toBeNull()
   })
 })
