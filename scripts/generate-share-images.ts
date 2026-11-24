@@ -28,7 +28,8 @@ function coverFile(images: string[]): string | null {
 
 function siteTexts(lang: Locale) {
   const t = getDictionary(lang)
-  return { title: t.meta.siteName, badge: t.meta.cardBadge, footer: `${t.meta.siteName} · ${t.footer.tagline}` }
+  // The site is called by its name ("楚岳的秘密基地"), never by a job title.
+  return { title: t.meta.title, badge: t.meta.cardBadge, footer: t.meta.title }
 }
 
 function posterDescription(entry: Entry): string {

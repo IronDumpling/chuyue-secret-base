@@ -4,7 +4,7 @@ export const zh: Dictionary = {
   meta: {
     siteName: '楚岳',
     fullName: '张楚岳',
-    title: '楚岳 - 系统设计师',
+    title: '楚岳的秘密基地',
     description: '张楚岳的作品集与博客，多伦多大学系统设计专业毕业生',
     ogLocale: 'zh_CN',
     cardBadge: '作品集与博客',
@@ -27,7 +27,7 @@ export const zh: Dictionary = {
     toggle: '切换主题',
   },
   footer: {
-    tagline: '系统设计师',
+    tagline: '欢迎来到我的秘密基地',
     quickLinks: '快速链接',
     socialMedia: '社交媒体',
     rights: '保留所有权利。',
@@ -176,6 +176,10 @@ export const zh: Dictionary = {
     savePoster: '保存海报',
     shareButton: '分享',
     scanToRead: '扫码阅读',
+    posterScan: '扫码查看',
+    posterSpec: { tech: '技术', code: '代码', live: '在线' },
+    posterLinks: { github: 'GitHub', demo: '演示', website: '网站' },
+    longPressHint: '长按图片可保存到相册',
     close: '关闭',
   },
   toc: {

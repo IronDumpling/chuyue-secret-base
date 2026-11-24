@@ -81,7 +81,9 @@ export function buildCardTree(input: CardInput): Node {
         ? h('div', { style: { display: 'flex', fontSize: 28, opacity: 0.85, marginBottom: 16 } }, input.badge)
         : null,
       h('div', { style: { display: 'flex', fontSize: 68, fontWeight: 700, lineHeight: 1.2 } }, clip(input.title, 44)),
-      h('div', { style: { display: 'flex', fontSize: 26, opacity: 0.7, marginTop: 24 } }, input.footer ?? 'Chuyue · System Designer')
+      input.footer
+        ? h('div', { style: { display: 'flex', fontSize: 26, opacity: 0.7, marginTop: 24 } }, input.footer)
+        : null
     )
   )
 }

@@ -4,7 +4,7 @@ export const en = {
   meta: {
     siteName: 'Chuyue',
     fullName: 'Chuyue Zhang',
-    title: 'Chuyue - System Designer',
+    title: "Chuyue's Secret Base",
     description:
       'Portfolio and blog of Chuyue Zhang, a system designer graduate from University of Toronto',
     ogLocale: 'en_US',
@@ -29,7 +29,7 @@ export const en = {
     toggle: 'Toggle theme',
   },
   footer: {
-    tagline: 'System Designer',
+    tagline: 'Welcome to my secret base',
     quickLinks: 'Quick Links',
     socialMedia: 'Social Media',
     rights: 'All rights reserved.',
@@ -179,6 +179,11 @@ export const en = {
     savePoster: 'Save Poster',
     shareButton: 'Share',
     scanToRead: 'Scan to read',
+    // Poster-only strings (scripts/generate-share-images.ts and the poster preview).
+    posterScan: 'Scan to view',
+    posterSpec: { tech: 'Stack', code: 'Code', live: 'Live' },
+    posterLinks: { github: 'GitHub', demo: 'Demo', website: 'Website' },
+    longPressHint: 'Long-press the image to save it to Photos',
     close: 'Close',
   },
   toc: {
