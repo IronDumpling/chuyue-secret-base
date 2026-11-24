@@ -38,7 +38,7 @@ const SERIF = 'Noto Serif SC'
 export const POSTER_IMAGE_SIZE: Record<PosterLayout, { width: number; height: number } | null> = {
   project: { width: IMAGE_WIDTH, height: 560 },
   review: { width: IMAGE_WIDTH, height: 734 },
-  art: { width: IMAGE_WIDTH, height: 1150 },
+  art: { width: IMAGE_WIDTH, height: 1060 },
   moment: { width: IMAGE_WIDTH, height: 760 },
   novel: null,
 }
@@ -77,7 +77,7 @@ function topBar(label: string, dateText: string): Node {
   return h(
     'div',
     { style: flex({ justifyContent: 'space-between', alignItems: 'baseline', padding: `96px ${SIDE}px 0 ${SIDE}px` }) },
-    h('div', { style: flex({ color: ACCENT, fontSize: 38, letterSpacing: 6, fontWeight: 700, fontFamily: SANS }) }, label),
+    h('div', { style: flex({ color: ACCENT, fontSize: 38, letterSpacing: 2, fontWeight: 700, fontFamily: SANS }) }, label),
     h('div', { style: flex({ color: MUTED, fontSize: 38, fontFamily: SANS, fontWeight: 400 }) }, dateText)
   )
 }
@@ -109,7 +109,7 @@ function signatureRow(input: PosterInput): Node {
       style: flex({
         justifyContent: 'space-between',
         alignItems: 'center',
-        margin: `0 78px`,
+        margin: `40px 78px 0 78px`,
         padding: '52px 0 70px 0',
         borderTop: `4px solid ${LINE}`,
       }),

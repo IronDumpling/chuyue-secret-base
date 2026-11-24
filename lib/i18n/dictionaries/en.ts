@@ -178,7 +178,6 @@ export const en = {
     copied: 'Copied!',
     savePoster: 'Save Poster',
     shareButton: 'Share',
-    scanToRead: 'Scan to read',
     // Poster-only strings (scripts/generate-share-images.ts and the poster preview).
     posterScan: 'Scan to view',
     posterSpec: { tech: 'Stack', code: 'Code', live: 'Live' },

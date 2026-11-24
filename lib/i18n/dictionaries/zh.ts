@@ -175,7 +175,6 @@ export const zh: Dictionary = {
     copied: '已复制！',
     savePoster: '保存海报',
     shareButton: '分享',
-    scanToRead: '扫码阅读',
     posterScan: '扫码查看',
     posterSpec: { tech: '技术', code: '代码', live: '在线' },
     posterLinks: { github: 'GitHub', demo: '演示', website: '网站' },
