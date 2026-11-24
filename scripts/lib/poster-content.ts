@@ -33,7 +33,7 @@ export const TITLE_MAX = 60
 // 0 means the layout shows no description.
 export const DESC_MAX: Record<PosterLayout, number> = { project: 60, review: 40, art: 0, novel: 90, moment: 50 }
 // Art posters let the picture speak, except a game's: its one line says how it plays.
-const GAMEPLAY_MAX = 50
+const GAMEPLAY_MAX = 120 // the poster clamps it to two lines
 
 export function posterLayoutOf(entry: Entry): PosterLayout {
   if (entry.target.kind === 'blog') {

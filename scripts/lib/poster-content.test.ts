@@ -119,5 +119,10 @@ describe('posterContent', () => {
     const title = 'Multi-Agent Reinforcement Learning for Exploration'
     expect(posterContent(project('ai', { title }), 'en').title).toBe(title)
   })
+
+  it('keeps a full gameplay sentence for the layout to wrap', () => {
+    const description = 'A 2D stealth platformer with innovative sound-based resonance mechanics, enhanced through iteration'
+    expect(posterContent(project('games', { description }), 'en').description).toBe(description)
+  })
 })
 
