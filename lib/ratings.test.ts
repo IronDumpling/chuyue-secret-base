@@ -3,7 +3,6 @@ import { resolveScale, resolveScales, validateRatingsFile, SCORES, REVIEW_CATEGO
 
 function baseRaw(): any {
   return {
-    subtitle: 'S',
     tiers: SCORES.map(score => ({ score, name: `N${score}`, definition: `D${score}` })),
   }
 }
@@ -15,7 +14,7 @@ function valid(raw: unknown = baseRaw()) {
 describe('resolveScale', () => {
   it('uses the default set when a category has no override', () => {
     const scale = resolveScale(valid(), 'films')
-    expect(scale.subtitle).toBe('S')
+    expect(scale).not.toHaveProperty('subtitle')
     expect(scale.tiers[7]).toEqual({ name: 'N7', definition: 'D7' })
   })
 
@@ -29,13 +28,6 @@ describe('resolveScale', () => {
     expect(resolveScale(file, 'films').tiers[8].name).toBe('N8')
   })
 
-  it('overrides the subtitle per category', () => {
-    const raw = baseRaw()
-    raw.categories = [{ category: 'music', subtitle: 'Music S' }]
-    const file = valid(raw)
-    expect(resolveScale(file, 'music').subtitle).toBe('Music S')
-    expect(resolveScale(file, 'films').subtitle).toBe('S')
-  })
 
   it('treats an empty override field as not overridden', () => {
     const raw = baseRaw()
@@ -91,10 +83,8 @@ describe('validateRatingsFile', () => {
     expectProblem(raw2, '11')
   })
 
-  it('rejects a missing subtitle', () => {
-    const raw = baseRaw()
-    delete raw.subtitle
-    expectProblem(raw, 'subtitle')
+  it('needs no subtitle: the axis explains the midpoint', () => {
+    expect(() => valid(baseRaw())).not.toThrow()
   })
 
   it('rejects a category that is not a review category, naming the known ones', () => {

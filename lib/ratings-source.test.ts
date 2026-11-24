@@ -15,7 +15,7 @@ function write(rel: string, text: string) {
 
 function yamlFile(prefix: string): string {
   const tiers = SCORES.map(s => `  - score: ${s}\n    name: ${prefix}${s}\n    definition: ${prefix}D${s}`).join('\n')
-  return `subtitle: ${prefix}S\ntiers:\n${tiers}\n`
+  return `tiers:\n${tiers}\n`
 }
 
 beforeEach(() => {
@@ -40,7 +40,7 @@ describe('createRatingsSource', () => {
   })
 
   it('throws naming the file when the YAML does not parse', () => {
-    write('blog/ratings.en.yml', 'subtitle: [unclosed\n')
+    write('blog/ratings.en.yml', 'tiers: [unclosed\n')
     expect(() => createRatingsSource(dir).scales('en')).toThrow('ratings.en.yml')
   })
 

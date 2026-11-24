@@ -91,7 +91,6 @@ export default function RatingExplorer({ scale, categoryName, postScore, autoFoc
       <h2 id={titleId} className="text-sm font-semibold text-gray-900 dark:text-gray-100">
         {format(t.scaleTitle, { category: categoryName })}
       </h2>
-      <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">{scale.subtitle}</p>
 
       <div className="mt-3.5 flex min-h-[34px] items-center gap-2.5">
         <span

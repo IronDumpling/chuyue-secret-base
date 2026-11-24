@@ -151,9 +151,8 @@ describe('buildCmsConfig', () => {
       expect(file.i18n).toBeTruthy()
     })
 
-    it('requires the default subtitle and exactly ten tiers', () => {
-      expect(byName(file.fields, 'subtitle')).toMatchObject({ widget: 'string', i18n: true })
-      expect(byName(file.fields, 'subtitle').required).not.toBe(false)
+    it('requires exactly ten tiers and has no subtitle field', () => {
+      expect(byName(file.fields, 'subtitle')).toBeUndefined()
       const tiers = byName(file.fields, 'tiers')
       expect(tiers).toMatchObject({ widget: 'list', min: 10, max: 10, i18n: true })
       expect(byName(tiers.fields, 'score')).toMatchObject({ widget: 'number', value_type: 'int', min: 1, max: 10 })
@@ -167,7 +166,7 @@ describe('buildCmsConfig', () => {
       const category = byName(categories.fields, 'category')
       expect(category.widget).toBe('select')
       expect(category.options).toEqual(['films', 'shows', 'music', 'video-games', 'books'])
-      expect(byName(categories.fields, 'subtitle').required).toBe(false)
+      expect(byName(categories.fields, 'subtitle')).toBeUndefined()
       const tiers = byName(categories.fields, 'tiers')
       expect(tiers.required).toBe(false)
       expect(byName(tiers.fields, 'score').widget).toBe('number')

@@ -24,19 +24,16 @@ export interface TierText {
 
 export interface CategoryOverride {
   category: ReviewCategory
-  subtitle?: string
   tiers?: { score: Score; name?: string; definition?: string }[]
 }
 
 // One language file, as parsed from YAML. Lists, not numeric keys, so the CMS form can edit it.
 export interface RatingsFile {
-  subtitle: string
   tiers: TierText[]
   categories?: CategoryOverride[]
 }
 
 export interface RatingScale {
-  subtitle: string
   tiers: Record<Score, { name: string; definition: string }>
 }
 
@@ -57,9 +54,7 @@ function isScore(value: unknown): value is Score {
 // Collects every problem and throws them together, so one build run shows all of them.
 export function validateRatingsFile(raw: unknown, file: string): RatingsFile {
   const problems: string[] = []
-  if (!isObject(raw)) throw new Error(`${file}: expected a mapping with subtitle and tiers`)
-
-  if (!filled(raw.subtitle)) problems.push('subtitle is missing')
+  if (!isObject(raw)) throw new Error(`${file}: expected a mapping with tiers`)
 
   const tiers = Array.isArray(raw.tiers) ? raw.tiers : []
   if (!Array.isArray(raw.tiers)) problems.push('tiers must be a list of ten tiers')
@@ -121,7 +116,7 @@ export function resolveScale(file: RatingsFile, category: ReviewCategory): Ratin
       definition: filled(own?.definition) ? own!.definition! : tier.definition,
     }
   }
-  return { subtitle: filled(override?.subtitle) ? override!.subtitle! : file.subtitle, tiers }
+  return { tiers }
 }
 
 export function resolveScales(file: RatingsFile): RatingScales {

@@ -137,7 +137,6 @@ function ratingsCollection(): Record<string, unknown> {
         file: 'blog/ratings.{{locale}}.yml',
         i18n: true,
         fields: [
-          localField({ name: 'subtitle', label: 'Subtitle (under the heading)', widget: 'string' }),
           localField({
             name: 'tiers',
             label: 'Tiers (one per score, 1-10)',
@@ -159,7 +158,6 @@ function ratingsCollection(): Record<string, unknown> {
             summary: '{{fields.category}}',
             fields: [
               { name: 'category', label: 'Category', widget: 'select', options: [...REVIEW_CATEGORIES] },
-              { name: 'subtitle', label: 'Subtitle', widget: 'string', required: false },
               {
                 name: 'tiers',
                 label: 'Tier overrides',
