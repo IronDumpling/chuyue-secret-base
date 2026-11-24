@@ -107,6 +107,7 @@ function signatureRow(input: PosterInput): Node {
     {
       'data-part': 'signature',
       style: flex({
+        flexShrink: 0,
         justifyContent: 'space-between',
         alignItems: 'center',
         margin: `40px 78px 0 78px`,
@@ -138,10 +139,26 @@ function signatureRow(input: PosterInput): Node {
   )
 }
 
-function titleText(text: string, size: number, top: number, family = SANS): Node {
+// Lines are capped, not only characters: an English title wraps sooner than a Chinese one.
+function clamped(lines: number) {
+  return { display: 'block', lineClamp: lines }
+}
+
+function titleText(text: string, size: number, top: number, lines = 2, family = SANS): Node {
   return h(
     'div',
-    { style: flex({ fontSize: size, fontWeight: 700, fontFamily: family, lineHeight: 1.25, marginTop: top, color: INK }) },
+    {
+      style: {
+        ...clamped(lines),
+        fontSize: size,
+        fontWeight: 700,
+        fontFamily: family,
+        lineHeight: 1.25,
+        marginTop: top,
+        color: INK,
+        flexShrink: 0,
+      },
+    },
     text
   )
 }
@@ -149,7 +166,19 @@ function titleText(text: string, size: number, top: number, family = SANS): Node
 function bodyText(text: string, size: number, top: number, style: Record<string, unknown> = {}): Node {
   return h(
     'div',
-    { style: flex({ fontSize: size, fontWeight: 400, fontFamily: SANS, lineHeight: 1.6, marginTop: top, color: INK, ...style }) },
+    {
+      style: {
+        ...clamped(2),
+        fontSize: size,
+        fontWeight: 400,
+        fontFamily: SANS,
+        lineHeight: 1.6,
+        marginTop: top,
+        color: INK,
+        flexShrink: 0,
+        ...style,
+      },
+    },
     text
   )
 }
@@ -173,7 +202,11 @@ function projectLayout({ content: c, imageDataUri }: PosterInput): (Node | null)
               'div',
               { style: flex({ fontSize: 42, fontFamily: SANS, fontWeight: 400, marginTop: i === 0 ? 0 : 30 }) },
               h('div', { style: flex({ width: 172, color: MUTED }) }, row.label),
-              h('div', { style: flex({ flex: 1, color: INK }) }, row.value)
+              h(
+                'div',
+                { style: { display: 'block', flex: 1, color: INK, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' } },
+                row.value
+              )
             )
           )
         )
@@ -209,7 +242,7 @@ function reviewLayout({ content: c, imageDataUri }: PosterInput): (Node | null)[
         { style: flex({ justifyContent: 'space-between', alignItems: 'flex-start', padding: '48px 56px 0 56px' }) },
         h(
           'div',
-          { style: flex({ flex: 1, fontSize: 64, fontWeight: 700, fontFamily: SANS, color: INK, lineHeight: 1.25, marginTop: 14 }) },
+          { style: { ...clamped(2), flex: 1, fontSize: 64, fontWeight: 700, fontFamily: SANS, color: INK, lineHeight: 1.25, marginTop: 14 } },
           c.title
         ),
         typeof c.rating === 'number'
@@ -286,8 +319,8 @@ function novelLayout({ content: c }: PosterInput): (Node | null)[] {
         { style: flex({ flexDirection: 'column', flexGrow: 1, padding: `104px ${SIDE}px 96px ${SIDE}px` }) },
         h(
           'div',
-          { style: flex({ fontSize: 110, fontWeight: 700, fontFamily: SERIF, lineHeight: 1.2, color: INK }) },
-          clip(c.title, 60)
+          { style: { ...clamped(3), fontSize: 110, fontWeight: 700, fontFamily: SERIF, lineHeight: 1.2, color: INK } },
+          c.title
         ),
         spacer(),
         blurb
@@ -340,9 +373,14 @@ export function buildPosterTree(input: PosterInput): Node {
     h(
       'div',
       { style: flex({ position: 'absolute', top: 0, left: 0, width: WIDTH, height: HEIGHT, flexDirection: 'column' }) },
-      topBar(c.label, c.dateText),
-      ...body,
-      c.layout === 'novel' ? null : spacer(),
+      // Everything above the signature lives in a box that clips instead of growing, so no
+      // amount of text can push the signature row or the QR code off the page.
+      h(
+        'div',
+        { style: flex({ flexDirection: 'column', flexGrow: 1, flexShrink: 1, minHeight: 0, overflow: 'hidden' }) },
+        topBar(c.label, c.dateText),
+        ...body
+      ),
       signatureRow(input)
     )
   )

@@ -112,4 +112,28 @@ describe('poster renderer', () => {
     expect(rows[0]).toBeDefined()
     expect(new Set(rows).size).toBe(1)
   })
+
+  it('keeps the signature row and QR on the page for the longest project', async () => {
+    const qr = await qrDataUri('https://example.com/en/portfolio/applications/wave-optics/')
+    const worst = content('project', {
+      title: 'Wave Optics Education Websit…',
+      description: 'An interactive education website that visualizes wave optics experi…',
+      specRows: [
+        { label: 'Stack', value: 'Interactive Simulation · Physics Education · Visualization' },
+        { label: 'Code', value: 'GitHub' },
+        { label: 'Live', value: 'Website' },
+      ],
+    })
+    const jpeg = await renderJpeg(buildPosterTree(input(worst, true, qr)), 1080, 1920, [loadLatinFallback()])
+    const { data, info } = await sharp(jpeg).raw().toBuffer({ resolveWithObject: true })
+    const pixel = (x: number, y: number) => {
+      const i = (y * info.width + x) * info.channels
+      return [data[i], data[i + 1], data[i + 2]]
+    }
+    // The QR's white frame: left padding and top padding of the box at the bottom right.
+    for (const [x, y] of [[831, 1762], [914, 1679]]) {
+      expect(pixel(x, y).every(v => v > 235)).toBe(true)
+    }
+  }, 30_000)
 })
+

@@ -6,6 +6,8 @@ import { coverDataUri } from './card'
 
 const WIDTH = 1080
 const HEIGHT = 1920
+// Mean channel value (0-255) a blurred background may reach at most.
+const TARGET_MEAN = 42
 
 // The poster's own picture, blurred and darkened to fill the whole 1080x1920 page. It is cut
 // ~10% larger and cropped back, so the blur's soft edge never shows as a grey frame.
@@ -13,12 +15,17 @@ export async function blurredBackgroundDataUri(filePath: string | null): Promise
   if (!filePath || !fs.existsSync(filePath)) return undefined
   try {
     const margin = 108
-    const blurred = await sharp(filePath)
+    const soft = await sharp(filePath)
       .rotate()
       .resize(WIDTH + margin * 2, HEIGHT + margin * 2, { fit: 'cover' })
       .blur(60)
-      .modulate({ brightness: 0.35, saturation: 0.9 })
       .toBuffer()
+    // Darken to 35%, but never leave the page brighter than an average photo would: a white
+    // diagram cover at 35% is mid grey, and the series must stay uniformly dark.
+    const { channels } = await sharp(soft).stats()
+    const mean = channels.slice(0, 3).reduce((sum, c) => sum + c.mean, 0) / 3
+    const brightness = Math.min(0.35, TARGET_MEAN / Math.max(mean, 1))
+    const blurred = await sharp(soft).modulate({ brightness, saturation: 0.9 }).toBuffer()
     const buffer = await sharp(blurred)
       .extract({ left: margin, top: margin, width: WIDTH, height: HEIGHT })
       .jpeg({ quality: 70 })

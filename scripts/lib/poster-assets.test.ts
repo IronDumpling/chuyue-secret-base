@@ -33,4 +33,14 @@ describe('poster assets', () => {
     const meta = await metaOf(await avatarDataUri(await tempImage(300, 500)))
     expect([meta.width, meta.height]).toEqual([160, 160])
   })
+
+  it('keeps a white cover as dark as the rest of the series', async () => {
+    const file = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'poster-white-')), 'white.jpg')
+    fs.writeFileSync(file, await sharp({ create: { width: 800, height: 600, channels: 3, background: '#ffffff' } }).jpeg().toBuffer())
+    const uri = await blurredBackgroundDataUri(file)
+    const stats = await sharp(Buffer.from(uri!.split(',')[1], 'base64')).stats()
+    const mean = stats.channels.slice(0, 3).reduce((sum, c) => sum + c.mean, 0) / 3
+    expect(mean).toBeLessThan(60)
+  })
 })
+

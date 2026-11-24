@@ -88,7 +88,7 @@ describe('posterContent', () => {
   })
 
   it('clips long title and description', () => {
-    const longTitle = '长'.repeat(40)
+    const longTitle = '长'.repeat(80)
     const c = posterContent(project('applications', { title: longTitle, description: '述'.repeat(200) }), 'zh')
     expect(Array.from(c.title)).toHaveLength(TITLE_MAX)
     expect(c.title.endsWith('…')).toBe(true)
@@ -109,4 +109,10 @@ describe('posterContent', () => {
     expect(posterContent(post('films', { images: ['/a.jpg', '/b.jpg'] }), 'zh').imagePath).toBe('/a.jpg')
     expect(posterContent(post('films'), 'zh').imagePath).toBeNull()
   })
+
+  it('leaves room for an English title to wrap by words', () => {
+    const title = 'Multi-Agent Reinforcement Learning for Exploration'
+    expect(posterContent(project('ai', { title }), 'en').title).toBe(title)
+  })
 })
+

@@ -28,7 +28,8 @@ export interface PosterContent {
   imagePath: string | null // site path of the first image
 }
 
-export const TITLE_MAX = 28
+// A safety cap only: each layout clamps the title by lines, which wraps English by words.
+export const TITLE_MAX = 60
 // 0 means the layout shows no description.
 export const DESC_MAX: Record<PosterLayout, number> = { project: 60, review: 40, art: 0, novel: 90, moment: 50 }
 
