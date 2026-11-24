@@ -37,14 +37,15 @@ describe('buildCmsConfig', () => {
   })
 
   it('asks for the slug on every collection, since Chinese titles cannot become ASCII slugs', () => {
-    for (const c of config.collections) expect(c.slug).toBe('{{fields._slug}}')
+    for (const c of config.collections.filter((c: any) => c.folder)) expect(c.slug).toBe('{{fields._slug}}')
   })
 
   it('creates one collection per blog and portfolio category, all names unique', () => {
     const expected = getCategories('blog').length + getCategories('portfolio').length
-    expect(config.collections).toHaveLength(expected)
-    expect(config.collections).toHaveLength(13)
-    const names = config.collections.map((c: any) => c.name)
+    const folders = config.collections.filter((c: any) => c.folder)
+    expect(folders).toHaveLength(expected)
+    expect(folders).toHaveLength(13)
+    const names = folders.map((c: any) => c.name)
     expect(new Set(names).size).toBe(expected)
   })
 
@@ -135,6 +136,43 @@ describe('buildCmsConfig', () => {
       quality: 82,
       width: 2048,
       height: 2048,
+    })
+  })
+
+  describe('rating scale', () => {
+    const collection = config.collections.find((c: any) => c.name === 'ratings')
+    const file = collection?.files?.[0]
+    const byName = (list: any[], name: string) => list.find((f: any) => f.name === name)
+
+    it('edits content/blog/ratings.{en,zh}.yml as one file per language', () => {
+      expect(collection.format).toBe('yaml')
+      expect(collection.files).toHaveLength(1)
+      expect(file.file).toBe('blog/ratings.{{locale}}.yml')
+      expect(file.i18n).toBeTruthy()
+    })
+
+    it('requires the default subtitle and exactly ten tiers', () => {
+      expect(byName(file.fields, 'subtitle')).toMatchObject({ widget: 'string', i18n: true })
+      expect(byName(file.fields, 'subtitle').required).not.toBe(false)
+      const tiers = byName(file.fields, 'tiers')
+      expect(tiers).toMatchObject({ widget: 'list', min: 10, max: 10, i18n: true })
+      expect(byName(tiers.fields, 'score')).toMatchObject({ widget: 'number', value_type: 'int', min: 1, max: 10 })
+      expect(byName(tiers.fields, 'name').widget).toBe('string')
+      expect(byName(tiers.fields, 'definition').widget).toBe('text')
+    })
+
+    it('offers optional overrides for every review category', () => {
+      const categories = byName(file.fields, 'categories')
+      expect(categories).toMatchObject({ widget: 'list', required: false, i18n: true })
+      const category = byName(categories.fields, 'category')
+      expect(category.widget).toBe('select')
+      expect(category.options).toEqual(['films', 'shows', 'music', 'video-games', 'books'])
+      expect(byName(categories.fields, 'subtitle').required).toBe(false)
+      const tiers = byName(categories.fields, 'tiers')
+      expect(tiers.required).toBe(false)
+      expect(byName(tiers.fields, 'score').widget).toBe('number')
+      expect(byName(tiers.fields, 'name').required).toBe(false)
+      expect(byName(tiers.fields, 'definition').required).toBe(false)
     })
   })
 })

@@ -6,6 +6,7 @@ import { getGroups, type BlogGroup, type PortfolioCategory } from '../../lib/tax
 const NO_CODE: readonly PortfolioCategory[] = ['photography', 'illustration', 'novel']
 import { hasRating } from '../../lib/blog-utils'
 import { en } from '../../lib/i18n/dictionaries/en'
+import { REVIEW_CATEGORIES } from '../../lib/ratings'
 
 export interface CmsOptions {
   repo: string
@@ -120,6 +121,65 @@ function portfolioFields(category: PortfolioCategory): CmsField[] {
   return fields
 }
 
+// The rating scale (content/blog/ratings.{en,zh}.yml, see lib/ratings.ts): a full default set
+// and optional per-category overrides. Each language file is edited on its own, so every field
+// is localized. Category choices follow the taxonomy's reviews group.
+function ratingsCollection(): Record<string, unknown> {
+  const score = { name: 'score', label: 'Score', widget: 'number', value_type: 'int', min: 1, max: 10 }
+  return {
+    name: 'ratings',
+    label: 'Rating scale',
+    format: 'yaml',
+    files: [
+      {
+        name: 'ratings',
+        label: 'Rating scale',
+        file: 'blog/ratings.{{locale}}.yml',
+        i18n: true,
+        fields: [
+          localField({ name: 'subtitle', label: 'Subtitle (under the heading)', widget: 'string' }),
+          localField({
+            name: 'tiers',
+            label: 'Tiers (one per score, 1-10)',
+            widget: 'list',
+            min: 10,
+            max: 10,
+            summary: '{{fields.score}} · {{fields.name}}',
+            fields: [
+              score,
+              { name: 'name', label: 'Name', widget: 'string' },
+              { name: 'definition', label: 'Definition', widget: 'text' },
+            ],
+          }),
+          localField({
+            name: 'categories',
+            label: 'Category overrides (anything left empty uses the defaults)',
+            widget: 'list',
+            required: false,
+            summary: '{{fields.category}}',
+            fields: [
+              { name: 'category', label: 'Category', widget: 'select', options: [...REVIEW_CATEGORIES] },
+              { name: 'subtitle', label: 'Subtitle', widget: 'string', required: false },
+              {
+                name: 'tiers',
+                label: 'Tier overrides',
+                widget: 'list',
+                required: false,
+                summary: '{{fields.score}} · {{fields.name}}',
+                fields: [
+                  score,
+                  { name: 'name', label: 'Name', widget: 'string', required: false },
+                  { name: 'definition', label: 'Definition', widget: 'text', required: false },
+                ],
+              },
+            ],
+          }),
+        ],
+      },
+    ],
+  }
+}
+
 export function buildCmsConfig({ repo, branch }: CmsOptions): Record<string, unknown> {
   const blogCollections = getGroups('blog').flatMap(group =>
     group.categories.map(category => ({
@@ -180,6 +240,6 @@ export function buildCmsConfig({ repo, branch }: CmsOptions): Record<string, unk
         },
       },
     },
-    collections: [...blogCollections, ...portfolioCollections],
+    collections: [...blogCollections, ...portfolioCollections, ratingsCollection()],
   }
 }
